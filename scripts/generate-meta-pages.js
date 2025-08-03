@@ -373,7 +373,7 @@ function generateInsectHTML(insect, type) {
       : [];
   
   // 分類情報の生成
-  const familyName = insect.familyJapanese || {
+  const familyName = insect.family || {
     moth: 'ヤガ科',
     butterfly: 'タテハチョウ科', 
     beetle: 'タマムシ科',
@@ -385,15 +385,15 @@ function generateInsectHTML(insect, type) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${insect.name} (${scientificName}) - ${typeNames[type]}図鑑</title>
-  <meta name="description" content="${insect.name}の詳細情報、分類、食草について。${hostPlantsArray.length > 0 ? `食草: ${hostPlantsArray.slice(0, 3).join('、')}など` : ''}">
-  <meta name="keywords" content="${insect.name},${scientificName},${typeNames[type]},食草,昆虫図鑑,${familyName}">
+  <title>${insect.japaneseName} (${scientificName}) - ${typeNames[type]}図鑑</title>
+  <meta name="description" content="${insect.japaneseName}の詳細情報、分類、食草について。${hostPlantsArray.length > 0 ? `食草: ${hostPlantsArray.slice(0, 3).join('、')}など` : ''}">
+  <meta name="keywords" content="${insect.japaneseName},${scientificName},${typeNames[type]},食草,昆虫図鑑,${familyName}">
   <link rel="canonical" href="https://orau98.github.io/${type}/${insect.id}">
   <link rel="stylesheet" href="/insects-host-plant-explorer-/assets/meta-styles.css">
   
   <!-- Open Graph -->
-  <meta property="og:title" content="${insect.name} (${scientificName}) - ${typeNames[type]}図鑑">
-  <meta property="og:description" content="${insect.name}の詳細情報。食草: ${hostPlantsArray.length > 0 ? hostPlantsArray.join('、') : '不明'}">
+  <meta property="og:title" content="${insect.japaneseName} (${scientificName}) - ${typeNames[type]}図鑑">
+  <meta property="og:description" content="${insect.japaneseName}の詳細情報。食草: ${hostPlantsArray.length > 0 ? hostPlantsArray.join('、') : '不明'}">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://orau98.github.io/${type}/${insect.id}">
   ${imageUrl ? `<meta property="og:image" content="https://orau98.github.io${imageUrl}">` : ''}
@@ -401,8 +401,8 @@ function generateInsectHTML(insect, type) {
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta property="twitter:title" content="${insect.name} (${scientificName}) - ${typeNames[type]}図鑑">
-  <meta property="twitter:description" content="${insect.name}の詳細情報。食草: ${hostPlantsArray.length > 0 ? hostPlantsArray.join('、') : '不明'}">
+  <meta property="twitter:title" content="${insect.japaneseName} (${scientificName}) - ${typeNames[type]}図鑑">
+  <meta property="twitter:description" content="${insect.japaneseName}の詳細情報。食草: ${hostPlantsArray.length > 0 ? hostPlantsArray.join('、') : '不明'}">
   ${imageUrl ? `<meta property="twitter:image" content="https://orau98.github.io${imageUrl}">` : ''}
   
   <!-- Enhanced Structured Data -->
@@ -410,8 +410,8 @@ function generateInsectHTML(insect, type) {
   {
     "@context": "https://schema.org",
     "@type": ["Animal", "Species"],
-    "name": "${insect.name}",
-    "alternateName": ["${scientificName}", "${insect.name}"],
+    "name": "${insect.japaneseName}",
+    "alternateName": ["${scientificName}", "${insect.japaneseName}"],
     "scientificName": "${scientificName}",
     "identifier": {
       "@type": "PropertyValue",
@@ -427,12 +427,12 @@ function generateInsectHTML(insect, type) {
         "taxonRank": "family"
       }
     },
-    "description": "${insect.name}（${scientificName}）は${familyName}に属する${typeNames[type]}の一種です。${hostPlantsArray.length > 0 ? `主な食草：${hostPlantsArray.slice(0, 3).join('、')}など${hostPlantsArray.length}種の植物を利用します。` : '食草情報は現在調査中です。'}",
+    "description": "${insect.japaneseName}（${scientificName}）は${familyName}に属する${typeNames[type]}の一種です。${hostPlantsArray.length > 0 ? `主な食草：${hostPlantsArray.slice(0, 3).join('、')}など${hostPlantsArray.length}種の植物を利用します。` : '食草情報は現在調査中です。'}",
     "url": "https://orau98.github.io/${type}/${insect.id}",
     ${imageUrl ? `"image": {
       "@type": "ImageObject",
       "url": "https://orau98.github.io${imageUrl}",
-      "caption": "${insect.name}（${scientificName}）の写真"
+      "caption": "${insect.japaneseName}（${scientificName}）の写真"
     },` : ''}
     "inLanguage": "ja",
     "author": {
@@ -453,11 +453,11 @@ function generateInsectHTML(insect, type) {
       <span>></span>
       <a href="/insects-host-plant-explorer-/${type}">${typeNames[type]}</a>
       <span>></span>
-      <span>${insect.name}</span>
+      <span>${insect.japaneseName}</span>
     </nav>
     
     <header class="meta-header">
-      <h1>${insect.name}</h1>
+      <h1>${insect.japaneseName}</h1>
       <h2>${formatScientificNameHTML(scientificName)}</h2>
     </header>
     
@@ -466,7 +466,7 @@ function generateInsectHTML(insect, type) {
         <h3>基本情報</h3>
         <dl>
           <dt>和名</dt>
-          <dd>${insect.name}</dd>
+          <dd>${insect.japaneseName}</dd>
           <dt>学名</dt>
           <dd>${formatScientificNameHTML(scientificName)}</dd>
           <dt>分類</dt>
@@ -487,18 +487,18 @@ function generateInsectHTML(insect, type) {
       ${imageUrl ? `
       <section class="image-section">
         <img src="${imageUrl}" 
-             alt="${insect.name}（${scientificName}）の写真" 
+             alt="${insect.japaneseName}（${scientificName}）の写真" 
              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
         <div style="display:none; padding: 40px; text-align: center; background-color: #f0f0f0; border-radius: 8px; color: #666;">
           画像を読み込み中...
         </div>
-        <div class="image-caption">${insect.name}の生態写真</div>
+        <div class="image-caption">${insect.japaneseName}の生態写真</div>
       </section>` : ''}
       
       <section class="host-plants">
         <h3>食草・食樹</h3>
         ${hostPlantsArray.length > 0 ? `
-        <p>${insect.name}は以下の植物を食草として利用します：</p>
+        <p>${insect.japaneseName}は以下の植物を食草として利用します：</p>
         <ul>
           ${hostPlantsArray.map(plant => {
             const safePlantName = plant.replace(/[/\\?%*:|"<>]/g, '-');
@@ -510,7 +510,7 @@ function generateInsectHTML(insect, type) {
       
       <section class="description">
         <h3>詳細説明</h3>
-        <p>${insect.name}（学名：${formatScientificNameHTML(scientificName)}）は${familyName}に分類される${typeNames[type]}の一種です。</p>
+        <p>${insect.japaneseName}（学名：${formatScientificNameHTML(scientificName)}）は${familyName}に分類される${typeNames[type]}の一種です。</p>
         ${hostPlantsArray.length > 0 ? `
         <p>幼虫は${hostPlantsArray.slice(0, 3).join('、')}${hostPlantsArray.length > 3 ? 'など' : ''}を食草として成長します。${hostPlantsArray.length}種の植物との関係が確認されており、多様な植物資源を利用する種です。</p>` : ''}
         ${source && source !== '不明' ? `<p>出典: ${source}</p>` : ''}
@@ -554,7 +554,7 @@ function generateInsectHTML(insect, type) {
 
 // Enhanced 植物のHTMLテンプレートを生成する関数 - フルコンテンツバージョン
 function generatePlantHTML(plantName, relatedInsects, plantImages) {
-  const insectsList = relatedInsects.map(insect => insect.name).join(', ');
+  const insectsList = relatedInsects.map(insect => insect.japaneseName).join(', ');
   const safePlantName = plantName.replace(/[/\\?%*:|"<>]/g, '-');
 
   // 植物の別名を取得
@@ -628,7 +628,7 @@ function generatePlantHTML(plantName, relatedInsects, plantImages) {
         "interactionType": "herbivory",
         "participantOrganism": {
           "@type": ["Animal", "Species"],
-          "name": "${insect.name}",
+          "name": "${insect.japaneseName}",
           "scientificName": "${insect.scientificName}"
         }
       }`).join(',\n      ')}
@@ -718,7 +718,7 @@ function generatePlantHTML(plantName, relatedInsects, plantImages) {
           ${insects.map(insect => `
           <li>
             <div class="insect-name">
-              <a href="/insects-host-plant-explorer-/${type}/${insect.id}">${insect.name}</a>
+              <a href="/insects-host-plant-explorer-/${type}/${insect.id}">${insect.japaneseName}</a>
             </div>
             <div class="insect-scientific">${formatScientificNameHTML(insect.scientificName)}</div>
           </li>`).join('')}
@@ -949,17 +949,17 @@ async function generateMetaPages() {
       const japaneseName = row['和名'];
       const genus = row['属'];
       const species = row['種小名'];
-      const familyJapanese = row['科和名'] || '';
-      const author = row['著者'] || '';
-      const year = row['公表年'] || '';
+      const familyJapanese = row['科'] || '';
+      const author = ''; // バタフライCSVには著者情報なし
+      const year = ''; // バタフライCSVには年情報なし
       let hostPlants = row['食草'] || '不明';
       
       if (!japaneseName || !genus || !species) {
         return;
       }
       
-      // 学名を構築
-      const scientificName = `${genus} ${species}${author && year ? ` (${author}, ${year})` : author ? ` ${author}` : ''}`;
+      // 学名を構築（バタフライCSVには著者・年情報なし）
+      const scientificName = `${genus} ${species}`;
       
       const insectId = `butterfly-csv-${index}`;
       const type = 'butterfly';
@@ -976,6 +976,7 @@ async function generateMetaPages() {
         author,
         year
       };
+      
       
       const html = generateInsectHTML(insect, type);
       const filename = path.join(__dirname, `../public/meta/${type}/${insectId}.html`);
