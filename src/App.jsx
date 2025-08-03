@@ -4181,6 +4181,7 @@ function App() {
           const hostPlants = row['食草'];
           const emergenceTime = row['成虫出現時期'];
           const source = row['出典'];
+          const remarks = row['備考']?.trim();
           let scientificName = row['学名']?.trim();
           
           if (!japaneseName || !scientificName) {
@@ -4217,7 +4218,8 @@ function App() {
             hostPlants: hostPlantList,
             emergenceTime: emergenceTime || '不明',
             source: hostPlantList.length > 0 ? "ハムシハンドブック" : (source || "ハムシ目録データベース"),
-            sourceUrl: hostPlantList.length > 0 ? "https://amzn.to/456YVhu" : undefined
+            sourceUrl: hostPlantList.length > 0 ? "https://amzn.to/456YVhu" : undefined,
+            geographicalRemarks: remarks || ''
           };
 
           leafbeetleData.push(leafbeetle);

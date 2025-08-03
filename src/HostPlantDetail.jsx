@@ -6,7 +6,8 @@ import { RelatedPlants } from './components/RelatedLinks';
 
 // 植物の別名データ
 const plantAliases = {
-  'ソメイヨシノ': ['染井吉野']
+  'ソメイヨシノ': ['染井吉野'],
+  'リンゴ': ['セイヨウリンゴ', 'ヨーロッパリンゴ']
 };
 
 const DetailCard = ({ title, children }) => (
@@ -249,11 +250,6 @@ const HostPlantDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = 
       
       <div className="mb-8">
         <h1 className="text-4xl md:text-5xl font-bold text-blue-600 dark:text-blue-400">{decodedPlantName}</h1>
-        {plantAliases[decodedPlantName] && (
-          <div className="text-lg text-slate-600 dark:text-slate-300 mt-2">
-            <span className="font-medium">別名:</span> {plantAliases[decodedPlantName].join('、')}
-          </div>
-        )}
         <dl className="text-xl text-slate-500 dark:text-slate-400 mt-1">
           <dt className="font-semibold">科名:</dt>
           <dd className="ml-4">
@@ -270,12 +266,30 @@ const HostPlantDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = 
               </dd>
             </>
           )}
-          {details.aliases && details.aliases.length > 0 && (
-            <>
-              <dt className="font-semibold mt-2">別名:</dt>
-              <dd className="ml-4">{details.aliases.join('、')}</dd>
-            </>
-          )}
+          {(() => {
+            const allAliases = [];
+            if (plantAliases[decodedPlantName]) {
+              allAliases.push(...plantAliases[decodedPlantName]);
+            }
+            if (details.aliases && details.aliases.length > 0) {
+              // Add CSV aliases but avoid duplicates and current plant name
+              details.aliases.forEach(alias => {
+                if (!allAliases.includes(alias) && alias !== decodedPlantName) {
+                  allAliases.push(alias);
+                }
+              });
+            }
+            // Filter out the current plant name from hardcoded aliases too
+            const filteredAliases = allAliases.filter(alias => alias !== decodedPlantName);
+            
+            // Only show aliases section if there are actually aliases to display
+            return filteredAliases.length > 0 ? (
+              <>
+                <dt className="font-semibold mt-2">別名:</dt>
+                <dd className="ml-4">{filteredAliases.join('、')}</dd>
+              </>
+            ) : null;
+          })()}
         </dl>
       </div>
 
