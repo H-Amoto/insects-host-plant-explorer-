@@ -788,6 +788,7 @@ async function generateMetaPages() {
 
     // CSVデータを読み込み
     const csvData = loadCSV(path.join(__dirname, '../public/ListMJ_hostplants_master.csv'));
+    const butterflyData = loadCSV(path.join(__dirname, '../public/butterfly_host.csv'));
     
     // 日本の冬夜蛾.csvから成虫出現時期データを読み込み
     const kirigaData = loadCSV(path.join(__dirname, '../public/日本の冬夜蛾.csv'));
@@ -941,6 +942,59 @@ async function generateMetaPages() {
       }
     });
     
+    // バタフライデータの処理
+    let butterflyCount = 0;
+    
+    butterflyData.forEach((row, index) => {
+      const japaneseName = row['和名'];
+      const genus = row['属'];
+      const species = row['種小名'];
+      const familyJapanese = row['科和名'] || '';
+      const author = row['著者'] || '';
+      const year = row['公表年'] || '';
+      let hostPlants = row['食草'] || '不明';
+      
+      if (!japaneseName || !genus || !species) {
+        return;
+      }
+      
+      // 学名を構築
+      const scientificName = `${genus} ${species}${author && year ? ` (${author}, ${year})` : author ? ` ${author}` : ''}`;
+      
+      const insectId = `butterfly-csv-${index}`;
+      const type = 'butterfly';
+      
+      const insect = {
+        id: insectId,
+        japaneseName,
+        scientificName,
+        family: familyJapanese,
+        hostPlants,
+        type,
+        genus,
+        species,
+        author,
+        year
+      };
+      
+      const html = generateInsectHTML(insect, type);
+      const filename = path.join(__dirname, `../public/meta/${type}/${insectId}.html`);
+      fs.writeFileSync(filename, html);
+      butterflyCount++;
+      
+      if (hostPlants && hostPlants !== '不明') {
+        const plants = [...new Set(hostPlants.split(/[、,，;；]/).map(p => p.trim()).filter(p => p && p !== '' && p !== '不明'))];
+        plants.forEach(plant => {
+          if (isValidPlantName(plant)) {
+            if (!hostPlantsMap.has(plant)) {
+              hostPlantsMap.set(plant, []);
+            }
+            hostPlantsMap.get(plant).push(insect);
+          }
+        });
+      }
+    });
+    
     // 植物ページを生成
     let plantCount = 0;
     let skippedPlants = 0;
@@ -959,6 +1013,7 @@ async function generateMetaPages() {
     
     console.log(`メタページ生成完了:`);
     console.log(`- 蛾: ${mothCount}種`);
+    console.log(`- 蝶: ${butterflyCount}種`);
     console.log(`- 食草: ${plantCount}種`);
     if (skippedPlants > 0) {
       console.log(`- スキップされた無効な植物: ${skippedPlants}件`);
