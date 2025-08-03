@@ -37,6 +37,16 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
     }
   }
   
+  // Debug for ヒメシタコバネナミシャク
+  if (moth && moth.name === 'ヒメシタコバネナミシャク') {
+    console.log('=== MothDetail DEBUG: ヒメシタコバネナミシャク ===');
+    console.log('moth.source:', moth.source);
+    console.log('typeof moth.source:', typeof moth.source);
+    console.log('moth.source truthy?:', !!moth.source);
+    console.log('Full moth object:', moth);
+    console.log('=== END MothDetail DEBUG ===');
+  }
+  
   // Debug logging for センモンヤガ
   if (insectId === 'catalog-3489' || insectId === 'main-6519') {
     console.log('DEBUG: Looking for センモンヤガ with ID:', insectId);
