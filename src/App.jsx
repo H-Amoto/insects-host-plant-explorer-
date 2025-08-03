@@ -341,8 +341,9 @@ function App() {
 
         const safeFileLoad = async (path, name, timeout = 15000) => {
           try {
-            console.log(`Loading ${name} from ${path}`);
+            console.log(`CRITICAL DEBUG: Loading ${name} from ${path}`);
             const res = await fetchWithTimeout(path, timeout);
+            console.log(`CRITICAL DEBUG: Response for ${name}: status=${res.status}, ok=${res.ok}`);
             if (!res.ok) {
               console.error(`Failed to fetch ${name}: ${res.statusText}`);
               return null;
@@ -4323,6 +4324,17 @@ function App() {
           hostPlants: Object.keys(cleanedHostPlantData).length,
           plantDetails: Object.keys(cleanedPlantDetailData).length
         });
+        
+        // Emergency validation - verify data is actually loaded
+        if (deduplicatedMoths.length === 0 && butterflyData.length === 0) {
+          console.error("EMERGENCY: NO DATA LOADED AT ALL! Moths: 0, Butterflies: 0");
+          console.error("EMERGENCY: This indicates a critical data loading failure");
+        } else {
+          console.log("SUCCESS: Data loaded successfully", {
+            sampleMoth: deduplicatedMoths[0]?.japaneseName || 'No moths',
+            sampleButterfly: butterflyData[0]?.japaneseName || 'No butterflies'
+          });
+        }
       } catch (error) {
         console.error("CRITICAL ERROR: Error fetching or parsing CSVs:", error);
         console.error("CRITICAL ERROR: Stack trace:", error.stack);
@@ -4434,7 +4446,19 @@ function App() {
     };
   }, []);
 
-  console.log("App rendering. Loading:", loading, "Moths count:", moths.length, "Theme:", theme);
+  console.log("CRITICAL DEBUG: App rendering. Loading:", loading, "Moths count:", moths.length, "Butterflies count:", butterflies.length, "Theme:", theme);
+  
+  // Emergency fallback - if data doesn't load after 30 seconds, force retry
+  useEffect(() => {
+    const emergency = setTimeout(() => {
+      if (loading) {
+        console.error("EMERGENCY: Data loading timeout detected after 30 seconds - forcing reload");
+        window.location.reload();
+      }
+    }, 30000);
+    
+    return () => clearTimeout(emergency);
+  }, [loading]);
   
   return (
     <div className={theme === 'dark' ? 'dark' : ''}>
