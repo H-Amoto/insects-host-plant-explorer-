@@ -3487,6 +3487,19 @@ function App() {
                   });
                 }
                 
+                if (mothName === 'ヒメシタコバネナミシャク') {
+                  console.log('DEBUG: ヒメシタコバネナミシャク data processing:', {
+                    catalogNo: catalogNo,
+                    mothName: mothName,
+                    rawSource: row['出典'],
+                    sourceToUse: sourceToUse,
+                    rowKeys: Object.keys(row),
+                    row25: row[Object.keys(row)[25]],
+                    row26: row[Object.keys(row)[26]],
+                    allRowData: row
+                  });
+                }
+                
                 
 
                 const mothData = { 
@@ -3581,6 +3594,16 @@ function App() {
                   console.log('Raw host plant text:', rawHostPlant);
                   console.log('Host plant entries:', hostPlantEntries);
                   console.log('=== END センモンヤガ DATA ===');
+                }
+                
+                // Debug for ヒメシタコバネナミシャク
+                if (mothName === 'ヒメシタコバネナミシャク') {
+                  console.log('=== FINAL ヒメシタコバネナミシャク DATA ===');
+                  console.log('ID:', mothData.id);
+                  console.log('Name:', mothData.name);
+                  console.log('Source field:', mothData.source);
+                  console.log('Entire mothData object:', mothData);
+                  console.log('=== END ヒメシタコバネナミシャク DATA ===');
                 }
                 
                 mainMothData.push(mothData);
