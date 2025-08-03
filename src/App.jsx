@@ -96,10 +96,12 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log("CRITICAL DEBUG: fetchData started. Setting loading to true.");
       setLoading(true);
       let mainMothData = [];
       let hostPlantData = {};
       let plantDetailData = {};
+      console.log("CRITICAL DEBUG: BASE_URL:", import.meta.env.BASE_URL);
       const wameiCsvPath = `${import.meta.env.BASE_URL}wamei_checklist_ver.1.10.csv`;
       const mainCsvPath = `${import.meta.env.BASE_URL}ListMJ_hostplants_master.csv?v=${Date.now()}&bust=${Math.random()}&nocache=${Date.now()}&t=${performance.now()}`;
       const yListCsvPath = `${import.meta.env.BASE_URL}20210514YList_download.csv`; // New YList CSV path
@@ -110,6 +112,8 @@ function App() {
       const fuyushakuCsvPath = `${import.meta.env.BASE_URL}日本の冬尺蛾.csv?v=${Date.now()}&bust=${Math.random()}&nocache=${Date.now()}&t=${performance.now()}`;
       const emergenceTimeCsvPath = `${import.meta.env.BASE_URL}emergence_time_integrated.csv`;
       const genusMappingCsvPath = `${import.meta.env.BASE_URL}genus_mapping.csv`;
+      console.log("CRITICAL DEBUG: CSV paths created. mainCsvPath:", mainCsvPath);
+      console.log("CRITICAL DEBUG: CSV paths created. butterflyCsvPath:", butterflyCsvPath);
 
       // Unified scientific name processing function for all insect types - FIXED SCOPE
       const processScientificName = (existingScientificName, genusName, speciesName, authorName, yearName, insectType = 'moth') => {
@@ -405,14 +409,14 @@ function App() {
           firstChars: fuyushakuText ? fuyushakuText.substring(0, 100) : 'N/A'
         });
 
-        console.log("File loading results:", {
-          wamei: wameiText ? 'SUCCESS' : 'FAILED',
-          main: mainText ? 'SUCCESS' : 'FAILED',
-          yList: yListText ? 'SUCCESS' : 'FAILED',
-          hamushi: hamushiSpeciesText ? 'SUCCESS' : 'FAILED',
-          butterfly: butterflyText ? 'SUCCESS' : 'FAILED',
-          beetle: beetleText ? 'SUCCESS' : 'FAILED',
-          kiriga: kirigaText ? 'SUCCESS' : 'FAILED',
+        console.log("CRITICAL DEBUG: File loading results:", {
+          wamei: wameiText ? `SUCCESS (${wameiText.length} chars)` : 'FAILED',
+          main: mainText ? `SUCCESS (${mainText.length} chars)` : 'FAILED',
+          yList: yListText ? `SUCCESS (${yListText.length} chars)` : 'FAILED',
+          hamushi: hamushiSpeciesText ? `SUCCESS (${hamushiSpeciesText.length} chars)` : 'FAILED',
+          butterfly: butterflyText ? `SUCCESS (${butterflyText.length} chars)` : 'FAILED',
+          beetle: beetleText ? `SUCCESS (${beetleText.length} chars)` : 'FAILED',
+          kiriga: kirigaText ? `SUCCESS (${kirigaText.length} chars)` : 'FAILED',
           fuyushaku: fuyushakuText ? 'SUCCESS' : 'FAILED',
           emergenceTime: emergenceTimeText ? 'SUCCESS' : 'FAILED',
           genusMapping: genusMappingText ? 'SUCCESS' : 'FAILED'
@@ -4320,7 +4324,8 @@ function App() {
           plantDetails: Object.keys(cleanedPlantDetailData).length
         });
       } catch (error) {
-        console.error("Error fetching or parsing CSVs:", error);
+        console.error("CRITICAL ERROR: Error fetching or parsing CSVs:", error);
+        console.error("CRITICAL ERROR: Stack trace:", error.stack);
         setLoading(false); // Ensure loading is set to false even on error
         // Set empty data to prevent app from hanging
         setMoths([]);
