@@ -96,12 +96,10 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("CRITICAL DEBUG: fetchData started. Setting loading to true.");
       setLoading(true);
       let mainMothData = [];
       let hostPlantData = {};
       let plantDetailData = {};
-      console.log("CRITICAL DEBUG: BASE_URL:", import.meta.env.BASE_URL);
       const wameiCsvPath = `${import.meta.env.BASE_URL}wamei_checklist_ver.1.10.csv`;
       const mainCsvPath = `${import.meta.env.BASE_URL}ListMJ_hostplants_master.csv?v=${Date.now()}&bust=${Math.random()}&nocache=${Date.now()}&t=${performance.now()}`;
       const yListCsvPath = `${import.meta.env.BASE_URL}20210514YList_download.csv`; // New YList CSV path
@@ -112,8 +110,6 @@ function App() {
       const fuyushakuCsvPath = `${import.meta.env.BASE_URL}日本の冬尺蛾.csv?v=${Date.now()}&bust=${Math.random()}&nocache=${Date.now()}&t=${performance.now()}`;
       const emergenceTimeCsvPath = `${import.meta.env.BASE_URL}emergence_time_integrated.csv`;
       const genusMappingCsvPath = `${import.meta.env.BASE_URL}genus_mapping.csv`;
-      console.log("CRITICAL DEBUG: CSV paths created. mainCsvPath:", mainCsvPath);
-      console.log("CRITICAL DEBUG: CSV paths created. butterflyCsvPath:", butterflyCsvPath);
 
       // Unified scientific name processing function for all insect types - FIXED SCOPE
       const processScientificName = (existingScientificName, genusName, speciesName, authorName, yearName, insectType = 'moth') => {
@@ -341,9 +337,8 @@ function App() {
 
         const safeFileLoad = async (path, name, timeout = 15000) => {
           try {
-            console.log(`CRITICAL DEBUG: Loading ${name} from ${path}`);
+            console.log(`Loading ${name} from ${path}`);
             const res = await fetchWithTimeout(path, timeout);
-            console.log(`CRITICAL DEBUG: Response for ${name}: status=${res.status}, ok=${res.ok}`);
             if (!res.ok) {
               console.error(`Failed to fetch ${name}: ${res.statusText}`);
               return null;
@@ -410,14 +405,14 @@ function App() {
           firstChars: fuyushakuText ? fuyushakuText.substring(0, 100) : 'N/A'
         });
 
-        console.log("CRITICAL DEBUG: File loading results:", {
-          wamei: wameiText ? `SUCCESS (${wameiText.length} chars)` : 'FAILED',
-          main: mainText ? `SUCCESS (${mainText.length} chars)` : 'FAILED',
-          yList: yListText ? `SUCCESS (${yListText.length} chars)` : 'FAILED',
-          hamushi: hamushiSpeciesText ? `SUCCESS (${hamushiSpeciesText.length} chars)` : 'FAILED',
-          butterfly: butterflyText ? `SUCCESS (${butterflyText.length} chars)` : 'FAILED',
-          beetle: beetleText ? `SUCCESS (${beetleText.length} chars)` : 'FAILED',
-          kiriga: kirigaText ? `SUCCESS (${kirigaText.length} chars)` : 'FAILED',
+        console.log("File loading results:", {
+          wamei: wameiText ? 'SUCCESS' : 'FAILED',
+          main: mainText ? 'SUCCESS' : 'FAILED',
+          yList: yListText ? 'SUCCESS' : 'FAILED',
+          hamushi: hamushiSpeciesText ? 'SUCCESS' : 'FAILED',
+          butterfly: butterflyText ? 'SUCCESS' : 'FAILED',
+          beetle: beetleText ? 'SUCCESS' : 'FAILED',
+          kiriga: kirigaText ? 'SUCCESS' : 'FAILED',
           fuyushaku: fuyushakuText ? 'SUCCESS' : 'FAILED',
           emergenceTime: emergenceTimeText ? 'SUCCESS' : 'FAILED',
           genusMapping: genusMappingText ? 'SUCCESS' : 'FAILED'
@@ -3852,19 +3847,7 @@ function App() {
               console.log('  Starts with:', cleanedHostPlants.substring(0, 100));
             }
             
-            // Special handling for complex butterfly data like ヤクシマルリシジミ
-            if (japaneseName === 'ヤクシマルリシジミ' && cleanedHostPlants.includes('以上')) {
-              console.log('DEBUG: ヤクシマルリシジミ special handling - complex data detected');
-              // For complex butterfly data, don't try to extract from parentheses
-              // Just clean up family annotations but preserve the full plant list
-              cleanedHostPlants = cleanedHostPlants
-                .replace(/（[^）]*科[^）]*）/g, '') // Remove family annotations like （ヤマモモ科）、（以上ブナ科）
-                .replace(/\([^)]*科[^)]*\)/g, '') // Remove family annotations with regular parentheses
-                .replace(/。[^。]*$/g, '') // Remove final sentence about behavior
-                .trim();
-              console.log('DEBUG: ヤクシマルリシジミ after cleaning:', cleanedHostPlants);
-            } else {
-              // Check if this has the pattern "科名（植物名、植物名）"
+            // Check if this has the pattern "科名（植物名、植物名）"
             const familyWithParenthesesMatch = cleanedHostPlants.match(/(.+科)\s*[（(]([^）)]+)[）)]/);
             if (familyWithParenthesesMatch) {
               // If it's like "イネ科（チヂミザサ、ノガリヤス）", include both family and plants
@@ -3894,9 +3877,7 @@ function App() {
                   .replace(/の/g, '') // Remove remaining "の" particles
                   .replace(/^[、，,]+|[、，,]+$/g, '') // Remove leading/trailing delimiters
                   .replace(/[、，,]+/g, '、'); // Normalize delimiters
-                console.log("Cleaned up:", cleanedHostPlants);
               }
-            }
             }
             
             // Split by delimiters including semicolon for cases like センモンヤガ
@@ -4324,20 +4305,8 @@ function App() {
           hostPlants: Object.keys(cleanedHostPlantData).length,
           plantDetails: Object.keys(cleanedPlantDetailData).length
         });
-        
-        // Emergency validation - verify data is actually loaded
-        if (deduplicatedMoths.length === 0 && butterflyData.length === 0) {
-          console.error("EMERGENCY: NO DATA LOADED AT ALL! Moths: 0, Butterflies: 0");
-          console.error("EMERGENCY: This indicates a critical data loading failure");
-        } else {
-          console.log("SUCCESS: Data loaded successfully", {
-            sampleMoth: deduplicatedMoths[0]?.japaneseName || 'No moths',
-            sampleButterfly: butterflyData[0]?.japaneseName || 'No butterflies'
-          });
-        }
       } catch (error) {
-        console.error("CRITICAL ERROR: Error fetching or parsing CSVs:", error);
-        console.error("CRITICAL ERROR: Stack trace:", error.stack);
+        console.error("Error fetching or parsing CSVs:", error);
         setLoading(false); // Ensure loading is set to false even on error
         // Set empty data to prevent app from hanging
         setMoths([]);
@@ -4446,19 +4415,7 @@ function App() {
     };
   }, []);
 
-  console.log("CRITICAL DEBUG: App rendering. Loading:", loading, "Moths count:", moths.length, "Butterflies count:", butterflies.length, "Theme:", theme);
-  
-  // Emergency fallback - if data doesn't load after 30 seconds, force retry
-  useEffect(() => {
-    const emergency = setTimeout(() => {
-      if (loading) {
-        console.error("EMERGENCY: Data loading timeout detected after 30 seconds - forcing reload");
-        window.location.reload();
-      }
-    }, 30000);
-    
-    return () => clearTimeout(emergency);
-  }, [loading]);
+  console.log("App rendering. Loading:", loading, "Moths count:", moths.length, "Theme:", theme);
   
   return (
     <div className={theme === 'dark' ? 'dark' : ''}>
