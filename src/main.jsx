@@ -24,8 +24,9 @@ import './index.css';
   ];
 
   if (suspiciousFeatures.some(feature => feature)) {
-    document.body.innerHTML = '<div style="text-align:center;padding:50px;">Access Restricted</div>';
-    throw new Error('Automated access detected');
+    console.warn('Bot detection triggered, but allowing access for debugging');
+    // TEMPORARILY DISABLED: document.body.innerHTML = '<div style="text-align:center;padding:50px;">Access Restricted</div>';
+    // TEMPORARILY DISABLED: throw new Error('Automated access detected');
   }
 
   // Rate limiting check
@@ -40,8 +41,9 @@ import './index.css';
   
   if (lastAccess && (currentTime - parseInt(lastAccess)) < timeWindow) {
     if (accessCount > maxRequests) {
-      document.body.innerHTML = '<div style="text-align:center;padding:50px;">Rate limit exceeded</div>';
-      throw new Error('Rate limit exceeded');
+      console.warn('Rate limit would be triggered, but allowing access for debugging');
+      // TEMPORARILY DISABLED: document.body.innerHTML = '<div style="text-align:center;padding:50px;">Rate limit exceeded</div>';
+      // TEMPORARILY DISABLED: throw new Error('Rate limit exceeded');
     }
     localStorage.setItem(accessKey, (accessCount + 1).toString());
   } else {
