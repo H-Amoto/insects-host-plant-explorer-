@@ -3481,9 +3481,9 @@ function App() {
                   console.log('DEBUG: Creating moth data for シモフリスズメ:', {
                     id: catalogNo ? `catalog-${catalogNo}` : `main-${index}`,
                     rawHostPlant,
-                    hostPlants: finalHostPlantList,
-                    hostPlantEntries: finalHostPlantEntries,
-                    hostPlantsLength: finalHostPlantList.length
+                    hostPlants: hostPlantList,
+                    hostPlantEntries: hostPlantEntries,
+                    hostPlantsLength: hostPlantList.length
                   });
                 }
                 
@@ -3633,17 +3633,37 @@ function App() {
         if (butterflyText) {
           try {
             console.log("Parsing butterfly data...");
-            const cleanedButterflyText = butterflyText.replace(/^\uFEFF/, '');
-            const lines = cleanedButterflyText.split('\n').filter(line => line.trim());
+            let cleanedButterflyText = butterflyText.replace(/^\uFEFF/, '');
             
-            console.log("Total lines in butterfly CSV:", lines.length);
+            // Fix quoted lines issue - entire CSV is malformed with quotes around each line
+            const lines = cleanedButterflyText.split('\n');
+            let fixedLines = [];
+            let fixedCount = 0;
+            
+            for (let line of lines) {
+              if (line.trim() && line.startsWith('"') && line.endsWith('"')) {
+                // Remove outer quotes from the entire line
+                line = line.slice(1, -1);
+                fixedCount++;
+              }
+              fixedLines.push(line);
+            }
+            
+            if (fixedCount > 0) {
+              cleanedButterflyText = fixedLines.join('\n');
+              console.log(`Fixed ${fixedCount} quoted lines in butterfly CSV`);
+            }
+            
+            const cleanLines = cleanedButterflyText.split('\n').filter(line => line.trim());
+            
+            console.log("Total lines in butterfly CSV:", cleanLines.length);
             
             // Manual parsing since this CSV has complex structure
             butterflyParsedData = [];
         
         // Skip header (first line)
-        for (let i = 1; i < lines.length; i++) {
-          const line = lines[i].trim();
+        for (let i = 1; i < cleanLines.length; i++) {
+          const line = cleanLines[i].trim();
           if (!line) continue;
           
           // Remove outer quotes if present

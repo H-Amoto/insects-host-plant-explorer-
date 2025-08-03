@@ -45,11 +45,47 @@ function loadCSV(filePath) {
       console.error(`スクリプトのディレクトリ: ${__dirname}`);
       process.exit(1);
     }
-    const csvContent = fs.readFileSync(filePath, 'utf-8');
-    return Papa.parse(csvContent, {
+    let csvContent = fs.readFileSync(filePath, 'utf-8');
+    
+    // Remove BOM if present
+    if (csvContent.charCodeAt(0) === 0xFEFF) {
+      csvContent = csvContent.slice(1);
+    }
+    
+    // Fix quoted lines issue for butterfly CSV - entire CSV is malformed with quotes around each line
+    if (filePath.includes('butterfly_host.csv')) {
+      const lines = csvContent.split('\n');
+      let fixedLines = [];
+      let fixedCount = 0;
+      
+      for (let line of lines) {
+        if (line.trim() && line.startsWith('"') && line.endsWith('"')) {
+          // Remove outer quotes from the entire line
+          line = line.slice(1, -1);
+          fixedCount++;
+        }
+        fixedLines.push(line);
+      }
+      
+      if (fixedCount > 0) {
+        csvContent = fixedLines.join('\n');
+        console.log(`Fixed ${fixedCount} quoted lines in ${filePath}`);
+      }
+    }
+    
+    const result = Papa.parse(csvContent, {
       header: true,
-      skipEmptyLines: true
-    }).data;
+      skipEmptyLines: true,
+      delimiter: ',',
+      quoteChar: '"',
+      escapeChar: '"'
+    });
+    
+    if (result.errors && result.errors.length > 0) {
+      console.error(`CSV parsing errors for ${filePath}:`, result.errors);
+    }
+    
+    return result.data;
   } catch (error) {
     console.error(`CSVファイルの読み込みエラー: ${error.message}`);
     process.exit(1);
@@ -339,7 +375,7 @@ function generateInsectHTML(insect, type) {
   const scientificName = insect.scientificName || '';
   const source = insect.source || '不明';
   const imageUrl = insect.scientificFilename ? 
-    `/insects-host-plant-explorer-/images/moths/${insect.scientificFilename}.jpg` : '';
+    `/images/moths/${insect.scientificFilename}.jpg` : '';
   
   // 食草リストを配列として処理
   // セミコロン区切りも処理する（例：センモンヤガの場合）
@@ -389,7 +425,7 @@ function generateInsectHTML(insect, type) {
   <meta name="description" content="${insect.japaneseName}の詳細情報、分類、食草について。${hostPlantsArray.length > 0 ? `食草: ${hostPlantsArray.slice(0, 3).join('、')}など` : ''}">
   <meta name="keywords" content="${insect.japaneseName},${scientificName},${typeNames[type]},食草,昆虫図鑑,${familyName}">
   <link rel="canonical" href="https://orau98.github.io/${type}/${insect.id}">
-  <link rel="stylesheet" href="/insects-host-plant-explorer-/assets/meta-styles.css">
+  <link rel="stylesheet" href="/assets/meta-styles.css">
   
   <!-- Open Graph -->
   <meta property="og:title" content="${insect.japaneseName} (${scientificName}) - ${typeNames[type]}図鑑">
@@ -449,9 +485,9 @@ function generateInsectHTML(insect, type) {
 <body>
   <div class="meta-page">
     <nav class="breadcrumb">
-      <a href="/insects-host-plant-explorer-/">昆虫食草図鑑</a>
+      <a href="/">昆虫食草図鑑</a>
       <span>></span>
-      <a href="/insects-host-plant-explorer-/${type}">${typeNames[type]}</a>
+      <a href="/${type}">${typeNames[type]}</a>
       <span>></span>
       <span>${insect.japaneseName}</span>
     </nav>
@@ -502,7 +538,7 @@ function generateInsectHTML(insect, type) {
         <ul>
           ${hostPlantsArray.map(plant => {
             const safePlantName = plant.replace(/[/\\?%*:|"<>]/g, '-');
-            return `<li><a href="/insects-host-plant-explorer-/plant/${encodeURIComponent(safePlantName)}.html">${plant}</a></li>`;
+            return `<li><a href="/plant/${encodeURIComponent(safePlantName)}.html">${plant}</a></li>`;
           }).join('')}
         </ul>` : `
         <p>食草情報は現在調査中です。</p>`}
@@ -519,8 +555,8 @@ function generateInsectHTML(insect, type) {
     </main>
     
     <section class="navigation">
-      <a href="/insects-host-plant-explorer-/" class="back-link">図鑑トップへ</a>
-      <a href="/insects-host-plant-explorer-/${type}/${insect.id}" class="detail-link">詳細ページへ</a>
+      <a href="/" class="back-link">図鑑トップへ</a>
+      <a href="/${type}/${insect.id}" class="detail-link">詳細ページへ</a>
     </section>
   </div>
   
@@ -564,7 +600,7 @@ function generatePlantHTML(plantName, relatedInsects, plantImages) {
   const basePlantName = plantName.split(' ')[0]; // "タケニグサ (ケシ科)" -> "タケニグサ"
   const plantImageFiles = plantImages.filter(img => img.startsWith(basePlantName));
   const mainImageUrl = plantImageFiles.length > 0 
-    ? `/insects-host-plant-explorer-/images/plants/${encodeURIComponent(plantImageFiles[0])}` 
+    ? `/images/plants/${encodeURIComponent(plantImageFiles[0])}` 
     : '';
 
   // 昆虫を種類別に分類
@@ -591,7 +627,7 @@ function generatePlantHTML(plantName, relatedInsects, plantImages) {
   <meta name="description" content="${plantName}を食草とする${relatedInsects.length}種の昆虫の詳細情報。蛾、蝶、タマムシ、ハムシの生態と食草関係について。">
   <meta name="keywords" content="${plantName},食草,植物,昆虫図鑑,生態系,${relatedInsects.slice(0, 5).map(i => i.name).join(',')}">
   <link rel="canonical" href="https://orau98.github.io/plant/${encodeURIComponent(safePlantName)}.html">
-  <link rel="stylesheet" href="/insects-host-plant-explorer-/assets/meta-styles.css">
+  <link rel="stylesheet" href="/assets/meta-styles.css">
   
   <!-- Open Graph -->
   <meta property="og:title" content="${plantName} - 食草図鑑 | ${relatedInsects.length}種の昆虫が利用">
@@ -647,9 +683,9 @@ function generatePlantHTML(plantName, relatedInsects, plantImages) {
 <body>
   <div class="meta-page">
     <nav class="breadcrumb">
-      <a href="/insects-host-plant-explorer-/">昆虫食草図鑑</a>
+      <a href="/">昆虫食草図鑑</a>
       <span>></span>
-      <a href="/insects-host-plant-explorer-/plant">植物</a>
+      <a href="/plant">植物</a>
       <span>></span>
       <span>${plantName}</span>
     </nav>
@@ -687,8 +723,8 @@ function generatePlantHTML(plantName, relatedInsects, plantImages) {
         <div class="gallery-container">
           ${plantImageFiles.map(img => `
             <div class="gallery-item">
-              <a href="/insects-host-plant-explorer-/images/plants/${encodeURIComponent(img)}" target="_blank" title="画像を拡大表示">
-                <img src="/insects-host-plant-explorer-/images/plants/${encodeURIComponent(img)}" alt="${plantName}の写真 - ${img.replace(/\.[^/.]+$/, '')}" loading="lazy">
+              <a href="/images/plants/${encodeURIComponent(img)}" target="_blank" title="画像を拡大表示">
+                <img src="/images/plants/${encodeURIComponent(img)}" alt="${plantName}の写真 - ${img.replace(/\.[^/.]+$/, '')}" loading="lazy">
               </a>
               <div class="image-caption">${img.replace(/\.[^/.]+$/, '').replace(/_/g, ' ')}</div>
             </div>
@@ -718,7 +754,7 @@ function generatePlantHTML(plantName, relatedInsects, plantImages) {
           ${insects.map(insect => `
           <li>
             <div class="insect-name">
-              <a href="/insects-host-plant-explorer-/${type}/${insect.id}">${insect.japaneseName}</a>
+              <a href="/${type}/${insect.id}">${insect.japaneseName}</a>
             </div>
             <div class="insect-scientific">${formatScientificNameHTML(insect.scientificName)}</div>
           </li>`).join('')}
@@ -727,7 +763,7 @@ function generatePlantHTML(plantName, relatedInsects, plantImages) {
     </main>
     
     <section class="navigation">
-      <a href="/insects-host-plant-explorer-/" class="back-link">図鑑トップへ</a>
+      <a href="/" class="back-link">図鑑トップへ</a>
     </section>
   </div>
   
