@@ -3487,6 +3487,16 @@ function App() {
                   });
                 }
                 
+                if (mothName === 'ヒメシタコバネナミシャク') {
+                  console.log('DEBUG: Creating moth data for ヒメシタコバネナミシャク:', {
+                    id: catalogNo ? `catalog-${catalogNo}` : `main-${index}`,
+                    catalogNo: catalogNo,
+                    sourceRaw: row['出典'],
+                    sourceToUse: sourceToUse,
+                    fullRow: Object.keys(row).map(key => `${key}: "${row[key]}"`).join(', ')
+                  });
+                }
+                
 
                 const mothData = { 
                   id: catalogNo ? `catalog-${catalogNo}` : `main-${index}`, 
