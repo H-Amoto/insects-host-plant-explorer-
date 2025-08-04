@@ -17,6 +17,21 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
   const allInsects = [...moths, ...butterflies, ...beetles, ...leafbeetles];
   const moth = allInsects.find(m => m.id === insectId);
   
+  // Debug logging for オオゴマシジミ
+  if (insectId === 'butterfly-csv-131' || (moth && moth.name === 'オオゴマシジミ')) {
+    console.log('=== DEBUG オオゴマシジミ SEARCH ===');
+    console.log('  insectId:', insectId);
+    console.log('  found moth:', moth);
+    if (moth) {
+      console.log('  moth.name:', moth.name);
+      console.log('  moth.geographicalRemarks:', moth.geographicalRemarks);
+      console.log('  moth.type:', moth.type);
+    }
+    console.log('  butterflies array length:', butterflies.length);
+    const ogomaButterfly = butterflies.find(b => b.name === 'オオゴマシジミ');
+    console.log('  direct search for オオゴマシジミ in butterflies:', ogomaButterfly);
+  }
+  
   // Debug logging for catalog-6065 (スミレモンキリガ)
   if (insectId === 'catalog-6065') {
     console.log('DEBUG catalog-6065: Found moth:', moth);
@@ -422,6 +437,11 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
               <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-3">
                 {moth.name}
               </h1>
+              {moth.alternativeNames && moth.alternativeNames.trim() && (
+                <p className="text-lg text-slate-600 dark:text-slate-400 mb-2">
+                  別名: {moth.alternativeNames}
+                </p>
+              )}
               <p className="text-xl text-slate-600 dark:text-slate-400 font-medium">
                 {formatScientificNameReact(moth.scientificName)}
               </p>
@@ -915,6 +935,19 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                 
                 {/* 地理的備考・生態学的特徴 */}
                 {moth.geographicalRemarks && typeof moth.geographicalRemarks === 'string' && moth.geographicalRemarks.trim() && (() => {
+                  // Debug logging for オオゴマシジミ
+                  if (moth.name === 'オオゴマシジミ') {
+                    console.log('=== DEBUG オオゴマシジミ geographicalRemarks section ===');
+                    console.log('  moth.geographicalRemarks:', moth.geographicalRemarks);
+                    console.log('  moth.geographicalRemarks type:', typeof moth.geographicalRemarks);
+                    console.log('  moth.geographicalRemarks length:', moth.geographicalRemarks ? moth.geographicalRemarks.length : 0);
+                    console.log('  moth.geographicalRemarks.trim():', moth.geographicalRemarks ? moth.geographicalRemarks.trim() : 'N/A');
+                    console.log('  moth.id:', moth.id);
+                    console.log('  moth.name:', moth.name);
+                    console.log('  moth.type:', moth.type);
+                    console.log('  Full moth object:', moth);
+                  }
+                  
                   // Debug logging for catalog-2604
                   if (moth.id === 'catalog-2604') {
                     console.log('DEBUG catalog-2604 geographicalRemarks section:', {
