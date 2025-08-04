@@ -89,8 +89,18 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
                 }`}
               >
                 <div className="flex items-center justify-center space-x-3">
+                  {/* Butterfly icon - modern and stylish */}
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    <g strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>
+                      {/* Body */}
+                      <path d="M12 8v8" />
+                      {/* Antennae */}
+                      <path d="M10 8c0-1.5-1-2-1-2M14 8c0-1.5 1-2 1-2" />
+                      {/* Upper wings */}
+                      <path d="M12 10c-2 0-4-2-4-4s2-2 3-1c0.5 0.5 1 1 1 1s0.5-0.5 1-1c1-1 3-1 3 1s-2 4-4 4z" />
+                      {/* Lower wings */}
+                      <path d="M12 14c-1.5 0-3 1.5-3 3s1.5 2 2.5 1c0.5-0.5 0.5-1 0.5-1s0 0.5 0.5 1c1 1 2.5 1 2.5-1s-1.5-3-3-3z" />
+                    </g>
                   </svg>
                   <span>昆虫 ({[...moths, ...butterflies, ...beetles, ...leafbeetles].length})</span>
                 </div>
@@ -108,6 +118,17 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
                 }`}
               >
                 <div className="flex items-center justify-center space-x-3">
+                  {/* Leaf icon - modern and stylish */}
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <g strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>
+                      {/* Main leaf shape */}
+                      <path d="M12 3c-4 0-7 3-7 7 0 2 0.5 3.5 1.5 4.5 1 1 2.5 1.5 4.5 1.5 0 2 0 4 0 6M12 3c4 0 7 3 7 7 0 2-0.5 3.5-1.5 4.5-1 1-2.5 1.5-4.5 1.5" />
+                      {/* Central vein */}
+                      <path d="M12 3v13" />
+                      {/* Side veins */}
+                      <path d="M9 7l3 3M15 7l-3 3M9 11l3 3M15 11l-3 3" />
+                    </g>
+                  </svg>
                   <span>食草 ({Object.keys(hostPlants).length})</span>
                 </div>
                 {activeTab === 'plants' && (
@@ -302,17 +323,6 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
                 </div>
               </div>
             </div>
-        </div>
-        
-        {/* Debug info */}
-        <div style={{display: 'none'}}>
-          <p>Moths: {moths.length}</p>
-          <p>Butterflies: {butterflies.length}</p>
-          <p>Beetles: {beetles.length}</p>
-          <p>Leafbeetles: {leafbeetles.length}</p>
-          <p>Combined: {[...moths, ...butterflies, ...beetles, ...leafbeetles].length}</p>
-          <p>First beetle: {beetles[0]?.name || 'None'}</p>
-          <p>First leafbeetle: {leafbeetles[0]?.name || 'None'}</p>
         </div>
       </div>
     </div>
