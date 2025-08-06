@@ -507,7 +507,7 @@ const HostPlantList = ({ hostPlants = {}, plantDetails = {}, embedded = false })
         </div>
         
         {totalPages > 1 && (
-          <div className="mt-6 pt-4 border-t border-emerald-200/30 dark:border-emerald-700/30">
+          <div className="mt-6 pt-4 border-t border-emerald-200/30 dark:border-emerald-700/30 overflow-x-hidden">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

@@ -96,7 +96,7 @@ const RelatedInsectsSection = ({ relatedMothsByPlant, allInsects }) => {
                     to={`/plant/${encodeURIComponent(plant)}`}
                     className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-all duration-200 border border-emerald-200/50 dark:border-emerald-700/50 hover:border-emerald-300 dark:hover:border-emerald-600"
                   >
-                    🌿 {plant}
+                    {plant}
                   </Link>
                   <span className="text-sm text-slate-500 dark:text-slate-400">
                     ({relatedMothNames.length}種)

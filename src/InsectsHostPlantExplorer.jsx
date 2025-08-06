@@ -73,13 +73,13 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
               
               <div className="flex flex-wrap gap-3 mt-6">
                 <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30">
-                  <span className="text-white/90 text-sm font-medium">🦋 蝶・蛾 {moths.length + butterflies.length}種</span>
+                  <span className="text-white/90 text-sm font-medium">蝶・蛾 {moths.length + butterflies.length}種</span>
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30">
-                  <span className="text-white/90 text-sm font-medium">🪲 甲虫 {beetles.length + leafbeetles.length}種</span>
+                  <span className="text-white/90 text-sm font-medium">甲虫 {beetles.length + leafbeetles.length}種</span>
                 </div>
                 <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30">
-                  <span className="text-white/90 text-sm font-medium">🌿 食草 {Object.keys(hostPlants).length}種</span>
+                  <span className="text-white/90 text-sm font-medium">食草 {Object.keys(hostPlants).length}種</span>
                 </div>
               </div>
               
@@ -344,7 +344,7 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
                   
                   {/* Instagram埋め込み - 個別投稿表示 */}
                   <div className="space-y-4">
-                    <div className="instagram-wrapper border-2 border-gradient-to-r from-purple-200/50 via-pink-200/50 to-orange-200/50 dark:border-purple-700/50 rounded-xl p-1 sm:p-2 bg-gradient-to-r from-purple-50/30 via-pink-50/30 to-orange-50/30 dark:bg-gradient-to-r dark:from-purple-900/10 dark:via-pink-900/10 dark:to-orange-900/10">
+                    <div className="instagram-wrapper border border-gradient-to-r from-purple-200/50 via-pink-200/50 to-orange-200/50 dark:border-purple-700/50 rounded-lg sm:rounded-xl p-0 sm:p-1 bg-gradient-to-r from-purple-50/30 via-pink-50/30 to-orange-50/30 dark:bg-gradient-to-r dark:from-purple-900/10 dark:via-pink-900/10 dark:to-orange-900/10">
                       <InstagramEmbed />
                     </div>
                   </div>

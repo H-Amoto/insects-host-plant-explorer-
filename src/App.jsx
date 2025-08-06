@@ -1169,7 +1169,7 @@ function App() {
             /多種の.*を摂食する$/,             // "多種の〇〇を摂食する"
             /多種の.*につく$/,                 // "多種の〇〇につく"
             /おそらく多種の/,                  // "おそらく多種の..."
-            /多食性で多種の/,                  // "多食性で多種の..."
+            /広食性で多種の/,                  // "広食性で多種の..."
             /多種の.*を食草とする$/            // "多種の〇〇を食草とする"
           ];
           
@@ -1358,7 +1358,7 @@ function App() {
             /樹木/,
             /草本/,
             /広食性/,
-            /多食性/,
+            /広食性/,
             /単食性/,
             /ほか/,
             /^の$/,
@@ -1708,7 +1708,7 @@ function App() {
         // 記述的表現のリスト
         const descriptiveTerms = new Set([
           '各種広葉樹', '各種針葉樹', 'ヤナギ類', 'マツ類', 'ナラ類',
-          '各種', '広食性', '多食性', '各種樹木', '草本類'
+          '各種', '広食性', '各種樹木', '草本類'
         ]);
 
         const correctPlantName = (name) => {
@@ -2406,14 +2406,14 @@ function App() {
                 hostPlantNotes.push('イラクサ科が主な寄主植物であるが、マルパウツギ(アジサイ科)、コウゾ、クワ(以上クワ科)、カナムグラ(アサ科)などを食べた例もある');
               }
               
-              // Check for "明らかに広食性" and "多食性" and add as note (check before replacement)
+              // Check for "明らかに広食性" and add as note (check before replacement)
               if (rawHostPlant.includes('明らかに広食性')) {
                 hostPlantNotes.push('広食性');
               }
               
-              // Check for "多食性" (polyphagous) and add as "広食性" (euryphagous) note
-              if (rawHostPlant.includes('多食性')) {
-                hostPlantNotes.push('広食性（多食性）');
+              // Check for "広食性" (polyphagous/euryphagous) and add as note
+              if (rawHostPlant.includes('広食性') && !rawHostPlant.includes('明らかに広食性')) {
+                hostPlantNotes.push('広食性');
               }
               
               // Add host plant remarks from CSV if available
@@ -2460,10 +2460,10 @@ function App() {
               // Replace "明らかに広食性" with just "広食性" in the plant list
               rawHostPlant = rawHostPlant.replace(/明らかに広食性/g, '広食性');
               
-              // Remove "多食性" and related phrases from plant list since it's now in notes
-              rawHostPlant = rawHostPlant.replace(/多食性[。；;\s]*/g, '');
-              rawHostPlant = rawHostPlant.replace(/^多食性[。；;\s]*/, '');
-              rawHostPlant = rawHostPlant.replace(/[。；;\s]*多食性$/g, '');
+              // Remove "広食性" and related phrases from plant list since it's now in notes
+              rawHostPlant = rawHostPlant.replace(/広食性[。；;\s]*/g, '');
+              rawHostPlant = rawHostPlant.replace(/^広食性[。；;\s]*/, '');
+              rawHostPlant = rawHostPlant.replace(/[。；;\s]*広食性$/g, '');
               
               rawHostPlant = rawHostPlant.trim();
 
@@ -2584,7 +2584,7 @@ function App() {
                       /多種の.*を摂食する$/,             // "多種の〇〇を摂食する"
                       /多種の.*につく$/,                 // "多種の〇〇につく"
                       /おそらく多種の/,                  // "おそらく多種の..."
-                      /多食性で多種の/,                  // "多食性で多種の..."
+                      /広食性で多種の/,                  // "広食性で多種の..."
                       /多種の.*を食草とする$/            // "多種の〇〇を食草とする"
                     ];
                     
@@ -2916,7 +2916,7 @@ function App() {
                       /多種の.*を摂食する$/,             // "多種の〇〇を摂食する"
                       /多種の.*につく$/,                 // "多種の〇〇につく"
                       /おそらく多種の/,                  // "おそらく多種の..."
-                      /多食性で多種の/,                  // "多食性で多種の..."
+                      /広食性で多種の/,                  // "広食性で多種の..."
                       /多種の.*を食草とする$/            // "多種の〇〇を食草とする"
                     ];
                     
@@ -3813,6 +3813,8 @@ function App() {
             // Extract plant parts information from hostPlants field (for butterflies)
             const extractPlantParts = (text) => {
               const partPatterns = [
+                { pattern: /の花蕾/g, part: '花蕾' },  // Add this for ルリシジミ
+                { pattern: /の花穂/g, part: '花穂' },  // Add this for flower spike
                 { pattern: /の花(?:弁|びら)?/g, part: '花' },
                 { pattern: /の花/g, part: '花' },
                 { pattern: /の実/g, part: '実' },
@@ -3850,20 +3852,49 @@ function App() {
                 });
               });
               
+              // Handle "PlantName (Family)の部位" format specifically for ルリシジミ and similar cases
+              const familyPartPattern = /([ア-ン一-龯A-Za-z]+)\s*[\(（]([^）)]+)[\)）]\s*の([花蕾|花穂|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽]+)/g;
+              const familyPartMatches = [...text.matchAll(familyPartPattern)];
+              familyPartMatches.forEach(match => {
+                const plantName = match[1].trim();
+                const family = match[2].trim();
+                const partName = match[3].trim();
+                
+                // Store both the plant name and the full format for display
+                const fullName = `${plantName} (${family})`;
+                if (!extractedParts.has(fullName)) {
+                  extractedParts.set(fullName, []);
+                }
+                if (!extractedParts.get(fullName).includes(partName)) {
+                  extractedParts.get(fullName).push(partName);
+                }
+                
+                // Also store just the plant name for matching
+                if (!extractedParts.has(plantName)) {
+                  extractedParts.set(plantName, []);
+                }
+                if (!extractedParts.get(plantName).includes(partName)) {
+                  extractedParts.get(plantName).push(partName);
+                }
+              });
+              
               // Then handle traditional "の" patterns
               partPatterns.forEach(({ pattern, part }) => {
                 const matches = [...text.matchAll(pattern)];
                 matches.forEach(match => {
                   // Extract plant name before the part
                   const beforeMatch = text.substring(0, match.index);
-                  const plantMatch = beforeMatch.match(/([ア-ン一-龯]{2,})$/);
-                  if (plantMatch) {
-                    const plantName = plantMatch[1];
-                    if (!extractedParts.has(plantName)) {
-                      extractedParts.set(plantName, []);
-                    }
-                    if (!extractedParts.get(plantName).includes(part)) {
-                      extractedParts.get(plantName).push(part);
+                  // Check if this is already handled by the family pattern
+                  if (!/[\(（][^）)]+[\)）]\s*$/.test(beforeMatch)) {
+                    const plantMatch = beforeMatch.match(/([ア-ン一-龯]{2,})$/);
+                    if (plantMatch) {
+                      const plantName = plantMatch[1];
+                      if (!extractedParts.has(plantName)) {
+                        extractedParts.set(plantName, []);
+                      }
+                      if (!extractedParts.get(plantName).includes(part)) {
+                        extractedParts.get(plantName).push(part);
+                      }
                     }
                   }
                 });
@@ -3873,6 +3904,13 @@ function App() {
             };
             
             const butterflyPlantParts = extractPlantParts(hostPlants);
+            
+            // Debug for ルリシジミ
+            if (japaneseName === 'ルリシジミ') {
+              console.log('=== DEBUG: ルリシジミ plant parts extraction ===');
+              console.log('  Original hostPlants:', hostPlants);
+              console.log('  Extracted parts Map:', Array.from(butterflyPlantParts.entries()));
+            }
             
             // Remove outer quotes and inner quotes
             let cleanedHostPlants = hostPlants;
@@ -3938,21 +3976,33 @@ function App() {
               plants = ['カメバヒキオコシ（花穂）', 'クロバナヒキオコシ（花穂）'];
               console.log('  Hardcoded plants:', plants);
             } else if (cleanedHostPlants.includes(';') || cleanedHostPlants.includes('；')) {
-              // Split by semicolon first to separate plants from other food sources (like ants)
+              // Check if all segments end with the same plant part (e.g., "の花蕾")
               const segments = cleanedHostPlants.split(/[;；]/);
+              const allSegmentsTrimmed = segments.map(s => s.trim()).filter(s => s);
               
-              // First segment should contain plants
-              if (segments[0]) {
-                plants = segments[0].split(/[、，,]/).map(p => p.trim()).filter(p => p);
-              }
+              // Check if all segments contain plant parts like "の花蕾", "の花", etc.
+              const plantPartPattern = /[のから](花蕾|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽|花穂)$/;
+              const allHavePlantParts = allSegmentsTrimmed.every(segment => 
+                plantPartPattern.test(segment) || segment.includes('(') && segment.includes(')')
+              );
               
-              // Check subsequent segments for non-plant food sources
-              for (let i = 1; i < segments.length; i++) {
-                const segment = segments[i].trim();
-                // If it looks like an ant name (contains アリ), skip it for plant processing
-                if (!segment.includes('アリ') && segment) {
-                  // Additional plant-like segments
-                  plants.push(...segment.split(/[、，,]/).map(p => p.trim()).filter(p => p));
+              if (allHavePlantParts) {
+                // All segments are plant entries with parts, treat them all as plants
+                plants = allSegmentsTrimmed;
+              } else {
+                // Original logic: first segment contains plants, others might be non-plant food
+                if (segments[0]) {
+                  plants = segments[0].split(/[、，,]/).map(p => p.trim()).filter(p => p);
+                }
+                
+                // Check subsequent segments for non-plant food sources
+                for (let i = 1; i < segments.length; i++) {
+                  const segment = segments[i].trim();
+                  // If it looks like an ant name (contains アリ), skip it for plant processing
+                  if (!segment.includes('アリ') && segment) {
+                    // Additional plant-like segments
+                    plants.push(...segment.split(/[、，,]/).map(p => p.trim()).filter(p => p));
+                  }
                 }
               }
             } else {
@@ -3961,6 +4011,32 @@ function App() {
             }
             
             // Debug for specific butterflies
+            if (japaneseName === 'ルリシジミ') {
+              console.log(`=== DEBUG: Processing ${japaneseName} ===`);
+              console.log('  Original hostPlants:', hostPlants);
+              console.log('  cleanedHostPlants:', cleanedHostPlants);
+              console.log('  cleanedHostPlants length:', cleanedHostPlants.length);
+              console.log('  Contains semicolon?:', cleanedHostPlants.includes(';') || cleanedHostPlants.includes('；'));
+              
+              const segments = cleanedHostPlants.split(/[;；]/);
+              console.log('  Number of segments:', segments.length);
+              console.log('  First 5 segments:', segments.slice(0, 5));
+              
+              const plantPartPattern = /[のから](花蕾|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽|花穂)$/;
+              const allSegmentsTrimmed = segments.map(s => s.trim()).filter(s => s);
+              const allHavePlantParts = allSegmentsTrimmed.every(segment => 
+                plantPartPattern.test(segment) || segment.includes('(') && segment.includes(')')
+              );
+              console.log('  All have plant parts?:', allHavePlantParts);
+              console.log('  allSegmentsTrimmed length:', allSegmentsTrimmed.length);
+              console.log('  First 5 trimmed segments:', allSegmentsTrimmed.slice(0, 5));
+              
+              console.log('  Parsed plants array:', plants);
+              console.log('  Number of plants:', plants.length);
+              if (plants.length > 0) {
+                console.log('  First 5 plants:', plants.slice(0, 5));
+              }
+            }
             if (japaneseName === 'オオゴマシジミ') {
               console.log(`=== DEBUG: Processing ${japaneseName} ===`);
               console.log('  Original hostPlants:', hostPlants);
@@ -3990,13 +4066,35 @@ function App() {
               .map(plant => plant.replace(/^(.+)"$/, '$1')); // Remove unclosed quotes at end
             let plantsAfterEmptyFilter = plantsAfterQuotes.filter(plant => plant && plant.length > 0); // Remove empty strings
             
-            // Remove parenthetical parts from plant names for processing, but keep track of original names
+            // Process plant names - handle "PlantName (Family)の部位" format specially
             let plantsWithParts = plantsAfterEmptyFilter.map(plant => {
-              const cleanPlant = plant.replace(/[（(][^）)]*[）)]/g, '').trim();
-              if (japaneseName === 'オオゴマシジミ') {
-                console.log(`DEBUG: Plant processing: "${plant}" -> clean: "${cleanPlant}"`);
+              let cleanPlant = plant;
+              let family = null;
+              let part = null;
+              
+              // Check for "PlantName (Family)の部位" format
+              const familyPartMatch = plant.match(/^([^（(]+)\s*[（(]([^）)]+)[）)]\s*の(.+)$/);
+              if (familyPartMatch) {
+                cleanPlant = familyPartMatch[1].trim();
+                family = familyPartMatch[2].trim();
+                part = familyPartMatch[3].trim();
+              } else {
+                // Check for simple "PlantNameの部位" format
+                const simplePartMatch = plant.match(/^([^の]+)の(.+)$/);
+                if (simplePartMatch) {
+                  cleanPlant = simplePartMatch[1].trim();
+                  part = simplePartMatch[2].trim();
+                } else {
+                  // Otherwise just remove parenthetical parts
+                  cleanPlant = plant.replace(/[（(][^）)]*[）)]/g, '').trim();
+                }
               }
-              return { original: plant, clean: cleanPlant };
+              
+              if (japaneseName === 'ルリシジミ' || japaneseName === 'オオゴマシジミ') {
+                console.log(`DEBUG: Plant processing: "${plant}" -> clean: "${cleanPlant}", family: "${family}", part: "${part}"`);
+              }
+              
+              return { original: plant, clean: cleanPlant, family, part };
             });
             
             let plantsAfterScienceFilter = plantsWithParts
@@ -4027,11 +4125,21 @@ function App() {
             }));
             
             hostPlantList = plantsAfterYListFilter.map(item => {
+              // For ルリシジミ and similar cases, reconstruct the format with family and part
+              if (item.family && item.part) {
+                return `${item.corrected} (${item.family})の${item.part}`;
+              }
+              
               // Check for part information using both original and corrected names
-              const plantParts = butterflyPlantParts.get(item.original) || 
-                                butterflyPlantParts.get(item.clean) || 
-                                butterflyPlantParts.get(item.normalized) || 
-                                butterflyPlantParts.get(item.corrected);
+              const plantParts = item.part ? [item.part] : (
+                butterflyPlantParts.get(item.original) || 
+                butterflyPlantParts.get(item.clean) || 
+                butterflyPlantParts.get(item.normalized) || 
+                butterflyPlantParts.get(item.corrected) ||
+                butterflyPlantParts.get(`${item.corrected} (${item.family})`) ||
+                []
+              );
+              
               if (plantParts && plantParts.length > 0) {
                 return `${item.corrected}（${plantParts.join('・')}）`;
               }
@@ -4039,6 +4147,34 @@ function App() {
             });
             
             // Debug filtering steps for specific butterflies
+            if (japaneseName === 'ルリシジミ') {
+              console.log(`=== DEBUG: Filter steps for ${japaneseName} ===`);
+              console.log('  After trim:', plantsAfterTrim.length, 'plants');
+              console.log('    First 10:', plantsAfterTrim.slice(0, 10));
+              
+              console.log('  After empty filter:', plantsAfterEmptyFilter.length, 'plants');
+              console.log('    First 10:', plantsAfterEmptyFilter.slice(0, 10));
+              
+              console.log('  After processing (with parts):', plantsWithParts.length, 'plants');
+              console.log('    First 10 processed:');
+              plantsWithParts.slice(0, 10).forEach((item, i) => 
+                console.log(`      ${i}: original="${item.original}" clean="${item.clean}" family="${item.family}" part="${item.part}"`));
+              
+              console.log('  After science filter:', plantsAfterScienceFilter.length, 'plants');
+              console.log('    First 10:', plantsAfterScienceFilter.slice(0, 10).map(p => p.clean));
+              
+              console.log('  After normalize:', plantsAfterNormalize.length, 'plants');  
+              console.log('    First 10:', plantsAfterNormalize.slice(0, 10).map(p => `${p.clean} -> ${p.normalized}`));
+              
+              console.log('  After correction:', plantsAfterCorrection.length, 'plants');
+              console.log('    First 10:', plantsAfterCorrection.slice(0, 10).map(p => `${p.normalized} -> ${p.corrected}`));
+              
+              console.log('  After YList filter:', plantsAfterYListFilter.length, 'plants');
+              console.log('    First 10:', plantsAfterYListFilter.slice(0, 10).map(p => p.corrected));
+              
+              console.log('  Final host plant list:', hostPlantList.length, 'plants');
+              console.log('    All plants:', hostPlantList);
+            }
             if (japaneseName === 'オオゴマシジミ') {
               console.log(`=== DEBUG: Filter steps for ${japaneseName} ===`);
               console.log('  After trim:', plantsAfterTrim.length, 'plants -', plantsAfterTrim);

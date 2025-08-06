@@ -23,7 +23,7 @@ const InstagramEmbed = ({ className = "" }) => {
 
   return (
     <div className={`instagram-embed-container ${className} w-full`} ref={embedRef}>
-      <div className="w-full flex justify-center px-4">
+      <div className="w-full flex justify-center px-2 sm:px-4">
         {/* Instagram Timeline Embed */}
         <blockquote 
           className="instagram-media mx-auto" 
@@ -36,7 +36,7 @@ const InstagramEmbed = ({ className = "" }) => {
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
             margin: '0 auto',
             maxWidth: '540px',
-            minWidth: '320px',
+            minWidth: '280px',
             padding: '0',
             width: '100%'
           }}
