@@ -74,7 +74,7 @@ input, textarea, .selectable-text {
   user-select: text !important;
 }
 
-/* Image protection */
+/* Image protection and optimization */
 img {
   -webkit-user-drag: none;
   -khtml-user-drag: none;
@@ -86,6 +86,61 @@ img {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+/* Image loading optimization */
+img.loading {
+  filter: blur(5px);
+  transition: filter 0.3s ease-out;
+}
+
+img.loaded {
+  filter: blur(0);
+  animation: imageLoad 0.3s ease-out;
+}
+
+@keyframes imageLoad {
+  from {
+    opacity: 0;
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Optimize image rendering */
+img[loading="lazy"] {
+  background-color: #f3f4f6;
+  background-image: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Performance optimization for transformed elements */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* GPU acceleration for smooth animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 /* Re-enable pointer events for interactive images */

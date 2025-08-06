@@ -6,7 +6,7 @@ import { RelatedPlants } from './components/RelatedLinks';
 
 // 植物の別名データ
 const plantAliases = {
-  'ソメイヨシノ': ['染井吉野'],
+  'ソメイヨシノ': ['染井吉野'],  // ユーザーリクエストにより手動追加
   'リンゴ': ['セイヨウリンゴ', 'ヨーロッパリンゴ']
 };
 
@@ -31,7 +31,7 @@ const ImageModal = ({ image, isOpen, onClose }) => {
         />
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 transition-colors"
+          className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2"
         >
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -120,7 +120,7 @@ const PlantImageGallery = ({ images }) => {
         {mainImage && (
           <div className="relative">
             <div 
-              className="group relative bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer"
+              className="group relative bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl cursor-pointer"
               onClick={() => handleImageClick(mainImage)}
             >
               <div className="relative bg-emerald-50 dark:bg-emerald-900/20 overflow-hidden aspect-[16/10] min-h-[500px]">
@@ -131,10 +131,10 @@ const PlantImageGallery = ({ images }) => {
                 />
                 
                 {/* Elegant gradient overlay on hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100"></div>
                 
                 {/* Image label overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 transform translate-y-full group-hover:translate-y-0">
                   <h3 className="text-white font-bold text-xl drop-shadow-lg">{mainImage.label}</h3>
                   <p className="text-white/90 text-sm drop-shadow-md mt-1">クリックで拡大表示</p>
                 </div>
@@ -153,7 +153,7 @@ const PlantImageGallery = ({ images }) => {
               {availableImages.map((image, index) => (
                 <div
                   key={index}
-                  className={`group relative bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer ${
+                  className={`group relative bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg cursor-pointer ${
                     mainImage?.finalSrc === image.finalSrc 
                       ? 'ring-3 ring-emerald-500 ring-offset-2 dark:ring-offset-slate-900' 
                       : ''

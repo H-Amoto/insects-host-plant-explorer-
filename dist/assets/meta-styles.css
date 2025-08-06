@@ -80,6 +80,8 @@ body {
 
 .basic-info dd {
   color: #333;
+  text-indent: 0;
+  margin-left: 0;
 }
 
 /* Image Section */

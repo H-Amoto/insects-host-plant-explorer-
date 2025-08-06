@@ -131,8 +131,8 @@ const RelatedInsectsSection = ({ relatedMothsByPlant, allInsects }) => {
               <div className={`transition-all duration-300 ${
                 layout === 'horizontal' ? 'flex space-x-4 min-w-max' :
                 layout === 'horizontal-limited' ? 'flex space-x-4 min-w-max' :
-                layout === 'grid-2rows' ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6' :
-                layout === 'grid-3rows' ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 gap-6' :
+                layout === 'grid-2rows' ? 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-6' :
+                layout === 'grid-3rows' ? 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-6' :
                 'flex space-x-4 min-w-max'
               }`}>
                 {relatedMothNames.slice(0, displayCount).map(relatedMothName => {
@@ -148,7 +148,7 @@ const RelatedInsectsSection = ({ relatedMothsByPlant, allInsects }) => {
                       key={relatedMoth.id}
                       to={`${baseUrl}${relatedMoth.id}`}
                       className={`insect-card group ${
-                        layout.startsWith('grid') ? 'w-full' : 'flex-shrink-0 w-48'
+                        layout.startsWith('grid') ? 'w-full' : 'flex-shrink-0 w-56'
                       }`}
                     >
                       <div className={`bg-white dark:bg-slate-800 rounded-xl overflow-hidden border-2 shadow-sm hover:shadow-lg transition-all duration-300 group-hover:scale-[1.02] ${
@@ -158,7 +158,7 @@ const RelatedInsectsSection = ({ relatedMothsByPlant, allInsects }) => {
                         'border-amber-300 dark:border-amber-600 group-hover:border-amber-500 dark:group-hover:border-amber-400'
                       }`}>
                         {/* 昆虫画像 - 大きくしてカードの大部分を占める */}
-                        <div className="relative w-full aspect-[4/3] overflow-hidden">
+                        <div className="relative w-full aspect-[3/2] overflow-hidden">
                           <img 
                             src={getImagePath(relatedMoth)}
                             alt={relatedMothName}
@@ -183,8 +183,8 @@ const RelatedInsectsSection = ({ relatedMothsByPlant, allInsects }) => {
                           </div>
                           
                           {/* 画像上に昆虫名をオーバーレイ表示 */}
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3">
-                            <h5 className="text-white font-medium text-base leading-tight line-clamp-2 drop-shadow-lg">
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent p-3">
+                            <h5 className="text-white font-medium text-xs leading-tight line-clamp-3 drop-shadow-lg">
                               {relatedMothName}
                             </h5>
                           </div>

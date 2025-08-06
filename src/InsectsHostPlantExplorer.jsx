@@ -7,6 +7,17 @@ import { MainStructuredData } from './components/StructuredData';
 
 const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leafbeetles, hostPlants, plantDetails, theme, setTheme }) => {
   const [activeTab, setActiveTab] = useState('insects');
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  
+  // Preload hero image on component mount
+  React.useEffect(() => {
+    const heroImageUrl = `${import.meta.env.BASE_URL}images/insects/Cucullia_argentea.jpg`;
+    const img = new Image();
+    img.decoding = 'async';
+    img.fetchPriority = 'high';
+    img.onload = () => setHeroImageLoaded(true);
+    img.src = heroImageUrl;
+  }, []);
 
 
   return (
@@ -17,23 +28,32 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
         <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-2xl group">
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 via-transparent to-slate-900/30 z-10"></div>
           
+          {/* Show skeleton while loading */}
+          {!heroImageLoaded && (
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 animate-pulse z-5" />
+          )}
+          
           <img 
             src={`${import.meta.env.BASE_URL}images/insects/Cucullia_argentea.jpg`} 
             alt="昆虫と食草の美しい関係を探る図鑑のメインビジュアル - Cucullia argentea（ギンスジキンウワバ）" 
-            className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 ease-out"
+            className={`w-full h-full object-cover object-center transform group-hover:scale-105 transition-all duration-700 ease-out ${
+              heroImageLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
             style={{ 
               imageRendering: 'auto',
-              willChange: 'transform'
+              willChange: heroImageLoaded ? 'auto' : 'opacity, transform',
+              contain: 'layout style paint'
             }}
             loading="eager"
             decoding="async" 
             fetchpriority="high"
-            onLoad={() => console.log('Hero image loaded successfully')}
+            onLoad={() => setHeroImageLoaded(true)}
             onError={(e) => { 
               console.error('Hero image failed to load:', e.target.src);
               e.target.onerror = null; 
               e.target.src=`${import.meta.env.BASE_URL}images/placeholder.jpg`; 
               e.target.alt='画像が見つかりません';
+              setHeroImageLoaded(true);
             }}
           />
           

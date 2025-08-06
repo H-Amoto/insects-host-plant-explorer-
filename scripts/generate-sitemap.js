@@ -47,6 +47,13 @@ function generateSitemap() {
     // CSVデータを読み込み
     const csvData = loadCSV(path.join(__dirname, '../public/ListMJ_hostplants_master.csv'));
     const beetleData = loadCSV(path.join(__dirname, '../public/buprestidae_host.csv'));
+    const butterflyData = loadCSV(path.join(__dirname, '../public/butterfly_host.csv'));
+    // leafbeetle データは存在する場合のみ読み込み
+    let leafbeetleData = [];
+    const leafbeetlePath = path.join(__dirname, '../public/leafbeetle_host.csv');
+    if (fs.existsSync(leafbeetlePath)) {
+      leafbeetleData = loadCSV(leafbeetlePath);
+    }
     
     // 昆虫データの処理
     let mothCount = 0, butterflyCount = 0, beetleCount = 0, leafbeetleCount = 0;
@@ -123,6 +130,96 @@ function generateSitemap() {
       }
     });
     
+    // 専用butterfly CSVデータの処理
+    butterflyData.forEach((row, index) => {
+      const insectName = row['和名'] || '';
+      const hostPlants = row['食草'] || '';
+      
+      if (!insectName) return;
+      
+      // butterfly URL を生成 (メタページ生成と一致させる)
+      urls.push({
+        loc: `${baseUrl}/butterfly/butterfly-csv-${index}`,
+        lastmod: currentDate,
+        changefreq: 'monthly',
+        priority: '0.8'
+      });
+      
+      butterflyCount++;
+      
+      // 食草データを収集
+      if (hostPlants && hostPlants !== '不明') {
+        const plants = hostPlants.split(/[、,，]/).map(p => p.trim()).filter(p => p);
+        plants.forEach(plant => {
+          if (plant) {
+            hostPlantsSet.add(plant);
+          }
+        });
+      }
+    });
+    
+    // hamushi_integrated_master.csvからleafbeetleデータを処理
+    const hamushiPath = path.join(__dirname, '../public/hamushi_integrated_master.csv');
+    let hamushiData = [];
+    if (fs.existsSync(hamushiPath)) {
+      hamushiData = loadCSV(hamushiPath);
+      
+      hamushiData.forEach((row, index) => {
+        const insectName = row['和名'] || '';
+        const family = row['科和名'] || row['科名'];
+        const hostPlants = row['食草'] || '';
+        
+        // ハムシ科のみを処理
+        if (family !== 'ハムシ科' || !insectName) return;
+        
+        // leafbeetle URL を生成
+        urls.push({
+          loc: `${baseUrl}/leafbeetle/leafbeetle-${index + 1}`,
+          lastmod: currentDate,
+          changefreq: 'monthly',
+          priority: '0.8'
+        });
+        
+        leafbeetleCount++;
+        
+        // 食草データを収集
+        if (hostPlants && hostPlants !== '不明') {
+          const plants = hostPlants.split(/[、,，]/).map(p => p.trim()).filter(p => p);
+          plants.forEach(plant => {
+            if (plant) {
+              hostPlantsSet.add(plant);
+            }
+          });
+        }
+      });
+    }
+    
+    // 専用leafbeetle CSVデータの処理（存在する場合）
+    leafbeetleData.forEach((row, index) => {
+      const insectName = row['和名'] || '';
+      const hostPlants = row['食草'] || '';
+      
+      if (!insectName) return;
+      
+      // leafbeetle URL を生成 (メタページ生成と一致させる)
+      urls.push({
+        loc: `${baseUrl}/leafbeetle/leafbeetle-csv-${index}`,
+        lastmod: currentDate,
+        changefreq: 'monthly',
+        priority: '0.8'
+      });
+      
+      // 食草データを収集
+      if (hostPlants && hostPlants !== '不明') {
+        const plants = hostPlants.split(/[、,，]/).map(p => p.trim()).filter(p => p);
+        plants.forEach(plant => {
+          if (plant) {
+            hostPlantsSet.add(plant);
+          }
+        });
+      }
+    });
+    
     // 植物ページのURL
     hostPlantsSet.forEach(plantName => {
       urls.push({
@@ -134,16 +231,16 @@ function generateSitemap() {
     });
     
     // XMLを生成
-    let xml = '<?xml version="1.0" encoding="UTF-8"?>\\n';
-    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\\n';
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     
     urls.forEach(url => {
-      xml += '  <url>\\n';
-      xml += `    <loc>${url.loc}</loc>\\n`;
-      xml += `    <lastmod>${url.lastmod}</lastmod>\\n`;
-      xml += `    <changefreq>${url.changefreq}</changefreq>\\n`;
-      xml += `    <priority>${url.priority}</priority>\\n`;
-      xml += '  </url>\\n';
+      xml += '  <url>\n';
+      xml += `    <loc>${url.loc}</loc>\n`;
+      xml += `    <lastmod>${url.lastmod}</lastmod>\n`;
+      xml += `    <changefreq>${url.changefreq}</changefreq>\n`;
+      xml += `    <priority>${url.priority}</priority>\n`;
+      xml += '  </url>\n';
     });
     
     xml += '</urlset>';

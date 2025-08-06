@@ -103,10 +103,9 @@ function App() {
       const wameiCsvPath = `${import.meta.env.BASE_URL}wamei_checklist_ver.1.10.csv`;
       const mainCsvPath = `${import.meta.env.BASE_URL}ListMJ_hostplants_master.csv?v=${Date.now()}&bust=${Math.random()}&nocache=${Date.now()}&t=${performance.now()}`;
       const yListCsvPath = `${import.meta.env.BASE_URL}20210514YList_download.csv`; // New YList CSV path
-      const hamushiSpeciesCsvPath = `${import.meta.env.BASE_URL}hamushi_species_integrated.csv`;
+      const hamushiIntegratedCsvPath = `${import.meta.env.BASE_URL}hamushi_integrated_master.csv`;
       const butterflyCsvPath = `${import.meta.env.BASE_URL}butterfly_host.csv`;
       const beetleCsvPath = `${import.meta.env.BASE_URL}buprestidae_host.csv`;
-      const leafbeetleCsvPath = `${import.meta.env.BASE_URL}leafbeetle_host.csv`;
       const kirigaCsvPath = `${import.meta.env.BASE_URL}日本の冬夜蛾.csv`;
       const fuyushakuCsvPath = `${import.meta.env.BASE_URL}日本の冬尺蛾.csv?v=${Date.now()}&bust=${Math.random()}&nocache=${Date.now()}&t=${performance.now()}`;
       const emergenceTimeCsvPath = `${import.meta.env.BASE_URL}emergence_time_integrated.csv`;
@@ -320,7 +319,7 @@ function App() {
       console.log("wameiCsvPath:", wameiCsvPath);
       console.log("mainCsvPath:", mainCsvPath);
       console.log("yListCsvPath:", yListCsvPath);
-      console.log("hamushiSpeciesCsvPath:", hamushiSpeciesCsvPath);
+      console.log("hamushiIntegratedCsvPath:", hamushiIntegratedCsvPath);
       console.log("butterflyCsvPath:", butterflyCsvPath);
       console.log("beetleCsvPath:", beetleCsvPath);
       console.log("BASE_URL:", import.meta.env.BASE_URL);
@@ -383,14 +382,13 @@ function App() {
         if (isDevelopment) console.log("DEBUG: フユシャクCsvPath:", fuyushakuCsvPath);
         if (isDevelopment) console.log("DEBUG: About to load フユシャク file with safeFileLoad");
         
-        const [wameiText, mainText, yListText, hamushiSpeciesText, butterflyText, beetleText, leafbeetleText, kirigaText, fuyushakuText, emergenceTimeText, genusMappingText] = await Promise.all([
+        const [wameiText, mainText, yListText, hamushiIntegratedText, butterflyText, beetleText, kirigaText, fuyushakuText, emergenceTimeText, genusMappingText] = await Promise.all([
           safeFileLoad(wameiCsvPath, 'wamei checklist', 20000),
           safeFileLoad(mainCsvPath, 'main moth data', 20000),
           safeFileLoad(yListCsvPath, 'YList data', 30000), // Longer timeout for large file
-          safeFileLoad(hamushiSpeciesCsvPath, 'hamushi species', 20000),
+          safeFileLoad(hamushiIntegratedCsvPath, 'hamushi integrated data', 20000),
           safeFileLoad(butterflyCsvPath, 'butterfly data', 15000),
           safeFileLoad(beetleCsvPath, 'beetle data', 15000),
-          safeFileLoad(leafbeetleCsvPath, 'leafbeetle data', 15000),
           safeFileLoad(kirigaCsvPath, 'kiriga data', 10000),
           safeFileLoad(fuyushakuCsvPath, 'fuyushaku data', 10000),
           safeFileLoad(emergenceTimeCsvPath, 'emergence time data', 10000),
@@ -411,7 +409,7 @@ function App() {
           wamei: wameiText ? 'SUCCESS' : 'FAILED',
           main: mainText ? 'SUCCESS' : 'FAILED',
           yList: yListText ? 'SUCCESS' : 'FAILED',
-          hamushi: hamushiSpeciesText ? 'SUCCESS' : 'FAILED',
+          hamushiIntegrated: hamushiIntegratedText ? 'SUCCESS' : 'FAILED',
           butterfly: butterflyText ? 'SUCCESS' : 'FAILED',
           beetle: beetleText ? 'SUCCESS' : 'FAILED',
           kiriga: kirigaText ? 'SUCCESS' : 'FAILED',
@@ -928,11 +926,17 @@ function App() {
           }
           
           // Remove family prefixes like "アカネ科ミサオノキ" -> "ミサオノキ", "ウマノスズクサ科ウマノスズクサ" -> "ウマノスズクサ"
-          let normalized = plantName.replace(/^[^科]*科([のに]?)/g, ''); // Remove family prefixes like "科名の", "科名に", or just "科名"
+          // But be careful not to match family names inside parentheses
+          let normalized = plantName.replace(/^([^（(科]+科)([のに]?)([^（(].+)$/, '$3'); // Only remove family prefix if there's plant content after it (not in parentheses)
+          if (normalized === plantName) {
+            // No family prefix found, keep original
+            normalized = plantName;
+          }
           
           // Remove family annotations like "アカマツ（マツ科）" -> "アカマツ"
-          normalized = normalized.replace(/（[^）]*科[^）]*）/g, ''); // Remove (科名) patterns
-          normalized = normalized.replace(/\([^)]*科[^)]*\)/g, ''); // Remove (family) patterns
+          // But preserve the plant name part before the annotation
+          normalized = normalized.replace(/^([^（(]+)（[^）]*科[^）]*）(.*)$/g, '$1$2'); // Remove (科名) patterns, keep plant name
+          normalized = normalized.replace(/^([^（(]+)\([^)]*科[^)]*\)(.*)$/g, '$1$2'); // Remove (family) patterns, keep plant name
           
           // Remove "以上〇〇科" patterns more carefully to preserve plant names
           normalized = normalized.replace(/\(以上[^)]*科\)/g, ''); // Remove "(以上〇〇科)"
@@ -948,9 +952,9 @@ function App() {
           normalized = normalized.replace(/^）/g, ''); // Remove orphaned closing parentheses at start
           normalized = normalized.replace(/^\)/g, ''); // Remove orphaned closing parentheses at start
           
-          // Remove other common annotations
-          normalized = normalized.replace(/（[^）]*）/g, ''); // Remove remaining parentheses
-          normalized = normalized.replace(/\([^)]*\)/g, ''); // Remove remaining parentheses
+          // Remove remaining simple parenthetical annotations at the end (after preserving family patterns above)
+          normalized = normalized.replace(/（[^）]*）$/g, ''); // Remove remaining parentheses at end
+          normalized = normalized.replace(/\([^)]*\)$/g, ''); // Remove remaining parentheses at end
           
           normalized = normalized.trim();
           
@@ -1121,6 +1125,11 @@ function App() {
           
           // Remove whitespace for testing
           const trimmed = plantName.trim();
+          
+          // Explicitly reject empty strings (after trimming)
+          if (trimmed === '' || trimmed.length === 0) {
+            return false;
+          }
           
           // Reject if only numbers or only English letters
           if (/^[0-9]+$/.test(trimmed) || /^[A-Za-z]+$/.test(trimmed)) {
@@ -1408,6 +1417,11 @@ function App() {
                 // Debug ツバキ-related mappings
                 if ((allName && allName.includes('ツバキ')) || (hubName && hubName.includes('ツバキ'))) {
                   console.log(`DEBUG: wameiMap ツバキ mapping: "${allName}" -> "${hubName}"`);
+                }
+                // Debug ソメイヨシノ-related mappings
+                if ((allName && allName.includes('ソメイヨシノ')) || (hubName && hubName.includes('ソメイヨシノ')) ||
+                    (allName && allName.includes('染井吉野')) || (hubName && hubName.includes('染井吉野'))) {
+                  console.log(`DEBUG: wameiMap ソメイヨシノ mapping: "${allName}" -> "${hubName}"`);
                 }
               }
               if (hubName && familyJp) wameiFamilyMap[hubName] = familyJp;
@@ -1699,6 +1713,14 @@ function App() {
 
         const correctPlantName = (name) => {
           
+          // 0. スラッシュを含む植物名の処理（別名処理）
+          if (name && name.includes('/')) {
+            // スラッシュで区切られた植物名は最初の名前を使用
+            const firstPart = name.split('/')[0].trim();
+            console.log(`DEBUG: Processing slash-separated plant name: "${name}" -> using first part: "${firstPart}"`);
+            return firstPart;
+          }
+          
           // 1. 直接マッチ（最優先）
           if (yListPlantNames.has(name)) {
             return name;
@@ -1798,29 +1820,45 @@ function App() {
           return name;
         };
 
-        // Process hamushi_species.csv first to create hamushiMap with error handling
+        // Process integrated hamushi CSV to create hamushiMap with error handling
         let hamushiMap = {};
-        if (hamushiSpeciesText) {
+        let hamushiParsedData = [];
+        if (hamushiIntegratedText) {
           try {
-            console.log("Parsing hamushi species data...");
-            const hamushiParsed = Papa.parse(hamushiSpeciesText, { header: true, skipEmptyLines: true, delimiter: ',' });
+            console.log("Parsing integrated hamushi data...");
+            const hamushiParsed = Papa.parse(hamushiIntegratedText, { header: true, skipEmptyLines: true, delimiter: ',' });
             if (hamushiParsed.errors.length) {
-              console.error("PapaParse errors in hamushi_species.csv:", hamushiParsed.errors);
+              console.error("PapaParse errors in hamushi_integrated_master.csv:", hamushiParsed.errors);
             }
             
+            hamushiParsedData = hamushiParsed.data;
             hamushiParsed.data.forEach(row => {
               const name = row['和名']?.trim();
               if (name) {
-                hamushiMap[name] = row;
+                // Convert integrated CSV structure to expected format
+                // Use correct column names from the actual CSV structure
+                hamushiMap[name] = {
+                  '和名': name,
+                  '学名': row['学名']?.trim(),
+                  '科和名': row['科和名']?.trim(), 
+                  '亜科和名': row['亜科和名']?.trim(),
+                  '族和名': row['族和名']?.trim(), // Add tribe information
+                  '食草': row['食草']?.trim(),
+                  '成虫出現時期': row['成虫出現時期']?.trim(),
+                  '出典': row['出典']?.trim(),
+                  '備考': row['備考']?.trim(),
+                };
               }
             });
-            console.log("Hamushi species data parsed successfully. hamushiMap size:", Object.keys(hamushiMap).length);
+            console.log("Integrated hamushi data parsed successfully. hamushiMap size:", Object.keys(hamushiMap).length);
           } catch (error) {
-            console.error("Error parsing hamushi species data:", error);
-            console.warn("Continuing without hamushi species data - detailed hamushi information may be incomplete");
+            console.error("Error parsing integrated hamushi data:", error);
+            console.warn("Continuing without integrated hamushi data - detailed hamushi information may be incomplete");
+            hamushiParsedData = [];
           }
         } else {
-          console.warn("Hamushi species data not available - detailed hamushi information will be limited");
+          console.warn("Integrated hamushi data not available - detailed hamushi information will be limited");
+          hamushiParsedData = [];
         }
 
 
@@ -1920,7 +1958,10 @@ function App() {
             console.log('=== END COLUMN MISALIGNMENT FIX ===');
             
             results.data.forEach((row, index) => {
+              const catalogNo = row['大図鑑カタログNo']?.trim();
               const originalMothName = row['和名']?.trim();
+              
+              // Skip rows without moth name (these are definitely incomplete)
               if (!originalMothName) return;
               
               
@@ -3593,8 +3634,21 @@ function App() {
 
               hostPlantEntries.forEach(({ plant, familyFromMainCsv }) => {
                 // Final validation to ensure we don't add invalid plant names
-                if (plant && plant.trim() && plant.length > 1) {
+                if (plant && 
+                    typeof plant === 'string' && 
+                    plant.trim() && 
+                    plant.length > 1 && 
+                    plant.trim() !== '' && 
+                    plant.trim() !== '不明' &&
+                    plant !== 'undefined' &&
+                    plant !== 'null') {
                   const validPlant = plant.trim();
+                  
+                  // Double check the trimmed plant name
+                  if (!validPlant || validPlant === '' || validPlant.length === 0) {
+                    console.log("DEBUG: Skipping empty validPlant:", JSON.stringify(plant), "->", JSON.stringify(validPlant));
+                    return;
+                  }
                   if (!hostPlantData[validPlant]) hostPlantData[validPlant] = [];
                   if (!hostPlantData[validPlant].includes(mothName)) {
                     hostPlantData[validPlant].push(mothName);
@@ -4236,32 +4290,23 @@ function App() {
           console.warn("Beetle data not available - beetle information will be limited");
         }
 
-        // Process hamushi_species_integrated.csv to create leafbeetle data
+        // Process integrated hamushi data to create leafbeetle data  
         leafbeetleData = [];
-        if (Object.keys(hamushiMap).length > 0) {
+        if (hamushiParsedData.length > 0) {
           try {
-            console.log("Processing leafbeetle data...");
+            console.log("Processing leafbeetle data from integrated hamushi file...");
             let processedCount = 0;
             let skippedCount = 0;
-            Object.values(hamushiMap).forEach((row, index) => {
+            hamushiParsedData.forEach((row, index) => {
           const japaneseName = row['和名']?.trim();
-          const family = row['科和名'] || row['科名'];
-          const subfamily = row['亜科和名'] || row['亜科名'];
-          const genus = row['属名'];
-          const species = row['種小名'];
-          const author = row['著者'];
-          const year = row['公表年'];
-          const hostPlants = row['食草'];
-          const emergenceTime = row['成虫出現時期'];
-          const source = row['出典'];
+          const family = row['科和名']?.trim();
+          const subfamily = row['亜科名']?.trim();        // 英語の亜科名
+          const subfamilyJapanese = row['亜科和名']?.trim(); // 日本語の亜科名
+          const hostPlants = row['食草']?.trim();
+          const emergenceTime = row['成虫出現時期']?.trim();
+          const source = row['出典']?.trim();
           const remarks = row['備考']?.trim();
-          let scientificName = row['学名']?.trim();
-          
-          // 科和名がハムシ科でない場合はスキップ
-          if (family !== 'ハムシ科') {
-            skippedCount++;
-            return;
-          }
+          const scientificName = row['学名']?.trim();
           
           // 和名が空の場合はスキップ
           if (!japaneseName) {
@@ -4270,15 +4315,13 @@ function App() {
             return;
           }
           
-          // 学名が空の場合は属名と種小名から構築を試行
-          if (!scientificName && genus && species) {
-            scientificName = `${genus} ${species}`;
+          // 学名が空の場合もスキップ
+          if (!scientificName) {
+            skippedCount++;
+            if (isDevelopment) console.log("Skipping leafbeetle row - no scientific name:", { japaneseName, scientificName, rowIndex: index });
+            return;
           }
           
-          // それでも学名が空の場合は未同定として処理
-          if (!scientificName) {
-            scientificName = '未同定';
-          }
           
           processedCount++;
           
@@ -4305,13 +4348,13 @@ function App() {
               family: 'Chrysomelidae',
               familyJapanese: 'ハムシ科',
               subfamily: subfamily,
-              subfamilyJapanese: subfamily,
-              genus: genus
+              subfamilyJapanese: subfamilyJapanese,
+              genus: scientificName ? scientificName.split(' ')[0] : '不明'
             },
             hostPlants: hostPlantList,
             emergenceTime: emergenceTime || '不明',
-            source: hostPlantList.length > 0 ? "ハムシハンドブック" : (source || "ハムシ目録データベース"),
-            sourceUrl: hostPlantList.length > 0 ? "https://amzn.to/456YVhu" : undefined,
+            source: source || "ハムシ目録データベース",
+            sourceUrl: (source && source.includes('ハムシハンドブック')) ? "https://amzn.to/456YVhu" : undefined,
             geographicalRemarks: remarks || ''
           };
 
@@ -4339,7 +4382,7 @@ function App() {
           console.warn("Continuing without leafbeetle data - leafbeetle information may be incomplete");
         }
         } else {
-          console.warn("Hamushi species data not available - leafbeetle information will be limited");
+          console.warn("Integrated hamushi data not available - leafbeetle information will be limited");
         }
 
         // Combine all moth data after all parsing is complete
@@ -4351,18 +4394,49 @@ function App() {
 
         // Clean up hostPlantData to remove any invalid plant names and normalize duplicates
         const cleanedHostPlantData = {};
+        console.log('DEBUG: Starting hostPlantData cleanup. Total entries:', Object.keys(hostPlantData).length);
+        
         Object.entries(hostPlantData).forEach(([plantName, mothList]) => {
+          // Debug logging for empty or suspicious plant names
+          if (!plantName || plantName.trim() === '' || plantName === 'undefined' || plantName === 'null') {
+            console.log("DEBUG: Found problematic plant name:", JSON.stringify(plantName), "with moths:", mothList);
+          }
+          
+          // Debug logging for ソメイヨシノ
+          if (plantName && (plantName.includes('ソメイヨシノ') || plantName.includes('染井吉野'))) {
+            console.log("DEBUG: Found ソメイヨシノ-related plant name:", JSON.stringify(plantName), "moths:", mothList);
+          }
+          
+          // Explicit check for empty/invalid plant names before calling isValidPlantName
+          if (!plantName || 
+              typeof plantName !== 'string' || 
+              plantName.trim() === '' || 
+              plantName === 'undefined' || 
+              plantName === 'null' ||
+              plantName.length === 0) {
+            console.log("DEBUG: Explicitly excluding empty/invalid plant name:", JSON.stringify(plantName));
+            return; // Skip this entry entirely
+          }
+          
           if (isValidPlantName(plantName)) {
             const normalizedName = normalizePlantName(plantName);
+            // Additional check after normalization
+            if (!normalizedName || normalizedName.trim() === '') {
+              console.log("DEBUG: Normalized plant name is empty, skipping:", JSON.stringify(plantName), "->", JSON.stringify(normalizedName));
+              return;
+            }
+            
             if (!cleanedHostPlantData[normalizedName]) {
               cleanedHostPlantData[normalizedName] = [];
             }
             // Merge moth lists for the same normalized plant name
             cleanedHostPlantData[normalizedName] = [...new Set([...cleanedHostPlantData[normalizedName], ...mothList])];
           } else {
-            console.log("Removed invalid plant name:", plantName);
+            console.log("DEBUG: Removed invalid plant name:", JSON.stringify(plantName), "Length:", plantName?.length, "Type:", typeof plantName);
           }
         });
+        
+        console.log('DEBUG: After cleanup. Cleaned entries:', Object.keys(cleanedHostPlantData).length);
         
         // Clean up plantDetailData as well
         const cleanedPlantDetailData = {};

@@ -17,6 +17,14 @@ const loadPlantImageFilenames = async () => {
       const text = await response.text();
       plantImageFilenames = text.split('\n')
         .map(line => line.trim())
+        .filter(line => line)
+        .map(line => {
+          // Extract filename after the arrow "→"
+          if (line.includes('→')) {
+            return line.split('→')[1].trim();
+          }
+          return line;
+        })
         .filter(line => line);
       plantImageFilenamesLoaded = true;
     }
@@ -102,26 +110,51 @@ const HostPlantListItem = React.memo(({ plant, mothNames, plantDetails = {}, pla
       const matchingImages = getMatchingImages();
       const matchingImage = matchingImages[0]; // Use the highest priority match
       
+      // Debug logging for オニグルミ
+      if (plant === 'オニグルミ') {
+        console.log('オニグルミ image matching debug:', {
+          plant,
+          safePlantName,
+          preloadedFilenamesLength: preloadedFilenames.length,
+          sampleFilenames: preloadedFilenames.slice(0, 10),
+          matchingImages,
+          matchingImage
+        });
+      }
+      
       if (matchingImage) {
         // Find the appropriate extension
         const baseUrl = `${import.meta.env.BASE_URL}images/plants/`;
         const extensions = ['jpg', 'JPG', 'jpeg', 'JPEG', 'png', 'PNG'];
         
-        // Try each extension to find the actual file
-        for (const ext of extensions) {
+        // Try extensions sequentially until one succeeds
+        const tryExtension = (extensionIndex) => {
+          if (extensionIndex >= extensions.length) {
+            // All extensions failed
+            setImageError(true);
+            return;
+          }
+          
+          const ext = extensions[extensionIndex];
           const url = `${baseUrl}${matchingImage}.${ext}`;
           const img = new Image();
+          
           img.onload = () => {
             setImageExists(true);
             setPlantImageUrl(url);
             setImageLoaded(true);
           };
+          
           img.onerror = () => {
-            // Try next extension if current one fails
+            // This extension failed, try the next one
+            tryExtension(extensionIndex + 1);
           };
+          
           img.src = url;
-          break; // Only try first matching pattern for now
-        }
+        };
+        
+        // Start trying from the first extension
+        tryExtension(0);
       } else {
         setImageError(true);
       }
@@ -196,17 +229,6 @@ const HostPlantListItem = React.memo(({ plant, mothNames, plantDetails = {}, pla
             </div>
           )}
           
-          {/* Image indicator badge */}
-          {imageExists && (
-            <div className="absolute top-2 left-2">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-500/90 text-white backdrop-blur-sm shadow-sm">
-                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z" />
-                </svg>
-                画像あり
-              </span>
-            </div>
-          )}
           
           {/* Decorative pattern overlay for non-image cards */}
           {!imageExists && (
@@ -280,6 +302,12 @@ const HostPlantList = ({ hostPlants = {}, plantDetails = {}, embedded = false })
     }
     const lowerCaseSearchTerm = debouncedPlantSearch.toLowerCase();
     const filtered = Object.entries(safeHostPlants).filter(([plantName]) => {
+      // Explicitly exclude empty, undefined, or invalid plant names
+      if (!plantName || plantName.trim() === '' || plantName === 'undefined' || plantName === 'null') {
+        console.log("DEBUG: Excluding invalid plant name:", JSON.stringify(plantName));
+        return false;
+      }
+      
       console.log("Filtering plant:", plantName, "Details:", safePlantDetails[plantName]);
       const detail = safePlantDetails[plantName] || {};
       const family = detail.family ? detail.family.toLowerCase() : '';

@@ -6,6 +6,30 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// 英語単語をイタリック体にフォーマットする関数
+function formatEnglishWordsInItalic(text) {
+  if (!text || typeof text !== 'string') {
+    return text;
+  }
+  
+  // 既に<em>タグがある場合は、一度削除
+  text = text.replace(/<\/?em>/g, '');
+  
+  // 日本語文字が含まれる単語は除外
+  const isJapanese = (word) => /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(word);
+  
+  // 英語の単語をすべて見つけて置換（重複を許可）
+  text = text.replace(/\b([A-Za-z]+)\b/g, (match, word) => {
+    // 日本語が含まれていない場合はイタリック体にする
+    if (!isJapanese(word)) {
+      return `<em>${word}</em>`;
+    }
+    return match;
+  });
+  
+  return text;
+}
+
 // 学名フォーマッティング関数 - 属名+種小名のみをイタリック体にし、著者名と年は通常体にする
 function formatScientificNameHTML(scientificName) {
   if (!scientificName || scientificName.trim() === '') {
@@ -191,7 +215,15 @@ function isValidPlantName(plantName) {
     /栽培/,
     /発生する/,
     /生息/,
-    /分布/
+    /分布/,
+    /寄主植物/,
+    /とするが$/,
+    /植物で$/,
+    /植物であるが$/,
+    /が主な/,
+    /を主な/,
+    /から子実体へ/,
+    /の樹皮下から/
   ];
   
   for (const pattern of descriptivePatterns) {
@@ -503,6 +535,9 @@ function generateInsectHTML(insect, type) {
         <dl>
           <dt>和名</dt>
           <dd>${insect.japaneseName}</dd>
+          ${insect.alternativeNames && insect.alternativeNames.trim() ? `
+          <dt>別名</dt>
+          <dd>${insect.alternativeNames}</dd>` : ''}
           <dt>学名</dt>
           <dd>${formatScientificNameHTML(scientificName)}</dd>
           <dt>分類</dt>
@@ -549,6 +584,9 @@ function generateInsectHTML(insect, type) {
         <p>${insect.japaneseName}（学名：${formatScientificNameHTML(scientificName)}）は${familyName}に分類される${typeNames[type]}の一種です。</p>
         ${hostPlantsArray.length > 0 ? `
         <p>幼虫は${hostPlantsArray.slice(0, 3).join('、')}${hostPlantsArray.length > 3 ? 'など' : ''}を食草として成長します。${hostPlantsArray.length}種の植物との関係が確認されており、多様な植物資源を利用する種です。</p>` : ''}
+        ${insect.remarks && insect.remarks.trim() ? `
+        <h4>備考</h4>
+        <p>${formatEnglishWordsInItalic(insect.remarks)}</p>` : ''}
         ${source && source !== '不明' ? `<p>出典: ${source}</p>` : ''}
         <p>この種の詳細な生態情報や観察記録については、メインの図鑑ページでご確認ください。</p>
       </section>
@@ -901,6 +939,12 @@ async function generateMetaPages() {
       const insectName = row['和名'] || row['種名'] || '';
       if (!insectName) return;
       
+      // プレースホルダーや無効な昆虫名を除外
+      if (insectName === '和名' || insectName === '種名' || insectName === '不明' || insectName.trim().length < 2) {
+        return;
+      }
+      
+      
       const familyJapanese = row['科和名'] || row['科名'] || '';
       
       const existingScientificName = (row['学名'] || '').trim();
@@ -911,10 +955,16 @@ async function generateMetaPages() {
       
       const scientificName = processScientificName(existingScientificName, genus, species, author, year);
       
+      // 無効な学名を除外
+      if (scientificName === '学名' || scientificName === '不明' || scientificName.trim().length < 3) {
+        return;
+      }
+      
       let hostPlants = row['食草'] || '不明';
-      const remarks = row['食草に関する備考'] || '';
+      const remarks = row['備考'] || row['食草に関する備考'] || '';
       const source = row['出典'] || row['出典\r'] || '不明';
       const catalogNo = row['大図鑑カタログNo'] || '';
+      const alternativeNames = row['別名'] || '';
       
       // 食草欄に説明文が含まれている場合、正しい食草情報を抽出
       if (hostPlants && hostPlants.includes('名義タイプ亜種')) {
@@ -946,9 +996,12 @@ async function generateMetaPages() {
       const insect = {
         id: insectId,
         name: insectName,
+        japaneseName: insectName,
         scientificName: scientificName,
         hostPlants: hostPlants,
         source: source,
+        remarks: remarks,
+        alternativeNames: alternativeNames,
         emergenceTime: emergenceTime,
         scientificFilename: (() => {
           // Extract binomial name (genus + species) from scientific name for filename
@@ -956,6 +1009,7 @@ async function generateMetaPages() {
           const binomialName = binomialMatch ? `${binomialMatch[1]} ${binomialMatch[2]}` : scientificName;
           return binomialName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_()\,]/g, '');
         })(),
+        family: familyJapanese,
         familyJapanese: familyJapanese,
         type: type
       };

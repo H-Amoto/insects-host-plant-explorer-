@@ -15,16 +15,24 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
   const handleIntersection = useCallback((entries) => {
     const [entry] = entries;
     if (entry.isIntersecting && !isVisible) {
-      setIsVisible(true);
+      // Use requestIdleCallback for non-critical image loading
+      if ('requestIdleCallback' in window && !isPriority) {
+        requestIdleCallback(() => setIsVisible(true), { timeout: 100 });
+      } else {
+        setIsVisible(true);
+      }
     }
-  }, [isVisible]);
+  }, [isVisible, isPriority]);
 
   useEffect(() => {
     if (isPriority) return; // Skip observer for priority images
     
     const observer = new IntersectionObserver(handleIntersection, {
-      threshold: 0.1,
-      rootMargin: '200px' // Increased preload distance for better perceived performance
+      threshold: 0.01, // Lower threshold for earlier loading
+      rootMargin: '400px 0px', // Increased vertical margin for better preloading
+      // Use native lazy loading hints
+      trackVisibility: true,
+      delay: 100
     });
     
     if (imgRef.current) {
@@ -159,11 +167,26 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
   const hasImageFilename = imageFilenames.size > 0 ? imageFilenames.has(imageFilename) : true;
   
   
-  // Preload priority images
+  // Preload priority images with better performance
   useEffect(() => {
     if (isPriority && hasImageFilename) {
+      // Create link preload for priority images
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = imageUrl;
+      link.fetchPriority = 'high';
+      document.head.appendChild(link);
+      
+      // Also preload via Image object for immediate caching
       const img = new Image();
+      img.decoding = 'async';
+      img.fetchPriority = 'high';
       img.src = imageUrl;
+      
+      return () => {
+        document.head.removeChild(link);
+      };
     }
   }, [isPriority, hasImageFilename, imageUrl]);
   
@@ -185,12 +208,13 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
                   <img
                     src={imageUrl}
                     alt={`${moth.name}（${moth.scientificName}）の写真`}
-                    className={`w-full h-full object-cover transition-all duration-300 group-hover:scale-105 ${
-                      imageLoaded ? 'opacity-100' : 'opacity-0'
+                    className={`w-full h-full object-cover transition-all duration-300 group-hover:scale-105 gpu-accelerated ${
+                      imageLoaded ? 'opacity-100 loaded' : 'opacity-0 loading'
                     }`}
                     style={{ 
-                      imageRendering: 'crisp-edges',
-                      willChange: imageLoaded ? 'auto' : 'opacity'
+                      imageRendering: 'auto', // Better for photos
+                      willChange: imageLoaded ? 'auto' : 'opacity, transform',
+                      contain: 'layout style paint'
                     }}
                     loading={isPriority ? "eager" : "lazy"}
                     decoding="async"

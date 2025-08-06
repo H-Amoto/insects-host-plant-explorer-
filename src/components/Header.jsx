@@ -71,28 +71,28 @@ const Header = ({ theme, setTheme, moths, butterflies = [], beetles = [], leafbe
   const speciesInfo = getCurrentSpeciesInfo();
 
   return (
-    <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 backdrop-blur-xl border-b border-slate-700/30 dark:border-slate-600/30 shadow-xl sticky top-0 z-50">
+    <header className="bg-gradient-to-r from-slate-900 via-emerald-900/30 to-slate-900 dark:from-slate-950 dark:via-emerald-950/30 dark:to-slate-950 backdrop-blur-xl border-b border-emerald-600/20 dark:border-emerald-500/20 shadow-2xl sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           <Link to="/" className="group flex items-center space-x-3 hover:scale-105 transition-transform duration-200">
             <div className="relative">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 via-teal-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-emerald-500/50 group-hover:shadow-2xl transition-all duration-300 group-hover:rotate-3">
+                <svg className="w-7 h-7 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
               </div>
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-2xl font-black bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent group-hover:from-blue-200 group-hover:to-emerald-200 transition-all duration-300">
-                昆虫 食草 - "繋がり"が見える図鑑
+              <h1 className="text-3xl font-black bg-gradient-to-r from-emerald-100 via-white to-blue-100 bg-clip-text text-transparent group-hover:from-emerald-200 group-hover:via-teal-100 group-hover:to-blue-200 transition-all duration-500 tracking-tight">
+                "繋がり"が見える昆虫食草図鑑
               </h1>
-              <p className="text-xs text-slate-400 font-medium tracking-wide -mt-1">
+              <p className="text-sm text-emerald-400/70 font-semibold tracking-widest uppercase">
                 Insect Host Plant Explorer
               </p>
             </div>
             <div className="sm:hidden">
-              <h1 className="text-xl font-black bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-                昆虫 食草図鑑
+              <h1 className="text-2xl font-black bg-gradient-to-r from-emerald-100 via-white to-blue-100 bg-clip-text text-transparent">
+                昆虫食草図鑑
               </h1>
             </div>
           </Link>
@@ -100,7 +100,7 @@ const Header = ({ theme, setTheme, moths, butterflies = [], beetles = [], leafbe
           <div className="flex items-center space-x-4">
             {/* Dynamic species classification info */}
             {speciesInfo && (
-              <div className="hidden lg:flex items-center space-x-3 bg-white/5 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/10">
+              <div className="hidden lg:flex items-center space-x-3 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 backdrop-blur-sm rounded-2xl px-5 py-2.5 border border-emerald-400/20 shadow-lg">
                 {speciesInfo.type === 'moth' ? (
                   <div className="flex items-center space-x-2">
                     <div className="text-sm">
@@ -125,16 +125,16 @@ const Header = ({ theme, setTheme, moths, butterflies = [], beetles = [], leafbe
             
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="group relative p-2.5 bg-white/10 dark:bg-white/5 backdrop-blur-sm rounded-xl border border-white/20 dark:border-white/10 hover:bg-white/20 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl"
+              className="group relative p-3 bg-gradient-to-br from-emerald-500/20 to-blue-500/20 dark:from-emerald-500/10 dark:to-blue-500/10 backdrop-blur-sm rounded-2xl border border-emerald-400/30 dark:border-emerald-400/20 hover:from-emerald-500/30 hover:to-blue-500/30 dark:hover:from-emerald-500/20 dark:hover:to-blue-500/20 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all duration-300 hover:scale-110 shadow-xl hover:shadow-emerald-500/30"
               aria-label="テーマを切り替え"
             >
               <div className="relative">
                 {theme === 'dark' ? (
-                  <SunIcon className="h-5 w-5 text-yellow-400 group-hover:text-yellow-300 transition-colors" />
+                  <SunIcon className="h-6 w-6 text-yellow-400 group-hover:text-yellow-300 transition-all duration-300 group-hover:rotate-180" />
                 ) : (
-                  <MoonIcon className="h-5 w-5 text-blue-400 group-hover:text-blue-300 transition-colors" />
+                  <MoonIcon className="h-6 w-6 text-blue-400 group-hover:text-blue-300 transition-all duration-300 group-hover:-rotate-12" />
                 )}
-                <div className="absolute inset-0 bg-blue-400/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/30 to-blue-400/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity blur-lg"></div>
               </div>
             </button>
           </div>
