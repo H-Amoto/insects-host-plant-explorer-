@@ -3981,7 +3981,8 @@ function App() {
               const allSegmentsTrimmed = segments.map(s => s.trim()).filter(s => s);
               
               // Check if all segments contain plant parts like "の花蕾", "の花", etc.
-              const plantPartPattern = /[のから](花蕾|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽|花穂)$/;
+              // Pattern now matches formats like "植物名 (科名)の花蕾" as well as "植物名の花蕾"
+              const plantPartPattern = /(?:\s*\([^)]+\))?[のから](花蕾|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽|花穂)$/;
               const allHavePlantParts = allSegmentsTrimmed.every(segment => 
                 plantPartPattern.test(segment) || segment.includes('(') && segment.includes(')')
               );
@@ -4022,20 +4023,38 @@ function App() {
               console.log('  Number of segments:', segments.length);
               console.log('  First 5 segments:', segments.slice(0, 5));
               
-              const plantPartPattern = /[のから](花蕾|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽|花穂)$/;
+              // Updated pattern to match "植物名 (科名)の花蕾" format
+              const plantPartPattern = /(?:\s*\([^)]+\))?[のから](花蕾|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽|花穂)$/;
               const allSegmentsTrimmed = segments.map(s => s.trim()).filter(s => s);
+              
+              // Check each segment
+              console.log('  Checking each segment:');
+              allSegmentsTrimmed.slice(0, 5).forEach((segment, i) => {
+                const matches = plantPartPattern.test(segment);
+                console.log(`    Segment ${i}: "${segment}" - Pattern matches: ${matches}`);
+              });
+              
               const allHavePlantParts = allSegmentsTrimmed.every(segment => 
                 plantPartPattern.test(segment) || segment.includes('(') && segment.includes(')')
               );
               console.log('  All have plant parts?:', allHavePlantParts);
+              console.log('  Processing path:', allHavePlantParts ? 'ALL_SEGMENTS' : 'FIRST_SEGMENT_ONLY');
               console.log('  allSegmentsTrimmed length:', allSegmentsTrimmed.length);
-              console.log('  First 5 trimmed segments:', allSegmentsTrimmed.slice(0, 5));
               
               console.log('  Parsed plants array:', plants);
               console.log('  Number of plants:', plants.length);
               if (plants.length > 0) {
                 console.log('  First 5 plants:', plants.slice(0, 5));
+                console.log('  Last 5 plants:', plants.slice(-5));
               }
+              
+              // Check family distribution
+              const families = new Set();
+              plants.forEach(plant => {
+                const familyMatch = plant.match(/\(([^)]+)\)/);
+                if (familyMatch) families.add(familyMatch[1]);
+              });
+              console.log('  Unique families found:', Array.from(families));
             }
             if (japaneseName === 'オオゴマシジミ') {
               console.log(`=== DEBUG: Processing ${japaneseName} ===`);
