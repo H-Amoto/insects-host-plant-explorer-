@@ -25,8 +25,8 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
       {/* 構造化データ */}
       <MainStructuredData />
       <div className="max-w-6xl mx-auto space-y-6 p-4 md:p-8">
-        <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-3xl overflow-hidden shadow-2xl group">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 via-transparent to-slate-900/30 z-10"></div>
+        <div className="relative w-full h-72 md:h-96 lg:h-[28rem] rounded-3xl overflow-hidden shadow-2xl group">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/30 via-transparent to-blue-900/40 z-10"></div>
           
           {/* Show skeleton while loading */}
           {!heroImageLoaded && (
@@ -57,23 +57,31 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
             }}
           />
           
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent z-20"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent z-20"></div>
           
           <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 z-30">
             <div className="max-w-6xl mx-auto">
               
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-3 leading-tight">
-                <span className="block bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent drop-shadow-2xl">
-                  昆虫 食草
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-4 leading-tight">
+                <span className="block bg-gradient-to-r from-emerald-100 via-white to-blue-100 bg-clip-text text-transparent drop-shadow-2xl animate-gradient-x">
+                  "繋がり"が見える
                 </span>
-                <span className="block bg-gradient-to-r from-blue-100 to-emerald-100 bg-clip-text text-transparent drop-shadow-2xl">
-                  "繋がり"が見える図鑑
+                <span className="block bg-gradient-to-r from-blue-100 via-teal-100 to-emerald-100 bg-clip-text text-transparent drop-shadow-2xl text-4xl md:text-6xl lg:text-7xl mt-2">
+                  昆虫食草図鑑
                 </span>
               </h1>
               
-              <p className="text-lg md:text-xl text-blue-100/90 font-medium drop-shadow-lg max-w-2xl">
-                昆虫と食草の美しい関係を探る、自然界の意外な繋がりを発見しよう
-              </p>
+              <div className="flex flex-wrap gap-3 mt-6">
+                <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30">
+                  <span className="text-white/90 text-sm font-medium">🦋 蝶・蛾 {moths.length + butterflies.length}種</span>
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30">
+                  <span className="text-white/90 text-sm font-medium">🪲 甲虫 {beetles.length + leafbeetles.length}種</span>
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30">
+                  <span className="text-white/90 text-sm font-medium">🌿 食草 {Object.keys(hostPlants).length}種</span>
+                </div>
+              </div>
               
             </div>
           </div>
@@ -81,7 +89,7 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
           <div className="absolute top-6 right-6 z-30">
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/20 hover:bg-white/20 transition-all duration-200"
+              className="bg-gradient-to-br from-emerald-500/20 to-blue-500/20 backdrop-blur-md rounded-2xl p-3.5 border border-white/30 hover:from-emerald-500/30 hover:to-blue-500/30 transition-all duration-300 hover:scale-110 shadow-xl"
               aria-label="テーマを切り替え"
             >
               {theme === 'dark' ? (
@@ -97,15 +105,15 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
           </div>
         </div>
         {/* タブナビゲーション */}
-        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/50 overflow-hidden">
+        <div className="bg-gradient-to-br from-white/90 to-white/80 dark:from-slate-800/90 dark:to-slate-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-emerald-200/30 dark:border-emerald-700/30 overflow-hidden">
             {/* タブヘッダー */}
-            <div className="flex border-b border-slate-200/30 dark:border-slate-700/30">
+            <div className="flex border-b-2 border-gradient-to-r from-emerald-200/50 via-blue-200/50 to-emerald-200/50 dark:from-emerald-700/50 dark:via-blue-700/50 dark:to-emerald-700/50">
               <button
                 onClick={() => setActiveTab('insects')}
-                className={`flex-1 px-6 py-4 text-lg font-semibold transition-all duration-200 relative ${
+                className={`flex-1 px-6 py-5 text-lg font-bold transition-all duration-300 relative ${
                   activeTab === 'insects'
-                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50/30 dark:hover:bg-blue-900/10'
+                    ? 'text-emerald-600 dark:text-emerald-400 bg-gradient-to-br from-emerald-50/70 to-blue-50/70 dark:from-emerald-900/30 dark:to-blue-900/30'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-gradient-to-br hover:from-emerald-50/40 hover:to-blue-50/40 dark:hover:from-emerald-900/20 dark:hover:to-blue-900/20'
                 }`}
               >
                 <div className="flex items-center justify-center space-x-3">
@@ -127,16 +135,16 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
                   <span>昆虫 ({[...moths, ...butterflies, ...beetles, ...leafbeetles].length})</span>
                 </div>
                 {activeTab === 'insects' && (
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-t-lg"></div>
+                  <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 rounded-t-lg shadow-lg"></div>
                 )}
               </button>
               
               <button
                 onClick={() => setActiveTab('plants')}
-                className={`flex-1 px-6 py-4 text-lg font-semibold transition-all duration-200 relative ${
+                className={`flex-1 px-6 py-5 text-lg font-bold transition-all duration-300 relative ${
                   activeTab === 'plants'
-                    ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-900/20'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-emerald-50/30 dark:hover:bg-emerald-900/10'
+                    ? 'text-blue-600 dark:text-blue-400 bg-gradient-to-br from-blue-50/70 to-emerald-50/70 dark:from-blue-900/30 dark:to-emerald-900/30'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-gradient-to-br hover:from-blue-50/40 hover:to-emerald-50/40 dark:hover:from-blue-900/20 dark:hover:to-emerald-900/20'
                 }`}
               >
                 <div className="flex items-center justify-center space-x-3">
