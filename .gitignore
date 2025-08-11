@@ -22,4 +22,20 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-node_modules
+
+# OS files
+__MACOSX/
+._*
+Thumbs.db
+
+# Archive directories (keep tracked)
+# /data/archive/
+# /misc/archive/
+
+# Reports (temporary)
+reports/cleanup-dryrun-*.md
+reports/cleanup-applied-*.md
+reports/cleanup-inventory.json
+
+# Keep optimized images in Git (for distribution)
+# Note: WebP and AVIF files are intentionally tracked

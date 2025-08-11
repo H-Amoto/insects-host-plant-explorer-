@@ -936,7 +936,7 @@ async function generateMetaPages() {
     const hostPlantsMap = new Map();
     
     csvData.forEach((row, index) => {
-      const insectName = row['和名'] || row['種名'] || '';
+      const insectName = row['和名'] || row['属名'] || row['種名'] || '';
       if (!insectName) return;
       
       // プレースホルダーや無効な昆虫名を除外
@@ -1138,7 +1138,7 @@ function generateImageFileLists() {
       }).data;
       
       csvData.forEach(row => {
-        const japaneseName = row['和名'];
+        const japaneseName = row['和名'] || row['属名'];
         const scientificName = row['学名'];
         const genus = row['属名'];
         const species = row['種小名'];

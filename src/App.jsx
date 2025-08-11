@@ -236,8 +236,23 @@ function App() {
           
           // Add author and year if available
           if (cleanAuthor || cleanYear) {
-            const authorYear = [cleanAuthor, cleanYear].filter(Boolean).join(', ');
-            binomial += ` (${authorYear})`;
+            // Check if author already has parentheses
+            if (cleanAuthor && cleanAuthor.startsWith('(') && cleanAuthor.endsWith(')')) {
+              // Author already has parentheses, don't add extra ones
+              if (cleanYear) {
+                // Remove closing parenthesis, add year, then close
+                const authorWithoutClosing = cleanAuthor.slice(0, -1);
+                binomial += ` ${authorWithoutClosing}, ${cleanYear})`;
+              } else {
+                binomial += ` ${cleanAuthor}`;
+              }
+            } else {
+              // Author doesn't have parentheses, add them
+              const authorYear = [cleanAuthor, cleanYear].filter(Boolean).join(', ');
+              if (authorYear) {
+                binomial += ` (${authorYear})`;
+              }
+            }
           }
           
           return binomial;
@@ -823,60 +838,48 @@ function App() {
 
         // Function to deduplicate moths by scientific name and Japanese name
         const deduplicateMoths = (moths) => {
-          const scientificNameMap = new Map();
-          const japaneseNameMap = new Map();
+          const uniqueMap = new Map();
           
           moths.forEach(moth => {
             const cleanScientificName = cleanScientificNameForComparison(moth.scientificName);
             const cleanJapaneseName = moth.name ? moth.name.trim() : '';
             
-            let duplicateFound = false;
+            // Determine if this has a complete species-level scientific name
+            const hasSpeciesName = cleanScientificName && 
+                                   cleanScientificName.includes(' ') && 
+                                   !cleanScientificName.endsWith(' sp.') &&
+                                   !cleanScientificName.endsWith(' spp.');
             
-            // Check for scientific name duplication
-            if (cleanScientificName && scientificNameMap.has(cleanScientificName)) {
-              const existing = scientificNameMap.get(cleanScientificName);
-              const merged = mergeMoths(existing, moth);
-              scientificNameMap.set(cleanScientificName, merged);
-              // Update Japanese name map as well
-              if (cleanJapaneseName) {
-                japaneseNameMap.set(cleanJapaneseName, merged);
-              }
-              duplicateFound = true;
-            }
-            // Check for Japanese name duplication (fallback for entries without scientific names)
-            else if (cleanJapaneseName && japaneseNameMap.has(cleanJapaneseName)) {
-              const existing = japaneseNameMap.get(cleanJapaneseName);
-              const merged = mergeMoths(existing, moth);
-              japaneseNameMap.set(cleanJapaneseName, merged);
-              // Update scientific name map if the merged entry has a scientific name
-              const mergedScientificName = cleanScientificNameForComparison(merged.scientificName);
-              if (mergedScientificName) {
-                scientificNameMap.set(mergedScientificName, merged);
-              }
-              duplicateFound = true;
+            // Create unique key based on available information
+            let uniqueKey;
+            
+            // Always use ID as part of the key to ensure uniqueness
+            // Only merge if both scientific name AND Japanese name match
+            if (hasSpeciesName && cleanJapaneseName) {
+              // Full species with Japanese name - use both for matching
+              uniqueKey = `${cleanScientificName}_${cleanJapaneseName}`;
+            } else if (hasSpeciesName) {
+              // Full species without Japanese name - use scientific name only
+              uniqueKey = cleanScientificName;
+            } else {
+              // For genus-only or incomplete data, always use ID to keep them separate
+              // This prevents different species with the same genus from being merged
+              uniqueKey = moth.id;
             }
             
-            if (!duplicateFound) {
-              // Add new entry to both maps
-              if (cleanScientificName) {
-                scientificNameMap.set(cleanScientificName, moth);
-              }
-              if (cleanJapaneseName) {
-                japaneseNameMap.set(cleanJapaneseName, moth);
-              }
-              // For entries without both names, use ID as fallback
-              if (!cleanScientificName && !cleanJapaneseName) {
-                scientificNameMap.set(moth.id, moth);
-              }
+            // Check if we already have this moth
+            if (uniqueMap.has(uniqueKey) && uniqueKey !== moth.id) {
+              // Only merge if it's a real duplicate (not just same ID)
+              const existing = uniqueMap.get(uniqueKey);
+              const merged = mergeMoths(existing, moth);
+              uniqueMap.set(uniqueKey, merged);
+            } else {
+              // Add new moth
+              uniqueMap.set(uniqueKey, moth);
             }
           });
           
-          // Create a set to avoid returning the same moth multiple times
-          const result = new Set();
-          scientificNameMap.forEach(moth => result.add(moth));
-          japaneseNameMap.forEach(moth => result.add(moth));
-          
-          return Array.from(result);
+          return Array.from(uniqueMap.values());
         };
 
         // Function to remove publication/reference names from food plant data
@@ -980,7 +983,6 @@ function App() {
             'セイヨウタンポポ': 'タンポポ',
             'セイヨウミザクラ': 'ミザクラ',
             'セイヨウアブラナ': 'アブラナ',
-            'セイヨウハコヤナギ': 'ハコヤナギ',
             'ヨーロッパリンゴ': 'リンゴ',
             'ヨーロッパナシ': 'ナシ',
             // Common variations
@@ -1580,6 +1582,10 @@ function App() {
                 if (plantName.includes('ツバキ')) {
                   console.log(`DEBUG: YList ツバキ plant added: "${plantName}"`);
                 }
+                // Debug セイヨウハコヤナギ
+                if (plantName === 'セイヨウハコヤナギ') {
+                  console.log(`DEBUG: セイヨウハコヤナギ added to yListPlantNames`);
+                }
               }
               if (plantName && familyJp) {
                 yListPlantFamilyMap[plantName] = familyJp;
@@ -1690,7 +1696,7 @@ function App() {
           'サクラ属': ['サクラ', 'ヤマザクラ', 'オオシマザクラ', 'エドヒガン', 'ウメ', 'モモ'],
           'バラ属': ['ノイバラ', 'テリハノイバラ'],
           'キイチゴ属': ['キイチゴ', 'クマイチゴ', 'ナワシロイチゴ'],
-          'ヤマナラシ属': ['ヤマナラシ', 'セイヨウハコヤナギ'],
+          'ヤマナラシ属': ['セイヨウハコヤナギ', 'ヤマナラシ'],
           'モミ属': ['モミ', 'トドマツ'],
           'トウヒ属': ['エゾマツ', 'トウヒ'],
           'タンポポ属': ['タンポポ', 'セイヨウタンポポ'],
@@ -1712,6 +1718,11 @@ function App() {
         ]);
 
         const correctPlantName = (name) => {
+          // デバッグ: セイヨウハコヤナギの処理を追跡
+          if (name && name.includes('セイヨウハコヤナギ')) {
+            console.log(`DEBUG: correctPlantName called with セイヨウハコヤナギ: "${name}"`);
+            console.log(`DEBUG: yListPlantNames.has('セイヨウハコヤナギ'): ${yListPlantNames.has('セイヨウハコヤナギ')}`);
+          }
           
           // 0. スラッシュを含む植物名の処理（別名処理）
           if (name && name.includes('/')) {
@@ -1721,8 +1732,17 @@ function App() {
             return firstPart;
           }
           
+          // 0.5. セイヨウハコヤナギの特別処理
+          if (name === 'セイヨウハコヤナギ') {
+            console.log('DEBUG: セイヨウハコヤナギ special handling - returning as-is');
+            return 'セイヨウハコヤナギ';
+          }
+          
           // 1. 直接マッチ（最優先）
           if (yListPlantNames.has(name)) {
+            if (name === 'セイヨウハコヤナギ') {
+              console.log('DEBUG: セイヨウハコヤナギ found in yListPlantNames, returning as-is');
+            }
             return name;
           }
 
@@ -1814,11 +1834,11 @@ function App() {
           
           // 7. 見つからない場合は元の名前を返す（YListにない植物も表示する）
           // Special debug for common plants that might be getting filtered
-          if (name === 'ヤマモモ' || name === 'コナラ' || name === 'カシワ' || name === 'クヌギ') {
+          if (name === 'ヤマモモ' || name === 'コナラ' || name === 'カシワ' || name === 'クヌギ' || name === 'セイヨウハコヤナギ') {
             console.log(`DEBUG: Plant "${name}" not found in YList, returning as-is`);
           }
           return name;
-        };
+        };;
 
         // Process integrated hamushi CSV to create hamushiMap with error handling
         let hamushiMap = {};
@@ -1959,7 +1979,8 @@ function App() {
             
             results.data.forEach((row, index) => {
               const catalogNo = row['大図鑑カタログNo']?.trim();
-              const originalMothName = row['和名']?.trim();
+              // Some rows have the Japanese name in the '属名' field instead of '和名'
+              const originalMothName = row['和名']?.trim() || row['属名']?.trim();
               
               // Skip rows without moth name (these are definitely incomplete)
               if (!originalMothName) return;
@@ -3288,8 +3309,8 @@ function App() {
                       }
                       const correctedPlantName = correctPlantName(wameiMapped || normalizedPlant);
                       
-                      // Debug for センモンヤガ, スミレモンキリガ, and アオバシャチホコ
-                      if (mothName === 'センモンヤガ' || mothName === 'スミレモンキリガ' || mothName === 'アオバシャチホコ') {
+                      // Debug for センモンヤガ, スミレモンキリガ, アオバシャチホコ, and シャンハイオエダシャク
+                      if (mothName === 'センモンヤガ' || mothName === 'スミレモンキリガ' || mothName === 'アオバシャチホコ' || mothName === 'シャンハイオエダシャク') {
                         console.log(`DEBUG: ${mothName} - Processing plant:`, {
                           original: plant,
                           normalized: normalizedPlant,
@@ -3443,8 +3464,17 @@ function App() {
                   hostPlantNotes: hostPlantNotes, // Add host plant notes
                   // Add notes field for compatibility with MothDetail.jsx
                   notes: hostPlantNotes.join(' '),
-                  // Get remarks from 27th column
-                  geographicalRemarks: String(row['備考'] || '').trim(),
+                  // Get remarks from 27th column or 30th column (成虫出現時期備考)
+                  // Some entries have remarks in the wrong column
+                  // Also check column 28 (成虫出現時期) and 29 (成虫出現時期出典) for misplaced remarks due to column shift
+                  // Check if 成虫出現時期 contains remarks-like content (not actual emergence time)
+                  geographicalRemarks: String(row['備考'] || row['成虫出現時期備考'] || 
+                    (row['成虫出現時期'] && (row['成虫出現時期'].includes('幼虫') || row['成虫出現時期'].includes('飼育')) ? row['成虫出現時期'] : '') || 
+                    row['成虫出現時期出典'] || '').trim(),
+                  // Also add remarks field for consistent remarks display  
+                  remarks: String(row['備考'] || row['成虫出現時期備考'] || 
+                    (row['成虫出現時期'] && (row['成虫出現時期'].includes('幼虫') || row['成虫出現時期'].includes('飼育')) ? row['成虫出現時期'] : '') || 
+                    row['成虫出現時期出典'] || '').trim(),
                   // Instagram data (if available)
                   instagramUrl: row['instagram_url'] || ''
                 });
@@ -3533,6 +3563,21 @@ function App() {
                 
                 
 
+                // Debug for catalog-2090 (ヒメウコンカギバ)
+                if (catalogNo === '2090') {
+                  console.log('DEBUG: catalog-2090 (ヒメウコンカギバ) data:', {
+                    catalogNo: catalogNo,
+                    name: mothName,
+                    備考_raw: row['備考'],
+                    成虫出現時期_raw: row['成虫出現時期'],
+                    成虫出現時期備考_raw: row['成虫出現時期備考'],
+                    成虫出現時期出典_raw: row['成虫出現時期出典'],
+                    remarks_computed: String(row['備考'] || row['成虫出現時期備考'] || row['成虫出現時期'] || row['成虫出現時期出典'] || '').trim(),
+                    allColumns: Object.keys(row).map(key => `${key}: ${row[key]}`),
+                    columnCount: Object.keys(row).length
+                  });
+                }
+                
                 const mothData = { 
                   id: catalogNo ? `catalog-${catalogNo}` : `main-${index}`, 
                   name: mothName, 
@@ -3554,8 +3599,15 @@ function App() {
                     }
                     return hostPlantNotes.join(' ');
                   })(),
-                  // Get remarks from 27th column
-                  geographicalRemarks: String(row['備考'] || '').trim(),
+                  // Add remarks field from CSV
+                  remarks: String(row['備考'] || '').trim(),
+                  // Get remarks from 27th column or 30th column (成虫出現時期備考)
+                  // Some entries have remarks in the wrong column
+                  // Also check column 28 (成虫出現時期) and 29 (成虫出現時期出典) for misplaced remarks due to column shift
+                  // Check if 成虫出現時期 contains remarks-like content (not actual emergence time)
+                  geographicalRemarks: String(row['備考'] || row['成虫出現時期備考'] || 
+                    (row['成虫出現時期'] && (row['成虫出現時期'].includes('幼虫') || row['成虫出現時期'].includes('飼育')) ? row['成虫出現時期'] : '') || 
+                    row['成虫出現時期出典'] || '').trim(),
                   // Instagram data (if available)
                   instagramUrl: row['instagram_url'] || '',
                   // Emergence time - lookup from integrated data or extract from notes
@@ -3655,7 +3707,12 @@ function App() {
                   }
 
                   if (!plantDetailData[validPlant]) plantDetailData[validPlant] = {}; // Ensure it's an object
-                  plantDetailData[validPlant].family = yListPlantFamilyMap[validPlant] || wameiFamilyMap[validPlant] || plantFamilyMap[validPlant] || '不明';
+                  // Check if the plant name itself is a family name (ends with 科)
+                  if (validPlant.endsWith('科')) {
+                    plantDetailData[validPlant].family = validPlant;
+                  } else {
+                    plantDetailData[validPlant].family = yListPlantFamilyMap[validPlant] || wameiFamilyMap[validPlant] || plantFamilyMap[validPlant] || '不明';
+                  }
                   plantDetailData[validPlant].scientificName = yListPlantScientificNameMap[validPlant] || plantScientificNameMap[validPlant] || '';
                   plantDetailData[validPlant].genus = (yListPlantScientificNameMap[validPlant] || plantScientificNameMap[validPlant] || '').split(' ')[0] || '';
                   plantDetailData[validPlant].aliases = yListPlantAliasMap[validPlant] || [];
@@ -3764,6 +3821,17 @@ function App() {
             console.log(`Full row object:`, row);
           }
           
+          // Special debug for ルリシジミ
+          if (japaneseName === 'ルリシジミ') {
+            console.log('=== INITIAL DATA FOR ルリシジミ ===');
+            console.log('  Row index:', index);
+            console.log('  Raw hostPlants from CSV:', hostPlants);
+            console.log('  hostPlants type:', typeof hostPlants);
+            console.log('  hostPlants length:', hostPlants ? hostPlants.length : 0);
+            console.log('  First 200 chars:', hostPlants ? hostPlants.substring(0, 200) : 'N/A');
+            console.log('  Contains semicolon?:', hostPlants && hostPlants.includes(';'));
+          }
+          
           // Special debug for ヤクシマルリシジミ
           if (japaneseName === 'ヤクシマルリシジミ') {
             console.log('DEBUG: ヤクシマルリシジミ found!');
@@ -3794,8 +3862,68 @@ function App() {
           
           // Parse host plants properly
           let hostPlantList = [];
+          let hostPlantEntries = [];
           if (hostPlants) {
             console.log("Raw host plants for", japaneseName, ":", hostPlants);
+            
+            // SUPER SIMPLE HANDLING FOR ルリシジミ
+            if (japaneseName === 'ルリシジミ') {
+              console.log('=== SIMPLIFIED HANDLING FOR ルリシジミ ===');
+              // Just split by semicolon and use all segments
+              const plantEntries = hostPlants.split(/[;；]/)
+                .map(plant => plant.trim())
+                .filter(plant => plant);
+              
+              // Create a map to store parts for each plant
+              const plantPartsMap = new Map();
+              
+              plantEntries.forEach(plantEntry => {
+                // Remove family name in parentheses from "フジ (マメ科)の花蕾" → "フジの花蕾"
+                let plantWithPart = plantEntry.replace(/\s*\([^)]+\)/g, '');
+                
+                // Extract the base plant name and part
+                const partMatch = plantWithPart.match(/^(.+?)の(花蕾|花|葉|実|果実|種子|若葉|新葉|古葉|樹皮|幹|枝|茎|根|蕾|芽)$/);
+                
+                if (partMatch) {
+                  const basePlant = partMatch[1];
+                  const part = partMatch[2];
+                  
+                  if (!plantPartsMap.has(basePlant)) {
+                    plantPartsMap.set(basePlant, new Set());
+                  }
+                  plantPartsMap.get(basePlant).add(part);
+                } else {
+                  // If no part is specified, just add the plant
+                  if (!plantPartsMap.has(plantWithPart)) {
+                    plantPartsMap.set(plantWithPart, new Set());
+                  }
+                }
+              });
+              
+              // Create hostPlantList from unique base plants
+              hostPlantList = Array.from(plantPartsMap.keys());
+              
+              // Create hostPlantEntries with part information
+              hostPlantEntries = hostPlantList.map(plant => {
+                const parts = Array.from(plantPartsMap.get(plant) || []);
+                return {
+                  plant: plant,
+                  parts: parts,
+                  condition: '' // Keep condition empty for normal display
+                };
+              });
+              
+              console.log('  plantEntries (raw):', plantEntries.length, 'entries');
+              console.log('  First 3 raw entries:', plantEntries.slice(0, 3));
+              console.log('  plantPartsMap size:', plantPartsMap.size);
+              console.log('  plantPartsMap keys:', Array.from(plantPartsMap.keys()).slice(0, 5));
+              console.log('  Split by semicolon directly:', hostPlantList.length, 'plants');
+              console.log('  First 5 plants:', hostPlantList.slice(0, 5));
+              console.log('  Last 5 plants:', hostPlantList.slice(-5));
+              console.log('  Host plant entries with parts:', hostPlantEntries.slice(0, 5));
+              
+              // Skip all other processing for ルリシジミ
+            } else {
             
             // Special debug for ヤクシマルリシジミ
             if (japaneseName === 'ヤクシマルリシジミ') {
@@ -3853,7 +3981,7 @@ function App() {
               });
               
               // Handle "PlantName (Family)の部位" format specifically for ルリシジミ and similar cases
-              const familyPartPattern = /([ア-ン一-龯A-Za-z]+)\s*[\(（]([^）)]+)[\)）]\s*の([花蕾|花穂|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽]+)/g;
+              const familyPartPattern = /([ア-ン一-龯A-Za-z]+)\s*[\(（]([^）)]+)[\)）]\s*の(花蕾|花穂|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽)/g;
               const familyPartMatches = [...text.matchAll(familyPartPattern)];
               familyPartMatches.forEach(match => {
                 const plantName = match[1].trim();
@@ -3933,36 +4061,43 @@ function App() {
               console.log('  Starts with:', cleanedHostPlants.substring(0, 100));
             }
             
-            // Check if this has the pattern "科名（植物名、植物名）"
-            const familyWithParenthesesMatch = cleanedHostPlants.match(/(.+科)\s*[（(]([^）)]+)[）)]/);
-            if (familyWithParenthesesMatch) {
-              // If it's like "イネ科（チヂミザサ、ノガリヤス）", include both family and plants
-              const familyName = familyWithParenthesesMatch[1];
-              const plantsInParentheses = familyWithParenthesesMatch[2];
-              cleanedHostPlants = familyName + '、' + plantsInParentheses;
-              console.log("Family with parentheses - combined:", cleanedHostPlants);
+            // Special handling for ルリシジミ - skip the parentheses extraction
+            if (japaneseName === 'ルリシジミ') {
+              console.log('=== SPECIAL HANDLING FOR ルリシジミ (parentheses extraction) ===');
+              console.log('  Keeping original format:', cleanedHostPlants.substring(0, 200));
+              // Keep the original format for ルリシジミ
             } else {
-              // Extract content from parentheses only
-              const parenthesesMatch = cleanedHostPlants.match(/[（(]([^）)]+)[）)]/);
-              if (parenthesesMatch) {
-                // If there's content in parentheses, use that
-                cleanedHostPlants = parenthesesMatch[1];
-                console.log("Extracted from parentheses:", cleanedHostPlants);
-                
-                // Debug for ヤクシマルリシジミ
-                if (japaneseName === 'ヤクシマルリシジミ') {
-                  console.log('DEBUG: ヤクシマルリシジミ - parentheses found, extracting content');
-                  console.log('  parenthesesMatch[1]:', parenthesesMatch[1]);
-                }
+              // Check if this has the pattern "科名（植物名、植物名）"
+              const familyWithParenthesesMatch = cleanedHostPlants.match(/(.+科)\s*[（(]([^）)]+)[）)]/);
+              if (familyWithParenthesesMatch) {
+                // If it's like "イネ科（チヂミザサ、ノガリヤス）", include both family and plants
+                const familyName = familyWithParenthesesMatch[1];
+                const plantsInParentheses = familyWithParenthesesMatch[2];
+                cleanedHostPlants = familyName + '、' + plantsInParentheses;
+                console.log("Family with parentheses - combined:", cleanedHostPlants);
               } else {
-                // Otherwise, clean up the whole string - be more careful with scientific terms
-                cleanedHostPlants = cleanedHostPlants
-                  .replace(/[^、，,]*属の?/g, '') // Remove genus names like "コナラ属の"
-                  // Do not remove '類' - it's meaningful for plant groups
-                  .replace(/など/g, '')
-                  .replace(/の/g, '') // Remove remaining "の" particles
-                  .replace(/^[、，,]+|[、，,]+$/g, '') // Remove leading/trailing delimiters
-                  .replace(/[、，,]+/g, '、'); // Normalize delimiters
+                // Extract content from parentheses only
+                const parenthesesMatch = cleanedHostPlants.match(/[（(]([^）)]+)[）)]/);
+                if (parenthesesMatch) {
+                  // If there's content in parentheses, use that
+                  cleanedHostPlants = parenthesesMatch[1];
+                  console.log("Extracted from parentheses:", cleanedHostPlants);
+                  
+                  // Debug for ヤクシマルリシジミ
+                  if (japaneseName === 'ヤクシマルリシジミ') {
+                    console.log('DEBUG: ヤクシマルリシジミ - parentheses found, extracting content');
+                    console.log('  parenthesesMatch[1]:', parenthesesMatch[1]);
+                  }
+                } else {
+                  // Otherwise, clean up the whole string - be more careful with scientific terms
+                  cleanedHostPlants = cleanedHostPlants
+                    .replace(/[^、，,]*属の?/g, '') // Remove genus names like "コナラ属の"
+                    // Do not remove '類' - it's meaningful for plant groups
+                    .replace(/など/g, '')
+                    .replace(/の/g, '') // Remove remaining "の" particles
+                    .replace(/^[、，,]+|[、，,]+$/g, '') // Remove leading/trailing delimiters
+                    .replace(/[、，,]+/g, '、'); // Normalize delimiters
+                }
               }
             }
             
@@ -3980,29 +4115,46 @@ function App() {
               const segments = cleanedHostPlants.split(/[;；]/);
               const allSegmentsTrimmed = segments.map(s => s.trim()).filter(s => s);
               
-              // Check if all segments contain plant parts like "の花蕾", "の花", etc.
-              // Pattern now matches formats like "植物名 (科名)の花蕾" as well as "植物名の花蕾"
-              const plantPartPattern = /(?:\s*\([^)]+\))?[のから](花蕾|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽|花穂)$/;
-              const allHavePlantParts = allSegmentsTrimmed.every(segment => 
-                plantPartPattern.test(segment) || segment.includes('(') && segment.includes(')')
-              );
-              
-              if (allHavePlantParts) {
-                // All segments are plant entries with parts, treat them all as plants
+              // Special handling for ルリシジミ - all segments are plants with parts
+              if (japaneseName === 'ルリシジミ') {
+                console.log('=== SPECIAL HANDLING FOR ルリシジミ ===');
+                console.log('  Original cleanedHostPlants:', cleanedHostPlants);
+                console.log('  Number of segments:', allSegmentsTrimmed.length);
+                console.log('  First 5 segments:', allSegmentsTrimmed.slice(0, 5));
+                // All segments are plant entries for ルリシジミ
                 plants = allSegmentsTrimmed;
+                console.log('  Assigned all segments to plants array:', plants.length, 'plants');
               } else {
-                // Original logic: first segment contains plants, others might be non-plant food
-                if (segments[0]) {
-                  plants = segments[0].split(/[、，,]/).map(p => p.trim()).filter(p => p);
-                }
+                // Check if all segments contain plant parts like "の花蕾", "の花", etc.
+                // Pattern now matches formats like "植物名 (科名)の花蕾" as well as "植物名の花蕾"
+                // Updated pattern to better match "植物名 (科名)の花蕾" format with space before parenthesis
+                const plantPartPattern = /\s*\([^)]+\)\s*[のから](花蕾|花穂|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽)/;
+                const simplePartPattern = /[のから](花蕾|花穂|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|新芽)$/;
                 
-                // Check subsequent segments for non-plant food sources
-                for (let i = 1; i < segments.length; i++) {
-                  const segment = segments[i].trim();
-                  // If it looks like an ant name (contains アリ), skip it for plant processing
-                  if (!segment.includes('アリ') && segment) {
-                    // Additional plant-like segments
-                    plants.push(...segment.split(/[、，,]/).map(p => p.trim()).filter(p => p));
+                const allHavePlantParts = allSegmentsTrimmed.every(segment => {
+                  // Check both patterns
+                  const hasPlantPart = plantPartPattern.test(segment) || simplePartPattern.test(segment);
+                  const hasParentheses = segment.includes('(') && segment.includes(')');
+                  return hasPlantPart || hasParentheses;
+                });
+                
+                if (allHavePlantParts) {
+                  // All segments are plant entries with parts, treat them all as plants
+                  plants = allSegmentsTrimmed;
+                } else {
+                  // Original logic: first segment contains plants, others might be non-plant food
+                  if (segments[0]) {
+                    plants = segments[0].split(/[、，,]/).map(p => p.trim()).filter(p => p);
+                  }
+                  
+                  // Check subsequent segments for non-plant food sources
+                  for (let i = 1; i < segments.length; i++) {
+                    const segment = segments[i].trim();
+                    // If it looks like an ant name (contains アリ), skip it for plant processing
+                    if (!segment.includes('アリ') && segment) {
+                      // Additional plant-like segments
+                      plants.push(...segment.split(/[、，,]/).map(p => p.trim()).filter(p => p));
+                    }
                   }
                 }
               }
@@ -4143,26 +4295,28 @@ function App() {
               corrected: item.corrected && item.corrected.trim() !== '' ? item.corrected : item.normalized
             }));
             
-            hostPlantList = plantsAfterYListFilter.map(item => {
-              // For ルリシジミ and similar cases, reconstruct the format with family and part
-              if (item.family && item.part) {
-                return `${item.corrected} (${item.family})の${item.part}`;
+            // Create a map to store plant parts for each unique plant
+            const plantPartsMap = new Map();
+            plantsAfterYListFilter.forEach(item => {
+              if (!plantPartsMap.has(item.corrected)) {
+                plantPartsMap.set(item.corrected, new Set());
               }
-              
-              // Check for part information using both original and corrected names
-              const plantParts = item.part ? [item.part] : (
-                butterflyPlantParts.get(item.original) || 
-                butterflyPlantParts.get(item.clean) || 
-                butterflyPlantParts.get(item.normalized) || 
-                butterflyPlantParts.get(item.corrected) ||
-                butterflyPlantParts.get(`${item.corrected} (${item.family})`) ||
-                []
-              );
-              
-              if (plantParts && plantParts.length > 0) {
-                return `${item.corrected}（${plantParts.join('・')}）`;
+              if (item.part) {
+                plantPartsMap.get(item.corrected).add(item.part);
               }
-              return item.corrected;
+            });
+            
+            // Remove duplicates and create hostPlantList
+            hostPlantList = Array.from(plantPartsMap.keys());
+            
+            // Create hostPlantEntries with part information
+            hostPlantEntries = hostPlantList.map(plant => {
+              const parts = Array.from(plantPartsMap.get(plant) || []);
+              return {
+                plant: plant,
+                parts: parts,
+                condition: parts.length > 0 ? parts.join('・') : ''
+              };
             });
             
             // Debug filtering steps for specific butterflies
@@ -4212,9 +4366,11 @@ function App() {
               console.log('  Final host plant list:', hostPlantList);
             }
             
-            // Remove duplicates and final empty string check
-            hostPlantList = [...new Set(hostPlantList)].filter(plant => plant && plant.trim() !== '');
-            
+            // Remove duplicates and final empty string check (skip for ルリシジミ since we already have the final list)
+            if (japaneseName !== 'ルリシジミ') {
+              hostPlantList = [...new Set(hostPlantList)].filter(plant => plant && plant.trim() !== '');
+            }
+            } // Close the else block for ルリシジミ special handling
             
             console.log("Final parsed host plants for", japaneseName, ":", hostPlantList);
           }
@@ -4233,6 +4389,7 @@ function App() {
               genus: genus
             },
             hostPlants: hostPlantList,
+            hostPlantDetails: hostPlantEntries, // Add part information
             geographicalRemarks: remarks && remarks.trim() ? remarks.trim() : '',
             source: source || "日本産蝶類標準図鑑"
           };
@@ -4640,6 +4797,9 @@ function App() {
         setHostPlants(cleanedHostPlantData);
         setPlantDetails(cleanedPlantDetailData);
         setLoading(false); // Set loading to false after data is loaded
+        
+        // DEBUG: Check actual state after setting
+        console.log("DEBUG: Expected total species:", deduplicatedMoths.length + butterflyData.length + combinedBeetleData.length + combinedLeafbeetleData.length);
         
         console.log("CRITICAL DEBUG - State set. Loading set to false. Final data counts:", {
           moths: deduplicatedMoths.length,

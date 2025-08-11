@@ -1,71 +1,146 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import csv
+import re
 import sys
 
-def fix_csv_structure():
-    input_file = '/Users/akimotohiroki/insects-host-plant-explorer/public/ListMJ_hostplants_master.csv'
-    output_file = '/Users/akimotohiroki/insects-host-plant-explorer/public/ListMJ_hostplants_master_fixed.csv'
+def fix_csv_structure(input_file, output_file):
+    """Fix CSV structure issues including split rows and misplaced data"""
     
-    with open(input_file, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
+    with open(input_file, 'r', encoding='utf-8') as infile:
+        reader = csv.reader(infile)
+        header = next(reader)
+        rows = list(reader)
     
-    # Read header and ensure it has exactly 27 columns with 備考
-    header_line = lines[0].strip()
-    header_cols = header_line.split(',')
+    print(f"Original CSV has {len(rows)} rows")
     
-    # Ensure header has exactly 27 columns ending with 備考
-    if len(header_cols) == 26:
-        header_cols.append('備考')
-    elif len(header_cols) > 27:
-        header_cols = header_cols[:27]
+    fixed_rows = []
+    i = 0
     
-    fixed_lines = []
-    fixed_lines.append(','.join(header_cols))
-    
-    # Process each data row
-    for i, line in enumerate(lines[1:], start=2):
-        line = line.strip()
-        if not line:
-            continue
+    while i < len(rows):
+        current_row = rows[i]
+        
+        # Check if this is a split row case (missing moth name but has scientific name data)
+        if (len(current_row) >= 24 and 
+            not current_row[16] and  # Empty moth name (column 16)
+            current_row[9]):  # Has genus name (column 9)
             
-        # Split the line respecting quoted fields
-        try:
-            reader = csv.reader([line], quotechar='"', delimiter=',', quoting=csv.QUOTE_MINIMAL)
-            cols = next(reader)
-        except:
-            # Fallback to simple split if CSV parsing fails
-            cols = line.split(',')
+            # Look for the continuation row
+            if i + 1 < len(rows):
+                next_row = rows[i + 1]
+                
+                # Check if next row looks like a continuation (starts with empty fields but has scientific name)
+                if (len(next_row) >= 24 and
+                    not next_row[0] and not next_row[1] and not next_row[2] and  # Empty first few fields
+                    len(next_row[7]) > 0 and '(' in next_row[7]):  # Has scientific name in column 7
+                    
+                    print(f"Found split row at lines {i+2}-{i+3}")
+                    print(f"  Row 1: {current_row[9:16]}")  # genus to year
+                    print(f"  Row 2: {next_row[7:11]}")     # scientific name and host
+                    
+                    # Merge the rows
+                    merged_row = current_row.copy()
+                    
+                    # Extract moth name from genus name if available
+                    if current_row[9] and not merged_row[16]:
+                        merged_row[16] = current_row[9]  # Use genus as moth name temporarily
+                    
+                    # Move scientific name from next_row[7] to merged_row[23]
+                    if next_row[7]:
+                        merged_row[23] = next_row[7]
+                    
+                    # Move host plant data from next_row[8] to merged_row[24]  
+                    if len(next_row) > 8 and next_row[8]:
+                        merged_row[24] = next_row[8]
+                    
+                    # Move source from next_row[9] to merged_row[25]
+                    if len(next_row) > 9 and next_row[9]:
+                        merged_row[25] = next_row[9]
+                    
+                    # Move comments from next_row[10] to merged_row[26]
+                    if len(next_row) > 10 and next_row[10]:
+                        merged_row[26] = next_row[10]
+                    
+                    fixed_rows.append(merged_row)
+                    i += 2  # Skip both rows
+                    continue
         
-        # Handle different column counts
-        if len(cols) < 27:
-            # Pad with empty strings to reach 27 columns
-            cols.extend([''] * (27 - len(cols)))
-        elif len(cols) > 27:
-            # For rows with >27 columns, merge extras into the last column (備考)
-            if len(cols) > 27:
-                # Keep first 26 columns, merge the rest into 備考
-                merged_remarks = ','.join(cols[26:])
-                cols = cols[:26] + [merged_remarks]
+        # Check for rows where moth name contains source/reference information
+        if len(current_row) > 16 and current_row[16]:
+            moth_name = current_row[16]
+            
+            # Check if moth name contains source references
+            if re.search(r'日本産蛾類標準図鑑|標準図鑑|図鑑|文献|出典', moth_name):
+                print(f"Found reference in moth name at line {i+2}: {moth_name}")
+                
+                # Try to extract actual moth name and move reference to appropriate field
+                # This is a complex case that might need manual review
+                current_row[16] = "要確認: " + moth_name  # Mark for manual review
         
-        # Escape any quotes in the data properly
-        escaped_cols = []
-        for col in cols:
-            if '"' in col or ',' in col or '\n' in col:
-                # Escape quotes and wrap in quotes
-                escaped_col = '"' + col.replace('"', '""') + '"'
-                escaped_cols.append(escaped_col)
-            else:
-                escaped_cols.append(col)
+        # Handle rows with missing moth names but present genus names
+        if (len(current_row) > 16 and not current_row[16] and 
+            current_row[9] and current_row[9] not in ['', '要確認']):
+            
+            # Try to construct moth name from genus if it looks like a Japanese name
+            genus = current_row[9]
+            if re.search(r'[ひらがなカタカナ漢字]', genus):
+                print(f"Using genus as moth name at line {i+2}: {genus}")
+                current_row[16] = genus
         
-        fixed_lines.append(','.join(escaped_cols))
+        fixed_rows.append(current_row)
+        i += 1
+    
+    print(f"Fixed CSV has {len(fixed_rows)} rows (reduction: {len(rows) - len(fixed_rows)})")
     
     # Write the fixed CSV
-    with open(output_file, 'w', encoding='utf-8') as f:
-        for line in fixed_lines:
-            f.write(line + '\n')
+    with open(output_file, 'w', encoding='utf-8', newline='') as outfile:
+        writer = csv.writer(outfile)
+        writer.writerow(header)
+        writer.writerows(fixed_rows)
     
-    print(f"Fixed CSV saved to {output_file}")
-    print(f"Processed {len(fixed_lines)-1} data rows")
+    print(f"Fixed CSV written to {output_file}")
+    
+    return len(rows) - len(fixed_rows)  # Return number of rows merged
+
+def validate_fixes(csv_file):
+    """Validate the fixes by checking for common issues"""
+    issues_found = 0
+    
+    with open(csv_file, 'r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        
+        for line_num, row in enumerate(reader, start=2):
+            # Check for empty moth names with scientific data
+            if (len(row) > 16 and not row[16] and 
+                any(row[i] for i in [9, 10, 11, 12, 13, 14, 15])):
+                print(f"Still has empty moth name at line {line_num}")
+                issues_found += 1
+            
+            # Check for source references in moth names
+            if len(row) > 16 and row[16]:
+                if re.search(r'日本産蛾類標準図鑑|標準図鑑|図鑑|文献|出典', row[16]):
+                    print(f"Still has reference in moth name at line {line_num}: {row[16]}")
+                    issues_found += 1
+    
+    print(f"Validation found {issues_found} remaining issues")
+    return issues_found
 
 if __name__ == "__main__":
-    fix_csv_structure()
+    input_file = "/Users/akimotohiroki/insects-host-plant-explorer/public/ListMJ_hostplants_master.csv"
+    output_file = "/Users/akimotohiroki/insects-host-plant-explorer/public/ListMJ_hostplants_master_fixed.csv"
+    
+    print("Starting CSV structure fix...")
+    
+    rows_merged = fix_csv_structure(input_file, output_file)
+    
+    print(f"\nFixed {rows_merged} split rows")
+    
+    print("\nValidating fixes...")
+    remaining_issues = validate_fixes(output_file)
+    
+    if remaining_issues == 0:
+        print("\nSuccess! All major issues have been resolved.")
+    else:
+        print(f"\nWarning: {remaining_issues} issues still remain and may need manual review.")

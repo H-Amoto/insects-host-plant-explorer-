@@ -9,6 +9,15 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
   const [activeTab, setActiveTab] = useState('insects');
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   
+  // DEBUG: Log the actual data received
+  console.log("DEBUG InsectsHostPlantExplorer received:", {
+    moths: moths.length,
+    butterflies: butterflies.length,
+    beetles: beetles.length,
+    leafbeetles: leafbeetles.length,
+    total: moths.length + butterflies.length + beetles.length + leafbeetles.length
+  });
+  
   // Preload hero image on component mount
   React.useEffect(() => {
     const heroImageUrl = `${import.meta.env.BASE_URL}images/insects/Cucullia_argentea.jpg`;
@@ -132,7 +141,7 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
                       c-12.641,1.719-18.766,19.391-4.172,29.469c11.781,12.188-9.016,35.094-23.844,51.578c-17.391,19.313-24.109,30.5-22.219,36.531
                       C262.492,186.777,267.602,184.246,268.305,179.339z"/>
                   </svg>
-                  <span>昆虫 ({[...moths, ...butterflies, ...beetles, ...leafbeetles].length})</span>
+                  <span>昆虫 ({moths.length + butterflies.length + beetles.length + leafbeetles.length})</span>
                 </div>
                 {activeTab === 'insects' && (
                   <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500 rounded-t-lg shadow-lg"></div>

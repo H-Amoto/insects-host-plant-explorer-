@@ -60,7 +60,7 @@ function generateSitemap() {
     const hostPlantsSet = new Set();
     
     csvData.forEach((row) => {
-      const insectName = row['和名'] || row['種名'] || '';
+      const insectName = row['和名'] || row['属名'] || row['種名'] || '';
       if (!insectName) return;
       
       const familyJapanese = row['科和名'] || row['科名'] || '';

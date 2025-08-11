@@ -1,0 +1,79 @@
+大図鑑カタログNo,科名,科和名,亜科名,亜科和名,族名,族和名,亜族名,亜族名_1,属名,亜属名,種小名,亜種小名,著者,公表年,類似種,和名,旧和名,別名,その他の和名,亜種範囲,標準図鑑ステータス,標準図鑑以後の変更,学名,食草,出典,備考,成虫出現時期,成虫出現時期出典,成虫出現時期備考,幼虫期,幼虫期に関する備考
+,Chrysomelidae,ハムシ科,,カタビロハムシ亜科,,,,,Colobaspis,,japonica,,Baly,,,カタビロハムシ,,,,,,,Colobaspis japonica (Baly),ネズミモチ、コバノトネリコ、イボタノキなど,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),小枝を傷つけて汁液を吸う。,4-6月,,年1化。,5-6月,新梢の小枝を噛みきり、その下部の茎内に産卵。幼虫は髄内を食い、3齢で枝を脱出し、地中にはいる。その後の経過は不明。
+,Chrysomelidae,ハムシ科,,ホソハムシ亜科,,,,,Syneta,,adamsi,,Baly,,,カバノキハムシ,,,,,,,Syneta adamsi Baly,サクラ、コナラ、カバノキ、ブナ、シデ、トチノキ,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),食葉性。,4-9月,,,不明,卵は糞で包んで地表に落とす。シベリアの近縁種の幼虫はサルハムシ亜科のように地中性。
+,Chrysomelidae,ハムシ科,,ホソハムシ亜科,,,,,Syneta,,brevitibialis,,Kimoto,,,ヒメカバノキハムシ,,,,,,,Syneta brevitibialis Kimoto,,,,,,5-7月,,不明
+,Chrysomelidae,ハムシ科,,ナガハムシ亜科,,,,,Orsodacne,,arakii,,Chûjô,,,ナガハムシ,,,,,,,Orsodacne arakii Chûjô,ハシドイ、オオカメノキなどの白色の花,,食花粉性、食花性。,低山地では4-5月,,山地では6-8月,年1化。,不明
+,Chrysomelidae,ハムシ科,,モモブトハムシ亜科,,,,,Zeugophora,,annulata,,Baly,,,ワモンナガハムシ,,,,,,,Zeugophora annulata (Baly),マユミ、ニシキギ、ムラサキマユミ、ツリバナ、サワダツ、ツルウメモドキ、クロズルなど,5-6月,食葉性。,4-5月,,7-9月,年1化,成虫越冬。
+,Chrysomelidae,ハムシ科,,モモブトハムシ亜科,,,,,Zeugophora,,bicolor,,Kraatz,,,ムナグロナガハムシ,,,,,,,Zeugophora bicolor (Kraatz),マユミ類,葉上に産卵;幼虫は潜葉性;蛹化は地中。,食葉性。,5-8月,,年1化,成虫越冬?,5-6月
+,Chrysomelidae,ハムシ科,,モモブトハムシ亜科,,,,,Zeugophora,,chujoi,,Ohno,,,クロホシモモブトハムシ,,,,,,,Zeugophora chujoi Ohno,コマユミ、マサキ?,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),神奈川県丹沢大山の中腹では開花期のマサキで複数の個体が採集されている。,5月,,,不明,
+,Chrysomelidae,ハムシ科,,モモブトハムシ亜科,,,,,Zeugophora,,flavonotata,,Chûjô,,,モンキモモブトハムシ,,,,,,,Zeugophora flavonotata (Chûjô),,,,,,3月,,不明
+,Chrysomelidae,ハムシ科,,モモブトハムシ亜科,,,,,Zeugophora,,gracilis,,unicolor Chûjô,,,キイロモモブトハムシ,,,,,,,Zeugophora gracilis unicolor Chûjô,,,草地のスィープで採集された例がある。,,,,,不明
+,Chrysomelidae,ハムシ科,,モモブトハムシ亜科,,,,,Zeugophora,,hozumii,,Chûjô,,,アオグロモモブトハムシ,,,,,,,Zeugophora hozumii Chûjô,ヤナギ類,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),食葉性。,7月,,,不明,
+,Chrysomelidae,ハムシ科,,モモブトハムシ亜科,,,,,Zeugophora,,japonica,,Chûjô,,,ムナキモモブトハムシ,,,,,,,Zeugophora japonica Chûjô,ドロノキ,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),食葉性。,5月,,,不明,
+,Chrysomelidae,ハムシ科,,モモブトハムシ亜科,,,,,Zeugophora,,unifasciata,,Jacoby,,,オビモンナガハムシ,,,,,,,Zeugophora unifasciata (Jacoby),マユミ,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),,5月~10月,,,不明,
+,Chrysomelidae,ハムシ科,,モモブトハムシ亜科,,,,,Zeugophora,,varipes,,Jacoby,,,アカイロナガハムシ,,,,,,,Zeugophora varipes (Jacoby),サワフタギ、タンナサワフタギ,葉上に産卵;幼虫は潜葉性。,,丘陵地では4-5月,,山地では7-8月,,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Crioceris,,orientalis,,Jacoby,,,カタボシクビナガハムシ,,,,,,,Crioceris orientalis Jacoby,クススギカズラ、アスパラガス,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),食葉性。,7月,,,不明,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Crioceris,,quatuordecimpunctata,,Scopoli,,,ジュウシホシクビナガハムシ,,,,,,,Crioceris quatuordecimpunctata (Scopoli),アスパラガス、キジカクシ、タチテンモンドウ,葉上に産卵;幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,4-10月,,年1化,成虫越冬。,5-8月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Petauristes,adamsii,,Baly,,,キベリクビボソハムシ,,,,,,,Lema (Petauristes) adamsii Baly,ヤマノイモ類,葉上に産卵;幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,4-9月,,年1化,成虫越冬。,5-6月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Lema,cirsicola,,Chûjô,,,ルリクビボソハムシ,,,,,,,Lema (Lema) cirsicola Chûjô,アザミ類,葉上に産卵;幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,4-10月,,年1化,成虫越冬。,5-8月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Lema,concinnipennis,,Baly,,,キバラルリクビボソハムシ,,,,,,,Lema (Lema) concinnipennis Baly,ツユクサ,葉上に産卵;幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,5-9月,,年1化?,成虫越冬。,5-7月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Lema,coronata,,Baly,,,トゲアシクビボソハムシ,,,,,,,Lema (Lema) coronata Baly,ツユクサ,葉上に産卵;幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,4-11月,,年1化?,成虫越冬。,5-9月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Microlema,decempunctata,,Gebler,,,トホシクビボソハムシ,,,,,,,Lema (Microlema) decempunctata Gebler,クコ,葉上に産卵、幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,3-11月,,年3-4化,成虫越冬。,5-11月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Lema,delicatura,,Baly,,,キオビクビボソハムシ,,,,,,,Lema (Lema) delicatura Baly,ツユクサ,葉腋部に産卵;幼虫は茎内に潜孔;地中の白い繭で蛹化。,食葉性。,4-9月,,年1化,成虫越冬。,5-6月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Lema,dilecta,,Baly,,,スゲクビボソハムシ,,,,,,,Lema (Lema) dilecta Baly,スゲ類とされるが不明,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),,4-9月,,,不明,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Lema,diversa,,Baly,,,アカクビボソハムシ,,,,,,,Lema (Lema) diversa Baly,ツユクサ,葉上に産卵、幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,4-11月,,年2-3化,成虫越冬。,5-10月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Petauristes,honorata,,Baly,,,ヤマイモハムシ,,,,,,,Lema (Petauristes) honorata Baly,ヤマイノイモ類,葉上に産卵;幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,4-10月,,年1化,成虫越冬。,5-7月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Lema,michioi,,Suzuki,,,コルリクビボソハムシ,,,,,,,Lema (Lema) michioi Suzuki,イボクサ,葉上に産卵;幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,4-10月,,年1化,成虫越冬。,8月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Petauristes,pectoralis,,unicolor Clark,,,オオクビボソハムシ,,,,,,,Lema (Petauristes) pectoralis unicolor Clark,,,国外ではラン科を食う。,,,,,不明
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Lema,rugifrons,,Jacoby,,,ヒメアカクビボソハムシ,,,,,,,Lema (Lema) rugifrons Jacoby,ツユクサ,不明,食葉性。,,,,,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lema,Lema,scutellaris,,Kraatz,,,セアカクビボソハムシ,,,,,,,Lema (Lema) scutellaris (Kraatz),ツユクサ,葉上に産卵;幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,5-8月,,年1化,成虫越冬。,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lilioceris,Lilioceris,balyi,,Chûjô,,,ベーリークビナガハムシ,,,,,,,Lilioceris (Lilioceris) balyi Chûjô,,,,,,,,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lilioceris,Lilioceris,formosana,,Heinze,,,オキナワクビナガハムシ,,,,,,,Lilioceris (Lilioceris) formosana Heinze,ササバサンキライ,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),食葉性。,3-6月,,,3月,葉上に産卵、幼虫は集団をなし、食葉性;地中の白い繭で蛹化。
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lilioceris,Bradyceris,lewisi,,Jacoby,,,ルイスクビナガハムシ,,,,,,,Lilioceris (Bradyceris) lewisi (Jacoby),マイヅルソウ、ナルコユリ、ギボウシ類,葉上に産卵、幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,4-10月,,年1化,成虫越冬。,5-6月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lilioceris,Lilioceris,merdigera,,Linnaeus,,,ユリクビナガハムシ,,,,,,,Lilioceris (Lilioceris) merdigera (Linnaeus),オニユリ、テッポウユリ、カノコユリなど、サルトリイバラ,葉上に産卵、幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,4-7月,,年1化,成虫越冬。,5-6月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lilioceris,Lilioceris,parvicollis,,Baly,,,ホソクビナガハムシ,,,,,,,Lilioceris (Lilioceris) parvicollis (Baly),サルトリイバラ,葉上に産卵;幼虫は集団をなし、食葉性;地中の白い繭で蛹化。,食葉性。,4-9月,,年1化,成虫越冬。,5月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lilioceris,Lilioceris,rugata,,Baly,,,キイロクビナガハムシ,,,,,,,Lilioceris (Lilioceris) rugata (Baly),ヤマイモ、オニドコロなど,葉上に産卵;幼虫は集団をなし、食葉性;地中の白い繭で蛹化。,食葉性。,4-7月,,年1化,成虫越冬。,5-6月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lilioceris,Lilioceris,ruficollis,,Baly,,,クロバネクビナガハムシ,,,,,,,Lilioceris (Lilioceris) ruficollis (Baly),朝鮮半島ではヤマノイモ類,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),食葉性。,5-7月,,,不明,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lilioceris,Lilioceris,scapularis,,Baly,,,カタモンクビナガハムシ,,,,,,,Lilioceris (Lilioceris) scapularis (Baly),,,,,,,,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lilioceris,Lilioceris,subpolita,,Motschulsky,,,アカクビナガハムシ,,,,,,,Lilioceris (Lilioceris) subpolita (Motschulsky),サルトリイバラ、シオデ,葉上に産卵、幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,4-9月,,年1化,成虫越冬。,5-6月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Oulema,,atrosuturalis,,Pic,,,セスジクビボソハムシ,,,,,,,Oulema atrosuturalis (Pic),メヒシバ、オイシバ、エノコログサなど,葉上に産卵、幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,5-10月,,年3化,成虫越冬。,6-9月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Oulema,,erichsoni,,Suffrian,,,ムギクビボソハムシ,,,,,,,Oulema erichsoni (Suffrian),コムギ、カモジグサ,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),食葉性。,5-8月,,,不明,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Oulema,,dilutipes,,Fairmaire,,,アワクビボソハムシ,,,,,,,Oulema dilutipes (Fairmaire),エノコログサ、アワ,葉上に産卵;幼虫は食葉性;地中の白い繭で蛹化。,食葉性。,4-11月,,年1化?,成虫越冬。,7月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Oulema,,hayashii,,Ohno,,,ハヤシクビボソハムシ,,,,,,,Oulema hayashii Ohno,不明,神奈川虫報 (156): 日本産ハムシ科生態覚書 (1),,5-9月,,,不明,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Oulema,,oryzae,,Kuwayama,,,イネクビボソハムシ,,,,,,,Oulema oryzae (Kuwayama),イネ、キタヨシ、カモガヤ、チガヤ、マコモなど,葉上に産卵;幼虫は食葉性;葉上あるいは地表の白い繭で蛹化。,食葉性。,4-9月,,年1化,成虫越冬。,5-7月
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Oulema,,tristis,,Herbst,,,キアシクビボソハムシ,,,,,,,Oulema tristis (Herbst),,,大陸ではエノコログサを食う。,,,,,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lilioceris,Lilioceris,neptis,,Weiss,,,アカホシクビナガハムシ,,,,,,,Lilioceris (Lilioceris) neptis (Weiss),ギョウジャニンニク、ヤマラッキョウ,神奈川虫報 (157): 日本産ハムシ科生態覚書 (2),食葉性。,5-8月,,,不明,
+,Chrysomelidae,ハムシ科,,クビナガハムシ亜科,,,,,Lilioceris,Lilioceris,yuae,,Long,,,ツマグロクビナガハムシ,,,,,,,Lilioceris (Lilioceris) yuae (Long),サルトリイバラ,神奈川虫報 (157): 日本産ハムシ科生態覚書 (2),,5-6月,,,不明,
+,Chrysomelidae,ハムシ科,,ツツハムシ亜科,,,,,Clytra,,arida,,Weise,,,ヨツボシナガツツハムシ,,,,,,,Clytra arida Weise,ハギ類、ヤナギ類、ハンノキ類、ブナ科,神奈川虫報 (157): 日本産ハムシ科生態覚書 (2),食葉性。,6-10月,,,,幼虫はヤマアリ類の巣内で育つ。
+,Chrysomelidae,ハムシ科,,ツツハムシ亜科,,,,,Physosmaragdina,,nigrifrons,,Hope,,,クロオビナガツツハムシ,,,,,,,Physosmaragdina nigrifrons (Hope),フジ、イタドリ、マルバハギ,神奈川虫報 (157): 日本産ハムシ科生態覚書 (2),,5-10月,,,不明,
+,Chrysomelidae,ハムシ科,,ツツハムシ亜科,,,,,Smaragdina,,aurita,,Linnaeus,,,キボシルリハムシ,,,,,,,Smaragdina aurita (Linnaeus),カンバ、ヤナギ、ハギ類,神奈川虫報 (157): 日本産ハムシ科生態覚書 (2),,4-6月、山地では6-8月,,,,幼虫は落葉や腐植を食う。
+,Chrysomelidae,ハムシ科,,ツツハムシ亜科,,,,,Smaragdina,,semiaurantiaca,,Fairmaire,,,ムナキルリハムシ,,,,,,,Smaragdina semiaurantiaca (Fairmaire),ヤナギ、カンバ類,神奈川虫報 (157): 日本産ハムシ科生態覚書 (2),,4-6月、山地では6-8月,,,,幼虫は落葉や腐植を食う。
+,Chrysomelidae,ハムシ科,,ツツハムシ亜科,,,,,Smaragdina,,nipponensis,,Chûjô,,,キイロナガツツハムシ,,,,,,,Smaragdina nipponensis (Chûjô),エノキ、イヌシデ、コナラ、クヌギ、クリ、ミズキ,神奈川虫報 (157): 日本産ハムシ科生態覚書 (2),,4-6月、山地では6-8月,,,,幼虫は落葉や腐植を食う。
+,Chrysomelidae,ハムシ科,,ツツハムシ亜科,,,,,Pachybrachis,,eruditus,,Baly,,,ハギツツハムシ,,,,,,,Pachybrachis eruditus (Baly),ハギ、ヤナギ,神奈川虫報 (157): 日本産ハムシ科生態覚書 (2),,5-10月,,,不明,幼虫は落葉や腐植を食う。
+,Chrysomelidae,ハムシ科,,ツツハムシ亜科,,,,,Adiscus,,lewisii,,Baly,,,タマツツハムシ,,,,,,,Adiscus lewisii (Baly),クヌギ、コナラ、クリ、ヤマハンノキ,神奈川虫報 (157): 日本産ハムシ科生態覚書 (2),,6-9月,,,不明,幼虫は落葉や腐植を食う。
+,Chrysomelidae,ハムシ科,,ツツハムシ亜科,,,,,Cryptocephalus,Cryptocephalus,nobilis,,Kraatz,,,ヨツモンクロツツハムシ,,,,,,,Cryptocephalus (Cryptocephalus) nobilis Kraatz,カシワ、ウワミズザクラ,神奈川虫報 (157): 日本産ハムシ科生態覚書 (2),,4-5月、山地では6-7月,,,,幼虫は落葉や腐植を食う。
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Acrothinium,,gaschkevitchii,,Motschulsky,,,アカガネサルハムシ,,,,,,,Acrothinium gaschkevitchii (Motschulsky),ノブドウ、エビヅル、ブドウ; アジサイ類,神奈川虫報 (158): 日本産ハムシ科生態覚書 (3),食葉性。,4-7月,,年1化。,,幼虫は地中で根を食う。
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Aoria,Aoria,nucea,,Fairmaire,,,イタヤサルハムシ,,,,,,,Aoria (Aoria) nucea (Fairmaire),カエデ類,神奈川虫報 (158): 日本産ハムシ科生態覚書 (3),,5-8月,,,不明,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Basilepta,,pallidulum,,Baly,,,ウスイロサルハムシ,,,,,,,Basilepta pallidulum (Baly),マツ類、スギ、ヒノキ、クリ、コナラ,神奈川虫報 (158): 日本産ハムシ科生態覚書 (3),食葉性。,6-8月,,年1化。,,幼虫は地中で根を食う。
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Basilepta,,balyi,,Harold,,,チャイロサルハムシ,,,,,,,Basilepta balyi (Harold),ハンノキ,,食葉性。,4-10月,,,,不明
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Basilepta,,fulvipes,,Motschulsky,,,アオバネサルハムシ,,,,,,,Basilepta fulvipes (Motschulsky),ヨモギ,神奈川虫報 (158): 日本産ハムシ科生態覚書 (3),食葉性。,6-7月,,年1化。,,幼虫は地中で根を食う。
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Basilepta,,modesta,,Jacoby,,,ルリサルハムシ,,,,,,,Basilepta modesta (Jacoby),ウツギ類,,,4-9月,,,,不明
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Basilepta,,ruficollis,,Jacoby,,,ムネアカサルハムシ,,,,,,,Basilepta ruficollis (Jacoby),クマイチゴ、クリの花,不明,,食花性、食花粉性。,,6-9月,,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Colasposoma,,dauricum,,Mannerheim,,,イモサルハムシ,,,,,,,Colasposoma dauricum Mannerheim,サツマイモ、ヒルガオ,神奈川虫報 (158): 日本産ハムシ科生態覚書 (3),食葉性。,5-8月,,年1化。,,幼虫は地中で根を食う。
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Cleoporus,,variabilis,,Baly,,,サクラサルハムシ,,,,,,,Cleoporus variabilis (Baly),サクラ、ウメ、ナシ、リンゴ,神奈川虫報 (158): 日本産ハムシ科生態覚書 (3),食葉性。,5-9月,,年1化。,,幼虫は地中で根を食う。
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Demotina,,fasciculata,,Baly,,,マダラアラゲサルハムシ,,,,,,,Demotina fasciculata Baly,カシ類、ナラ類、ツバキ、チャノキ,幼虫は地中で根を食う。,,食葉性。,,4-10月,年1化、成虫越冬。,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Demotina,,decorata,,Baly,,,チビカサハラハムシ,,,,,,,Demotina decorata Baly,コナラ、ツバキ、ヒサカキ、ヤマグワ,幼虫は地中で根を食う。,,食葉性。,,4-10月,年1化、成虫越冬。,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Demotina,,modesta,,Baly,,,カサハラハムシ,,,,,,,Demotina modesta Baly,ナラ類、クヌギ、シイ類,幼虫は地中で根を食う。,,食葉性。,,4-9月,,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Hyperaxis,,fasciata,,Baly,,,クロオビカサハラハムシ,,,,,,,Hyperaxis fasciata (Baly),カシワ類,幼虫は地中で根を食う。,,食葉性。,,3-10月,年1化、成虫越冬。,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Hyperaxis,,consors,,Lewis,,,タテスジサルハムシ,,,,,,,Hyperaxis consors (Lewis),カシワ類,,,食葉性。,,6-9月,,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Lypesthes,,fulvus,,Baly,,,セアカケブカサルハムシ,,,,,,,Lypesthes fulvus (Baly),コウチニッケイ、ウラジロガシ,幼虫は地中で根を食う。,,食葉性。,,2-6月,,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Lypesthes,,japonicus,,Ohno,,,ニホンケブカサルハムシ,,,,,,,Lypesthes japonicus Ohno,コナラ、ツバキ、ケヤキ,幼虫は地中で根を食う。,,食葉性。,,4-7月,年1化、成虫越冬。,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Lypesthes,,ater,,Motschulsky,,,リンゴコフキサルハムシ,,,,,,,Lypesthes ater (Motschulsky),リンゴ、ナシ、ウメ、クルミ,幼虫は地中で根を食う。,,食葉性。,,4-7月,,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Bromius,,obscurus,,Linnaeus,,,ブドウサルハムシ,,,,,,,Bromius obscurus (Linnaeus),フキ、ノブドウ、ヤナギラン,幼虫は地中で根を食う。,,食葉性。,,5-9月,,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Nodina,,chalcosoma,,Baly,,,アオガネサルハムシ,,,,,,,Nodina chalcosoma Baly,ブドウ、ノイバラ,幼虫は地中で根を食う。,,食葉性。,,6-7月,,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Pagria,,consimilis,,Baly,,,ムネアカキバネサルハムシ,,,,,,,Pagria consimilis Baly,クズ、ハギ,幼虫は地中で根を食う。,,食葉性。,,3-11月,年1化、成虫越冬。,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Chrysochus,,chinensis,,Baly,,,オオサルハムシ,,,,,,,Chrysochus chinensis Baly,イヨカズラ、ガガイモ、サツマイモ,,,食葉性。,,4-9月,,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Platycorynus,,japonicus,,Jacoby,,,オオミドリサルハムシ,,,,,,,Platycorynus japonicus (Jacoby),リュウキュウテイカカズラ,,,3-7月,,,,不明
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Scelodonta,,lewisii,,Baly,,,ドウガネサルハムシ,,,,,,,Scelodonta lewisii (Baly),ヤブガラシ、ノブドウ、エビヅル、クサギ,幼虫は地中で根を食う。,,食葉性。,,3-11月,,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Trichochrysea,,japana,,Motschulsky,,,トビサルハムシ,,,,,,,Trichochrysea japana (Motschulsky),クリ、クヌギ、コナラ,不明,,食葉性。,,4-8月,,
+,Chrysomelidae,ハムシ科,,サルハムシ亜科,,,,,Xanthonia,,placida,,Baly,,,キイロケブカサルハムシ,,,,,,,Xanthonia placida Baly,クワ、ヤマグワ,幼虫は地中で根を食う。,,食葉性。,,6-8月,年1化。,

@@ -7,7 +7,7 @@ import { formatScientificNameReact } from '../utils/scientificNameFormatter.jsx'
 import EmergenceTimeDisplay from './EmergenceTimeDisplay';
 import { extractEmergenceTime, normalizeEmergenceTime } from '../utils/emergenceTimeUtils';
 
-const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false, imageFilenames = new Set(), imageExtensions = {} }) => {
+const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false, imageFilenames = new Set(), imageExtensions = {}, currentPage = 1 }) => {
   const [isVisible, setIsVisible] = useState(isPriority);
   const [imageLoaded, setImageLoaded] = useState(false);
   const imgRef = useRef(null);
@@ -198,7 +198,15 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
   try {
     return (
       <li ref={imgRef} className="group relative overflow-hidden rounded-xl bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border-2 border-slate-200 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.02] transform shadow-md list-none">
-      <Link to={route} className="block">
+            <Link 
+        to={route} 
+        className="block"
+        onClick={() => {
+          // Save scroll position before navigation
+          sessionStorage.setItem('mothListScrollPosition', window.scrollY.toString());
+          sessionStorage.setItem('mothListPage', currentPage.toString());
+        }}
+      >
         <div className="flex flex-col h-full">
           {/* Enhanced Image section - full card width */}
           <div className="w-full relative overflow-hidden rounded-t-[10px] -mx-[2px] -mt-[2px]">
@@ -350,6 +358,28 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
   const classificationFilter = searchParams.get('classification');
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
+  // Restore scroll position and page when returning from detail page
+  useEffect(() => {
+    const savedPosition = sessionStorage.getItem('mothListScrollPosition');
+    const savedPage = sessionStorage.getItem('mothListPage');
+    
+    if (savedPosition && savedPage) {
+      // Restore the page
+      const pageNum = parseInt(savedPage, 10);
+      if (!isNaN(pageNum) && pageNum > 0) {
+        setCurrentPage(pageNum);
+      }
+      
+      // Restore scroll position after a small delay to ensure content is rendered
+      setTimeout(() => {
+        window.scrollTo(0, parseInt(savedPosition, 10));
+        // Clear the saved position after restoring
+        sessionStorage.removeItem('mothListScrollPosition');
+        sessionStorage.removeItem('mothListPage');
+      }, 100);
+    }
+  }, []);
+
   // Set initial search term from URL parameter
   useEffect(() => {
     if (classificationFilter && !searchTerm) {
@@ -381,6 +411,11 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
                    (moth.classification?.family?.toLowerCase().includes(lowerClassification)) ||
                    (moth.classification?.subfamily?.toLowerCase().includes(lowerClassification)) ||
                    (moth.classification?.tribe?.toLowerCase().includes(lowerClassification));
+          }
+          
+          // If no search term, include all moths
+          if (!lowerCaseSearchTerm) {
+            return true;
           }
           
           // Regular search filtering
@@ -679,6 +714,7 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
                         isPriority={index < 12} 
                         imageFilenames={imageFilenames}
                         imageExtensions={imageExtensions}
+                        currentPage={currentPage}
                       />
                     </div>
                   );
