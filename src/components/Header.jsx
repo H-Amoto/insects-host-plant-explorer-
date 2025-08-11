@@ -91,8 +91,8 @@ const Header = ({ theme, setTheme, moths, butterflies = [], beetles = [], leafbe
               </p>
             </div>
             <div className="sm:hidden">
-              <h1 className="text-2xl font-black bg-gradient-to-r from-emerald-100 via-white to-blue-100 bg-clip-text text-transparent">
-                昆虫食草図鑑
+              <h1 className="text-lg font-black bg-gradient-to-r from-emerald-100 via-white to-blue-100 bg-clip-text text-transparent">
+                "繋がり"が見える昆虫食草図鑑
               </h1>
             </div>
           </Link>
