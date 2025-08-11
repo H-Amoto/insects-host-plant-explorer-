@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { getSourceLink } from '../utils/sourceLinks';
 
 // 月名と色のマッピング
 const MONTHS = [
@@ -470,7 +471,22 @@ const EmergenceTimeDisplay = ({ emergenceTime, source, compact = false }) => {
               </svg>
               <div className="text-sm text-slate-500 dark:text-slate-400">
                 <span className="font-medium">出典:</span>{' '}
-                <span className="font-medium">{source}</span>
+                {(() => {
+                  const sourceLink = getSourceLink(source);
+                  if (sourceLink) {
+                    return (
+                      <a 
+                        href={sourceLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        {source}
+                      </a>
+                    );
+                  }
+                  return <span className="font-medium">{source}</span>;
+                })()}
               </div>
             </div>
           </div>
@@ -568,7 +584,22 @@ const EmergenceTimeDisplay = ({ emergenceTime, source, compact = false }) => {
               </svg>
               <div className="text-sm text-slate-500 dark:text-slate-400">
                 <span className="font-medium">出典:</span>{' '}
-                <span className="font-medium">{source}</span>
+                {(() => {
+                  const sourceLink = getSourceLink(source);
+                  if (sourceLink) {
+                    return (
+                      <a 
+                        href={sourceLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        {source}
+                      </a>
+                    );
+                  }
+                  return <span className="font-medium">{source}</span>;
+                })()}
               </div>
             </div>
           </div>
