@@ -553,9 +553,11 @@ const EmergenceTimeDisplay = ({ emergenceTime, source, compact = false }) => {
       
       {/* 原文表示 - 食草セクションと同じ構造で色違い */}
       <div>
-        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-          {emergenceTime}
-        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+            {emergenceTime}
+          </span>
+        </div>
         {source && (
           <div className="mt-4 pt-4 border-t border-orange-200/30 dark:border-orange-700/30">
             <div className="flex items-start space-x-2">
