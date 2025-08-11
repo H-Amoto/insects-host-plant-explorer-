@@ -801,8 +801,8 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                         })()}
                       </div>
                     ) : (
-                      /* Fallback to simple display */
-                      <ul className="space-y-2 list-disc list-inside">
+                      /* Fallback to simple display - カードスタイルで統一 */
+                      <div className="grid grid-cols-1 gap-2">
                         {(() => {
                           // Debug logging for all moths with semicolons
                           if (moth.hostPlants && moth.hostPlants.length > 0) {
@@ -846,12 +846,29 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                             }
                           }
                           
-                          return (
-                            <li key={plant} className="text-slate-700 dark:text-slate-300">
-                              <Link
-                                to={`/plant/${encodeURIComponent(plantNameForLink)}`}
-                                className="inline-flex items-center space-x-2 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                          // 「不明」の場合はリンクなしのカード
+                          if (plant === '不明') {
+                            return (
+                              <div
+                                key={plant}
+                                className="group bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3 border border-emerald-200/50 dark:border-emerald-700/50"
                               >
+                                <div className="flex items-center space-x-3">
+                                  <span className="font-medium text-slate-700 dark:text-slate-300">
+                                    不明
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          }
+                          
+                          return (
+                            <Link
+                              key={plant}
+                              to={`/plant/${encodeURIComponent(plantNameForLink)}`}
+                              className="group bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-all duration-200 border border-emerald-200/50 dark:border-emerald-700/50 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md block"
+                            >
+                              <div className="flex items-center space-x-3">
                                 {(() => {
                                     // First check if we have parts from hostPlantDetails
                                     if (partsFromDetails) {
@@ -937,11 +954,11 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                                       );
                                     }
                                 })()}
-                              </Link>
-                            </li>
+                              </div>
+                            </Link>
                           );
                         }) : null}
-                      </ul>
+                      </div>
                     )}
                   </div>
                 ) : (

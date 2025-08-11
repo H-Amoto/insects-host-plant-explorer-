@@ -4646,7 +4646,8 @@ function App() {
           
           // Parse host plants - CSVクリーニング後はシンプルな処理で十分
           let hostPlantList = [];
-          if (hostPlants && hostPlants !== '不明') {
+          if (hostPlants && hostPlants.trim()) {
+            // 「不明」も食草データとして含める（蛾ページと統一）
             hostPlantList = hostPlants.split(/[、,，]/).map(plant => plant.trim()).filter(plant => plant);
           }
 
