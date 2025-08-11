@@ -17,6 +17,20 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
   const allInsects = [...moths, ...butterflies, ...beetles, ...leafbeetles];
   const moth = allInsects.find(m => m.id === insectId);
   
+  // Debug for catalog-2090 (ヒメウコンカギバ)
+  if (insectId === 'catalog-2090') {
+    console.log('DEBUG MothDetail: catalog-2090 (ヒメウコンカギバ) display:', {
+      id: moth?.id,
+      name: moth?.name,
+      remarks: moth?.remarks,
+      geographicalRemarks: moth?.geographicalRemarks,
+      type: moth?.type,
+      hostPlants: moth?.hostPlants,
+      hasRemarks: !!(moth?.remarks && moth?.remarks.trim()),
+      remarksIncludesPipe: moth?.remarks?.includes('|')
+    });
+  }
+  
   // Debug logging for オオゴマシジミ
   if (insectId === 'butterfly-csv-131' || (moth && moth.name === 'オオゴマシジミ')) {
     console.log('=== DEBUG オオゴマシジミ SEARCH ===');
@@ -162,24 +176,57 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
   // Group related moths by host plant
   const relatedMothsByPlant = {};
   moth.hostPlants.forEach(plant => {
-    if (hostPlants[plant]) {
-      const relatedMoths = hostPlants[plant].filter(mothName => mothName !== moth.name);
-      if (relatedMoths.length > 0) {
-        relatedMothsByPlant[plant] = relatedMoths;
-      }
+    // Extract base plant name for matching (e.g., "フジの花蕾" -> "フジ")
+    let basePlantName = plant;
+    const partMatch = plant.match(/^([^の]+)の/);
+    if (partMatch) {
+      basePlantName = partMatch[1];
     }
+    
+    // Try both full plant name and base plant name
+    const plantsToCheck = [plant, basePlantName];
+    
+    plantsToCheck.forEach(checkPlant => {
+      if (hostPlants[checkPlant]) {
+        const relatedMoths = hostPlants[checkPlant].filter(mothName => mothName !== moth.name);
+        if (relatedMoths.length > 0) {
+          // Use base plant name for display (without parts like "の花蕾")
+          if (!relatedMothsByPlant[basePlantName]) {
+            relatedMothsByPlant[basePlantName] = [];
+          }
+          // Add unique moths only
+          relatedMoths.forEach(mothName => {
+            if (!relatedMothsByPlant[basePlantName].includes(mothName)) {
+              relatedMothsByPlant[basePlantName].push(mothName);
+            }
+          });
+        }
+      }
+    });
   });
 
   // Also keep the old format for backward compatibility
   const relatedMoths = new Set();
   moth.hostPlants.forEach(plant => {
-    if (hostPlants[plant]) {
-      hostPlants[plant].forEach(mothName => {
-        if (mothName !== moth.name) {
-          relatedMoths.add(mothName);
-        }
-      });
+    // Extract base plant name for matching (e.g., "フジの花蕾" -> "フジ")
+    let basePlantName = plant;
+    const partMatch = plant.match(/^([^の]+)の/);
+    if (partMatch) {
+      basePlantName = partMatch[1];
     }
+    
+    // Try both full plant name and base plant name
+    const plantsToCheck = [plant, basePlantName];
+    
+    plantsToCheck.forEach(checkPlant => {
+      if (hostPlants[checkPlant]) {
+        hostPlants[checkPlant].forEach(mothName => {
+          if (mothName !== moth.name) {
+            relatedMoths.add(mothName);
+          }
+        });
+      }
+    });
   });
 
   // Check if Instagram post is available
@@ -451,6 +498,11 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
             <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-xl shadow-lg border border-white/20 dark:border-slate-700/50 overflow-hidden">
               <div className="p-4 bg-emerald-500/10 dark:bg-emerald-500/20 border-b border-emerald-200/30 dark:border-emerald-700/30">
                 <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-emerald-500 rounded-lg">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                    </svg>
+                  </div>
                   <h2 className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
                     食草
                     {moth.isMonophagous && (
@@ -589,16 +641,39 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                                               <div className="flex items-center space-x-3">
                                                 {/* Extract plant name and parts, or add parts from remarks */}
                                                 {(() => {
+                                                  // First check if parts are provided in the detail object
+                                                  if (detail.parts && detail.parts.length > 0) {
+                                                    return (
+                                                      <>
+                                                        <span className="font-medium">
+                                                          {detail.plant}
+                                                        </span>
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+                                                          {detail.parts.join('・')}
+                                                        </span>
+                                                        {detail.condition && (
+                                                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ml-1 ${
+                                                            detail.condition === '自然状態' 
+                                                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                                                              : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                                                          }`}>
+                                                            {detail.condition === '飼育条件下' ? '飼育' : '自然'}
+                                                          </span>
+                                                        )}
+                                                      </>
+                                                    );
+                                                  }
+                                                  
                                                   // 既存の統合形式をチェック
                                                   const plantPartsMatch = detail.plant.match(/^(.+?)（([^）]+)）$/);
                                                   if (plantPartsMatch) {
                                                     const [, plantName, parts] = plantPartsMatch;
                                                     return (
                                                       <>
-                                                        <span className="text-slate-800 dark:text-slate-200 font-medium group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                                                        <span className="font-medium">
                                                           {plantName}
                                                         </span>
-                                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 ml-2">
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
                                                           {parts}
                                                         </span>
                                                         {detail.condition && (
@@ -620,10 +695,10 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                                                     const [, plantName, , part, suffix] = plantPartDirectMatch;
                                                     return (
                                                       <>
-                                                        <span className="text-slate-800 dark:text-slate-200 font-medium group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                                                        <span className="font-medium">
                                                           {plantName}{suffix}
                                                         </span>
-                                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 ml-2">
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
                                                           {part}
                                                         </span>
                                                         {detail.condition && (
@@ -646,11 +721,11 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                                                     
                                                     return (
                                                       <>
-                                                        <span className="text-slate-800 dark:text-slate-200 font-medium group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                                                        <span className="font-medium">
                                                           {detail.plant}
                                                         </span>
                                                         {allParts.length > 0 && (
-                                                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 ml-2">
+                                                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
                                                             {allParts.join('・')}
                                                           </span>
                                                         )}
@@ -727,54 +802,81 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                       </div>
                     ) : (
                       /* Fallback to simple display */
-                      <div className="grid grid-cols-1 gap-2">
+                      <ul className="space-y-2 list-disc list-inside">
                         {(() => {
-                          // Debug logging for ルリシジミ
-                          if (moth.name === 'ルリシジミ') {
-                            console.log('=== MothDetail: ルリシジミ display ===');
-                            console.log('hostPlants array:', moth.hostPlants);
-                            console.log('hostPlants length:', moth.hostPlants.length);
-                            console.log('First 5 plants:', moth.hostPlants.slice(0, 5));
+                          // Debug logging for all moths with semicolons
+                          if (moth.hostPlants && moth.hostPlants.length > 0) {
+                            const joinedPlants = moth.hostPlants.join('; ');
+                            if (joinedPlants.includes(';')) {
+                              console.log(`=== MothDetail: ${moth.name} has semicolon-separated plants ===`);
+                              console.log('hostPlants array:', moth.hostPlants);
+                              console.log('hostPlants is Array?:', Array.isArray(moth.hostPlants));
+                              console.log('hostPlants length:', moth.hostPlants.length);
+                              console.log('Joined plants:', joinedPlants);
+                            }
                           }
                           return null;
                         })()}
-                        {moth.hostPlants.map((plant, index) => {
-                          // Extract just the plant name for the link
+                        {moth.hostPlants && Array.isArray(moth.hostPlants) ? moth.hostPlants.map((plant, index) => {
+                          // First check if we have hostPlantDetails for this plant
                           let plantNameForLink = plant;
+                          let partsFromDetails = null;
                           
-                          // Handle "PlantName (Family)の部位" format
-                          const familyPartMatch = plant.match(/^(.+?)\s*\([^)]+\)(の|から|で)/);
-                          if (familyPartMatch) {
-                            plantNameForLink = familyPartMatch[1];
-                          } else {
-                            // Handle "PlantNameの部位" format
-                            const partMatch = plant.match(/^(.+?)(の|から|で)(花蕾|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|若い翼果)/);
-                            if (partMatch) {
-                              plantNameForLink = partMatch[1];
+                          // If hostPlantDetails exists, look for this plant's parts
+                          if (moth.hostPlantDetails && moth.hostPlantDetails.length > 0) {
+                            const plantDetail = moth.hostPlantDetails.find(detail => detail.plant === plant);
+                            if (plantDetail && plantDetail.parts && plantDetail.parts.length > 0) {
+                              partsFromDetails = plantDetail.parts;
+                              plantNameForLink = plant; // Use the plant name directly
+                            }
+                          }
+                          
+                          // If no details found, extract from the plant name string
+                          if (!partsFromDetails) {
+                            // Handle "PlantName (Family)の部位" format
+                            const familyPartMatch = plant.match(/^(.+?)\s*\([^)]+\)(の|から|で)/);
+                            if (familyPartMatch) {
+                              plantNameForLink = familyPartMatch[1];
+                            } else {
+                              // Handle "PlantNameの部位" format
+                              const partMatch = plant.match(/^(.+?)(の|から|で)(花蕾|花|実|果実|葉|茎|根|枝|樹皮|蕾|若葉|若い翼果)/);
+                              if (partMatch) {
+                                plantNameForLink = partMatch[1];
+                              }
                             }
                           }
                           
                           return (
-                            <Link
-                              key={plant}
-                              to={`/plant/${encodeURIComponent(plantNameForLink)}`}
-                              className="group bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-lg p-3 hover:from-emerald-100 hover:to-teal-100 dark:hover:from-emerald-900/30 dark:hover:to-teal-900/30 transition-all duration-200 border border-emerald-200/50 dark:border-emerald-700/50 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md"
-                            >
-                            <div>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-3">
-                                  {/* Extract plant name and parts, or add parts from remarks */}
-                                  {(() => {
+                            <li key={plant} className="text-slate-700 dark:text-slate-300">
+                              <Link
+                                to={`/plant/${encodeURIComponent(plantNameForLink)}`}
+                                className="inline-flex items-center space-x-2 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                              >
+                                {(() => {
+                                    // First check if we have parts from hostPlantDetails
+                                    if (partsFromDetails) {
+                                      return (
+                                        <>
+                                          <span className="font-medium">
+                                            {plant}
+                                          </span>
+                                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+                                            {partsFromDetails.join('・')}
+                                          </span>
+                                        </>
+                                      );
+                                    }
+                                    
                                     // 既存の統合形式をチェック
                                     const plantPartsMatch = plant.match(/^(.+?)（([^）]+)）$/);
                                     if (plantPartsMatch) {
                                       const [, plantName, parts] = plantPartsMatch;
                                       return (
                                         <>
-                                          <span className="text-slate-800 dark:text-slate-200 font-medium group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                                          <span className="font-medium">
                                             {plantName}
                                           </span>
-                                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 ml-2">
+                                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
                                             {parts}
                                           </span>
                                         </>
@@ -787,13 +889,13 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                                       const [, plantName, family, , part, suffix] = plantFamilyPartMatch;
                                       return (
                                         <>
-                                          <span className="text-slate-800 dark:text-slate-200 font-medium group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                                          <span className="font-medium">
                                             {plantName}
                                           </span>
-                                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 ml-2">
+                                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
                                             {family}
                                           </span>
-                                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 ml-2">
+                                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
                                             {part}
                                           </span>
                                         </>
@@ -806,10 +908,10 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                                       const [, plantName, , part, suffix] = plantPartDirectMatch;
                                       return (
                                         <>
-                                          <span className="text-slate-800 dark:text-slate-200 font-medium group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                                          <span className="font-medium">
                                             {plantName}{suffix}
                                           </span>
-                                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 ml-2">
+                                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
                                             {part}
                                           </span>
                                         </>
@@ -823,25 +925,23 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                                       
                                       return (
                                         <>
-                                          <span className="text-slate-800 dark:text-slate-200 font-medium group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                                          <span className="font-medium">
                                             {plant}
                                           </span>
                                           {allParts.length > 0 && (
-                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 ml-2">
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
                                               {allParts.join('・')}
                                             </span>
                                           )}
                                         </>
                                       );
                                     }
-                                  })()}
-                                </div>
-                              </div>
-                            </div>
-                            </Link>
+                                })()}
+                              </Link>
+                            </li>
                           );
-                        })}
-                      </div>
+                        }) : null}
+                      </ul>
                     )}
                   </div>
                 ) : (
@@ -979,8 +1079,9 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                   );
                 })()}
                 
-                {/* 地理的備考・生態学的特徴 */}
-                {moth.geographicalRemarks && typeof moth.geographicalRemarks === 'string' && moth.geographicalRemarks.trim() && (() => {
+                {/* 地理的備考・生態学的特徴 - moth.remarksも考慮 */}
+                {((moth.geographicalRemarks && typeof moth.geographicalRemarks === 'string' && moth.geographicalRemarks.trim()) || 
+                  (moth.remarks && typeof moth.remarks === 'string' && moth.remarks.trim() && moth.type === 'moth')) && (() => {
                   // Debug logging for オオゴマシジミ
                   if (moth.name === 'オオゴマシジミ') {
                     console.log('=== DEBUG オオゴマシジミ geographicalRemarks section ===');
@@ -1003,15 +1104,20 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                   }
                   
                   // 重複チェック - 生態情報（単食性等）でない場合のみチェック
-                  const content = moth.geographicalRemarks.trim();
-                  const isEcological = content.match(/^(単食性|広食性|狭食性)$/);
+                  // moth.remarksがある場合は優先して使用
+                  const remarksContent = (moth.type === 'moth' && moth.remarks && moth.remarks.trim()) ? 
+                                        moth.remarks.trim() : 
+                                        (moth.geographicalRemarks ? moth.geographicalRemarks.trim() : '');
+                  if (!remarksContent) return false;
                   
-                  if (!isEcological && window.displayedRemarks && window.displayedRemarks.has(content)) {
+                  const isEcological = remarksContent.match(/^(単食性|広食性|狭食性)$/);
+                  
+                  if (!isEcological && window.displayedRemarks && window.displayedRemarks.has(remarksContent)) {
                     return false; // 既に表示済みの場合はスキップ
                   }
                   
                   if (!isEcological) {
-                    window.displayedRemarks.add(content);
+                    window.displayedRemarks.add(remarksContent);
                   }
                   
                   return true;
@@ -1019,31 +1125,111 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                   <div className="mt-4 pt-4 border-t border-emerald-200/30 dark:border-emerald-700/30">
                     <div className="flex flex-wrap gap-2">
                       {/* 生態学的特徴（単食性、広食性など）か地域情報かを判断 */}
-                      {moth.geographicalRemarks.trim().match(/^(単食性|広食性|狭食性)$/) ? (
-                        <>
-                          <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">食性:</span>
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
-                            {moth.geographicalRemarks.trim()}
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">備考:</span>
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
-                            {moth.geographicalRemarks.trim()}
-                          </span>
-                        </>
-                      )}
+                      {(() => {
+                        // moth.remarksがある場合は優先して使用
+                        const displayRemarks = (moth.type === 'moth' && moth.remarks && moth.remarks.trim()) ? 
+                                              moth.remarks.trim() : 
+                                              (moth.geographicalRemarks ? moth.geographicalRemarks.trim() : '');
+                        
+                        if (displayRemarks.match(/^(単食性|広食性|狭食性)$/)) {
+                          return (
+                            <>
+                              <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">食性:</span>
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                                {displayRemarks}
+                              </span>
+                            </>
+                          );
+                        } else if ((moth.name === 'ルリシジミ' || moth.japaneseName === 'ルリシジミ') && displayRemarks.includes('。')) {
+                          return (
+                            <>
+                              <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">備考:</span>
+                              <div className="flex flex-col gap-2 mt-2 w-full">
+                                {displayRemarks.split('。').filter(s => s.trim()).map((sentence, idx) => (
+                                  <div key={idx} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+                                    <span className="mr-2">•</span>
+                                    <span>{sentence.trim()}。</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </>
+                          );
+                        } else {
+                          return (
+                            <>
+                              <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">備考:</span>
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+                                {displayRemarks}
+                              </span>
+                            </>
+                          );
+                        }
+                      })()}
                     </div>
                   </div>
                 )}
 
-                {/* 詳細備考情報（キリガデータ統合対応） */}
-                {moth.remarks && (
+                {/* シンプルな備考表示 - 蛾とタマムシの場合（重複を避ける） */}
+                {(() => {
+                  // Debug logging for remarks
+                  if (moth.id && (moth.id.includes('2090') || moth.id.includes('2102'))) {
+                    console.log('DEBUG moth remarks:', {
+                      id: moth.id,
+                      name: moth.name,
+                      remarks: moth.remarks,
+                      geographicalRemarks: moth.geographicalRemarks,
+                      type: moth.type
+                    });
+                  }
+                  // geographicalRemarksと同じ内容の場合は表示しない（重複を避ける）
+                  return (moth.type === 'moth' || moth.type === 'beetle') && 
+                         moth.remarks && moth.remarks.trim() && 
+                         !moth.remarks.includes('|') &&
+                         moth.remarks !== moth.geographicalRemarks;
+                })() && (
+                  <div className="mt-4 pt-4 border-t border-emerald-200/30 dark:border-emerald-700/30">
+                    <div className="flex flex-wrap gap-2">
+                      <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">備考:</span>
+                      {(() => {
+                        // セミコロン(;)で区切られている場合は箇条書きにする
+                        if (moth.remarks.includes(';')) {
+                          const remarkItems = moth.remarks.split(';').map(item => item.trim()).filter(item => item);
+                          return (
+                            <div className="flex-1 space-y-2">
+                              {remarkItems.map((item, index) => (
+                                <div key={index} className="flex items-start space-x-2">
+                                  <span className="text-orange-600 dark:text-orange-400 mt-0.5">•</span>
+                                  <span className="text-sm text-slate-700 dark:text-slate-300">
+                                    {item}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+                              {moth.remarks.trim()}
+                            </span>
+                          );
+                        }
+                      })()}
+                    </div>
+                  </div>
+                )}
+
+                {/* 詳細備考情報（キリガデータ統合対応） - ルリシジミや既に備考表示済みの蝶は除外 */}
+                {(moth.remarks && moth.remarks.includes('|') && !(moth.name === 'ルリシジミ' || moth.japaneseName === 'ルリシジミ')) && (
                   <div className="mt-4 pt-4 border-t border-emerald-200/30 dark:border-emerald-700/30">
                     <div className="space-y-2">
                       <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">詳細情報:</span>
-                      {moth.remarks.split(' | ').map((remark, remarkIndex) => {
+                      {(() => {
+                        // butterflyの場合、geographicalRemarksをremarksとして扱う
+                        const actualRemarks = moth.remarks || (moth.type === 'butterfly' && moth.geographicalRemarks ? moth.geographicalRemarks : '');
+                        
+                        if (!actualRemarks) return null;
+                        
+                        return actualRemarks.split(' | ').map((remark, remarkIndex) => {
                         // 成虫発生時期を含む備考は除外
                         const { notes: filteredRemark } = extractEmergenceTime(remark);
                         if (!filteredRemark.trim()) return null;
@@ -1108,6 +1294,28 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                         }
                         // その他の備考
                         else {
+                          // ルリシジミの場合、文章を箇条書きにする
+                          if ((moth.name === 'ルリシジミ' || moth.japaneseName === 'ルリシジミ') && remark.includes('。')) {
+                            const sentences = remark.split('。').filter(s => s.trim());
+                            return (
+                              <div key={remarkIndex} className="space-y-2">
+                                <div className="flex items-start space-x-2">
+                                  <svg className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                  <div className="space-y-1">
+                                    {sentences.map((sentence, idx) => (
+                                      <div key={idx} className="flex items-start">
+                                        <span className="text-blue-500 dark:text-blue-400 mr-2">•</span>
+                                        <p className="text-sm text-slate-700 dark:text-slate-300">{sentence.trim()}。</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          }
+                          // 通常の備考
                           return (
                             <div key={remarkIndex} className="flex items-start space-x-2">
                               <svg className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1117,7 +1325,8 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                             </div>
                           );
                         }
-                      })}
+                      });
+                      })()}
                     </div>
                   </div>
                 )}
