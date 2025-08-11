@@ -479,7 +479,7 @@ const EmergenceTimeDisplay = ({ emergenceTime, source, compact = false }) => {
                         href={sourceLink} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                        className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline hover:no-underline transition-colors duration-200"
                       >
                         {source}
                         <svg className="w-3 h-3 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -595,7 +595,7 @@ const EmergenceTimeDisplay = ({ emergenceTime, source, compact = false }) => {
                         href={sourceLink} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                        className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline hover:no-underline transition-colors duration-200"
                       >
                         {source}
                         <svg className="w-3 h-3 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
