@@ -2,6 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+/* システムフォントスタックで視認性を最適化 */
+@layer base {
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+                 "Yu Gothic", "Yu Gothic Medium", "Meiryo", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "palt" 1; /* プロポーショナルメトリクス */
+  }
+  
+  /* 通常テキストの視認性向上 */
+  p, div, span, li {
+    letter-spacing: 0.025em; /* 文字間隔を少し広げる */
+    line-height: 1.7; /* 行間を広げる */
+  }
+  
+  /* 小さいテキストの調整 */
+  .text-xs {
+    letter-spacing: 0.03em;
+    line-height: 1.6;
+  }
+  
+  .text-sm {
+    letter-spacing: 0.025em;
+    line-height: 1.65;
+  }
+  
+  /* 通常の太さのテキストを少し太く */
+  .font-normal {
+    font-weight: 450; /* 400から450に */
+  }
+  
+  /* コントラスト強化 - ダークモードの薄いテキスト */
+  .dark .text-slate-400 {
+    color: rgb(203 213 225); /* slate-300 */
+  }
+  
+  .dark .text-slate-500 {
+    color: rgb(148 163 184); /* slate-400 */
+  }
+  
+  /* 本文サイズの最適化 */
+  .text-base {
+    font-size: 15px; /* 14pxから15pxに */
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
