@@ -387,6 +387,15 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
     }
   }, [classificationFilter, searchTerm]);
 
+  // ひらがなをカタカナに変換する関数
+  const hiraganaToKatakana = (str) => {
+    if (!str) return '';
+    return str.replace(/[\u3041-\u3096]/g, (match) => {
+      const code = match.charCodeAt(0) + 0x60;
+      return String.fromCharCode(code);
+    });
+  };
+
   const filteredMoths = useMemo(() => {
     try {
       console.log('DEBUG: Filtering moths, total count:', moths.length, 'search term:', debouncedSearchTerm);
@@ -400,13 +409,19 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
           if (!moth) return false;
           
           const lowerCaseSearchTerm = debouncedSearchTerm.toLowerCase();
+          // ひらがなをカタカナに変換した検索語も用意
+          const katakanaSearchTerm = hiraganaToKatakana(debouncedSearchTerm).toLowerCase();
           
           // If there's a classification filter from URL, prioritize that
           if (classificationFilter && !debouncedSearchTerm) {
             const lowerClassification = classificationFilter.toLowerCase();
+            const katakanaClassification = hiraganaToKatakana(classificationFilter).toLowerCase();
             return (moth.classification?.familyJapanese?.toLowerCase().includes(lowerClassification)) ||
+                   (moth.classification?.familyJapanese?.toLowerCase().includes(katakanaClassification)) ||
                    (moth.classification?.subfamilyJapanese?.toLowerCase().includes(lowerClassification)) ||
+                   (moth.classification?.subfamilyJapanese?.toLowerCase().includes(katakanaClassification)) ||
                    (moth.classification?.tribeJapanese?.toLowerCase().includes(lowerClassification)) ||
+                   (moth.classification?.tribeJapanese?.toLowerCase().includes(katakanaClassification)) ||
                    (moth.classification?.genus?.toLowerCase().includes(lowerClassification)) ||
                    (moth.classification?.family?.toLowerCase().includes(lowerClassification)) ||
                    (moth.classification?.subfamily?.toLowerCase().includes(lowerClassification)) ||
@@ -418,12 +433,16 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
             return true;
           }
           
-          // Regular search filtering
+          // Regular search filtering - check both original and katakana converted search terms
           return (moth.name?.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                 (moth.name?.toLowerCase().includes(katakanaSearchTerm)) ||
                  (moth.scientificName?.toLowerCase().includes(lowerCaseSearchTerm)) ||
                  (moth.classification?.familyJapanese?.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                 (moth.classification?.familyJapanese?.toLowerCase().includes(katakanaSearchTerm)) ||
                  (moth.classification?.subfamilyJapanese?.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                 (moth.classification?.subfamilyJapanese?.toLowerCase().includes(katakanaSearchTerm)) ||
                  (moth.classification?.tribeJapanese?.toLowerCase().includes(lowerCaseSearchTerm)) ||
+                 (moth.classification?.tribeJapanese?.toLowerCase().includes(katakanaSearchTerm)) ||
                  (moth.classification?.genus?.toLowerCase().includes(lowerCaseSearchTerm)) ||
                  (moth.classification?.family?.toLowerCase().includes(lowerCaseSearchTerm)) ||
                  (moth.classification?.subfamily?.toLowerCase().includes(lowerCaseSearchTerm)) ||
@@ -444,18 +463,37 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
       if (!searchTerm || !moths || moths.length === 0) return [];
       
       const lowerCaseSearchTerm = searchTerm.toLowerCase();
+      // ひらがなをカタカナに変換した検索語も用意
+      const katakanaSearchTerm = hiraganaToKatakana(searchTerm).toLowerCase();
       const uniqueSuggestions = new Set();
 
       moths.forEach(moth => {
         try {
           if (!moth) return;
           
-          if (moth.name?.toLowerCase().includes(lowerCaseSearchTerm)) uniqueSuggestions.add(moth.name);
-          if (moth.scientificName?.toLowerCase().includes(lowerCaseSearchTerm)) uniqueSuggestions.add(moth.scientificName);
-          if (moth.classification?.familyJapanese?.toLowerCase().includes(lowerCaseSearchTerm)) uniqueSuggestions.add(moth.classification.familyJapanese);
-          if (moth.classification?.subfamilyJapanese?.toLowerCase().includes(lowerCaseSearchTerm)) uniqueSuggestions.add(moth.classification.subfamilyJapanese);  
-          if (moth.classification?.tribeJapanese?.toLowerCase().includes(lowerCaseSearchTerm)) uniqueSuggestions.add(moth.classification.tribeJapanese);
-          if (moth.classification?.genus?.toLowerCase().includes(lowerCaseSearchTerm)) uniqueSuggestions.add(moth.classification.genus);
+          // Check both original and katakana converted search terms
+          if (moth.name?.toLowerCase().includes(lowerCaseSearchTerm) || 
+              moth.name?.toLowerCase().includes(katakanaSearchTerm)) {
+            uniqueSuggestions.add(moth.name);
+          }
+          if (moth.scientificName?.toLowerCase().includes(lowerCaseSearchTerm)) {
+            uniqueSuggestions.add(moth.scientificName);
+          }
+          if (moth.classification?.familyJapanese?.toLowerCase().includes(lowerCaseSearchTerm) ||
+              moth.classification?.familyJapanese?.toLowerCase().includes(katakanaSearchTerm)) {
+            uniqueSuggestions.add(moth.classification.familyJapanese);
+          }
+          if (moth.classification?.subfamilyJapanese?.toLowerCase().includes(lowerCaseSearchTerm) ||
+              moth.classification?.subfamilyJapanese?.toLowerCase().includes(katakanaSearchTerm)) {
+            uniqueSuggestions.add(moth.classification.subfamilyJapanese);
+          }
+          if (moth.classification?.tribeJapanese?.toLowerCase().includes(lowerCaseSearchTerm) ||
+              moth.classification?.tribeJapanese?.toLowerCase().includes(katakanaSearchTerm)) {
+            uniqueSuggestions.add(moth.classification.tribeJapanese);
+          }
+          if (moth.classification?.genus?.toLowerCase().includes(lowerCaseSearchTerm)) {
+            uniqueSuggestions.add(moth.classification.genus);
+          }
         } catch (error) {
           console.error('Error processing moth for suggestions:', moth, error);
         }

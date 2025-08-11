@@ -3,29 +3,9 @@ import React, { useState } from 'react';
 const SearchInput = ({ value, onChange, placeholder, suggestions = [], onSelectSuggestion }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  // ひらがなをカタカナに変換する関数
-  const hiraganaToKatakana = (str) => {
-    return str.replace(/[\u3041-\u3096]/g, (match) => {
-      const code = match.charCodeAt(0) + 0x60;
-      return String.fromCharCode(code);
-    });
-  };
-
   const handleChange = (e) => {
-    // 入力値をひらがなからカタカナに変換
-    const originalValue = e.target.value;
-    const convertedValue = hiraganaToKatakana(originalValue);
-    
-    // 変換された値でイベントオブジェクトを更新
-    const newEvent = {
-      ...e,
-      target: {
-        ...e.target,
-        value: convertedValue
-      }
-    };
-    
-    onChange(newEvent);
+    // 入力値はそのまま保持（変換しない）
+    onChange(e);
     setShowSuggestions(true);
   };
 
