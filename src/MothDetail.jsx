@@ -504,7 +504,7 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                     </svg>
                   </div>
                   <h2 className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
-                    食草
+                    食草・食樹
                     {moth.isMonophagous && (
                       <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
                         単食性

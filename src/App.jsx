@@ -4665,6 +4665,7 @@ function App() {
             },
             hostPlants: hostPlantList,
             emergenceTime: emergenceTime || '不明',
+            emergenceTimeSource: source || "ハムシ目録データベース",
             source: source || "ハムシ目録データベース",
             sourceUrl: (source && source.includes('ハムシハンドブック')) ? "https://amzn.to/456YVhu" : undefined,
             geographicalRemarks: remarks || ''
