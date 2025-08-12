@@ -50,7 +50,7 @@ const parseEmergenceTime = (emergenceTime) => {
   if (!emergenceTime || emergenceTime === '不明') return { months: [], periods: [] };
   
   // Debug log for specific species
-  const isDebugSpecies = emergenceTime.includes('3月');
+  const isDebugSpecies = emergenceTime.includes('3月') || emergenceTime.includes('丘陵地') || emergenceTime.includes('山地');
   if (isDebugSpecies) {
     console.log('DEBUG: parseEmergenceTime input:', emergenceTime);
   }
@@ -64,10 +64,28 @@ const parseEmergenceTime = (emergenceTime) => {
     '七': 7, '八': 8, '九': 9, '十': 10, '十一': 11, '十二': 12
   };
   
+  // 処理対象のテキストを準備
+  // 地域別・条件別の記述を含む場合は統合して処理
+  let textToProcess = emergenceTime;
+  
+  // "丘陵地では4-5月、山地では7-8月" のようなパターンを検出
+  if (emergenceTime.includes('では') || emergenceTime.includes('で') && emergenceTime.includes('月')) {
+    // カンマで分割して、それぞれから月の情報を抽出
+    const segments = emergenceTime.split(/[、,]/);
+    const monthPatterns = segments.map(segment => {
+      // 月の範囲を含む部分を抽出
+      const monthMatch = segment.match(/\d{1,2}[-~～〜]\d{1,2}月|\d{1,2}月/g);
+      return monthMatch ? monthMatch.join(' ') : '';
+    }).filter(s => s);
+    
+    // 全ての月パターンを結合
+    textToProcess = monthPatterns.join(' ') + ' ' + emergenceTime;
+  }
+  
   // 旬単位のパターンを検出（例：3月上旬、4月中旬、5月下旬）
   const periodPattern = /(\d{1,2})月(上旬|中旬|下旬)/g;
   let match;
-  while ((match = periodPattern.exec(emergenceTime)) !== null) {
+  while ((match = periodPattern.exec(textToProcess)) !== null) {
     const month = parseInt(match[1]);
     const period = match[2];
     if (month >= 1 && month <= 12) {
@@ -195,8 +213,9 @@ const parseEmergenceTime = (emergenceTime) => {
     }
   });
   
-  // 範囲指定（例：5～8月、3月～10月）を検出 - ASCII チルダ (~) も含む（旬指定なし）
-  const rangePattern = /(\d{1,2})月?[～〜~-](\d{1,2})月(?![上中下])/g;
+  // 範囲指定（例：5～8月、3月～10月、4-5月）を検出 - ASCII チルダ (~) も含む（旬指定なし）
+  // ハイフンも含めて処理
+  const rangePattern = /(\d{1,2})月?[～〜~\-－](\d{1,2})月(?![上中下])/g;
   while ((match = rangePattern.exec(emergenceTime)) !== null) {
     const start = parseInt(match[1]);
     const end = parseInt(match[2]);

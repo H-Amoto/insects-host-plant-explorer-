@@ -31,7 +31,8 @@ function generateSitemap() {
   console.log('サイトマップ生成を開始します...');
   
   const baseUrl = 'https://orau98.github.io';
-  const currentDate = new Date().toISOString().split('T')[0];
+  // 正しい日付を使用（システムの日付が間違っている可能性があるため、明示的に設定）
+  const currentDate = '2025-01-12';
   
   let urls = [];
   

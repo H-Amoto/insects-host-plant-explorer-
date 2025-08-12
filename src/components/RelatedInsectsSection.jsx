@@ -36,6 +36,43 @@ const RelatedInsectsSection = ({ relatedMothsByPlant, allInsects }) => {
   };
 
   // MothDetailと同じ画像パス構築ロジックを使用
+  // 和名→学名ファイル名マッピング（App.jsxと同期）
+  const globalJapaneseToScientificMapping = new Map([
+    // 蛾類
+    ['ウスムラサキケンモン', 'Acronicta_subpurpurea_Matsumura'],
+    ['オオマエベニトガリバ', 'Tethea_consimilis'],
+    ['ショウブオオヨトウ', 'Helotropha_leucostigma'],
+    ['シラオビキリガ', 'Cosmia_camptostigma'],
+    ['シラホシキリガ', 'Cosmia_pyralina'],
+    ['タカオキリガ', 'Pseudopanolis_takao'],
+    ['ツマベニヒメハマキ', 'Phaecasiophora_roseana_2'],
+    ['ナシキリガ', 'Cosmia_restituta_Walker_1857'],
+    ['ニッコウケンモン', 'Craniophora_praeclara'],
+    ['ニッコウシャチホコ', 'Shachia_circumscripta'],
+    ['ノコメセダカヨトウ', 'Orthogonia_sera'],
+    ['ハスモンヨトウ', 'Spodoptera_litura'],
+    ['マエジロシャチホコ', 'Notodonta_albicosta'],
+    ['クロハナコヤガ', 'Aventiola_pusilla'],
+    ['フタスジエグリアツバ', 'Gonepatica_opalina'],
+    ['ベニスズメ', 'Deilephila_elpenor'],
+    ['ヒメスズメ', 'Deilephila_askoldensis'],
+    ['マダラキボシキリガ', 'Dimorphicosmia_variegata'],
+    ['ナシイラガ', 'Narosoideus_flavidorsalis'],
+    ['ヨモギオオホソハマキ', 'Phtheochroides_clandestina'],
+    // 今回リネームした画像のマッピング追加
+    ['クロモクメヨトウ', 'Dypterygia_caliginosa'],
+    ['コスジシロエダシャク', 'Cabera_purus'],
+    ['シマフコヤガ', 'Corgatha_nitens'],
+    ['シロテンツマキリアツバ', 'Amphitrogia_amphidecta'],
+    ['スジモンヒトリ', 'Spilarctia_seriatopunctata'],
+    ['プライヤエグリシャチホコ', 'Lophontosia_pryeri'],
+    // タマムシ科
+    ['アオマダラタマムシ', 'Nipponobuprestis_amabilis'],
+    ['ルイスヒラタチビタマムシ', 'Habroloma_lewisii'],
+    // シジミチョウ科
+    ['クロマダラソテツシジミ', 'Chilades_pandava']
+  ]);
+
   const createSafeFilename = (scientificName) => {
     if (!scientificName) return '';
     let cleanedName = scientificName.replace(/\s*\(.*?(?:\)|\s*$)/g, '');

@@ -1,52 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* システムフォントスタックで視認性を最適化 */
+/* モダンなフォントスタックで洗練されたデザイン */
 @layer base {
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
-                 "Yu Gothic", "Yu Gothic Medium", "Meiryo", sans-serif;
+    font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 
+                 "Helvetica Neue", "Segoe UI", "Hiragino Kaku Gothic ProN",
+                 "Yu Gothic", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    font-feature-settings: "palt" 1; /* プロポーショナルメトリクス */
+    font-feature-settings: "palt" 1, "kern" 1; /* カーニングとプロポーショナル */
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: -0.011em; /* モダンなタイトな文字間隔 */
   }
   
-  /* 通常テキストの視認性向上 */
+  /* 日本語テキストの最適化 */
+  :lang(ja) {
+    font-family: 'Noto Sans JP', 'Inter', -apple-system, BlinkMacSystemFont,
+                 "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    letter-spacing: 0.02em; /* 日本語は少し広め */
+  }
+  
+  /* 見出しのモダンなスタイリング */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  
+  h1 {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  
+  h2 {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  
+  h3 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  
+  /* 通常テキストの読みやすさ向上 */
   p, div, span, li {
-    letter-spacing: 0.025em; /* 文字間隔を少し広げる */
-    line-height: 1.7; /* 行間を広げる */
+    line-height: 1.7;
   }
   
-  /* 小さいテキストの調整 */
+  /* テキストサイズの調整 */
   .text-xs {
-    letter-spacing: 0.03em;
-    line-height: 1.6;
+    font-size: 0.75rem;
+    letter-spacing: 0.01em;
+    line-height: 1.5;
+    font-weight: 500;
   }
   
   .text-sm {
-    letter-spacing: 0.025em;
-    line-height: 1.65;
+    font-size: 0.875rem;
+    letter-spacing: -0.006em;
+    line-height: 1.6;
+    font-weight: 450;
   }
   
-  /* 通常の太さのテキストを少し太く */
+  .text-base {
+    font-size: 1rem;
+    letter-spacing: -0.011em;
+    line-height: 1.7;
+  }
+  
+  .text-lg {
+    font-size: 1.125rem;
+    letter-spacing: -0.014em;
+    line-height: 1.6;
+  }
+  
+  .text-xl {
+    font-size: 1.25rem;
+    letter-spacing: -0.017em;
+    line-height: 1.5;
+  }
+  
+  .text-2xl {
+    font-size: 1.5rem;
+    letter-spacing: -0.019em;
+    line-height: 1.4;
+  }
+  
+  .text-3xl {
+    font-size: 1.875rem;
+    letter-spacing: -0.021em;
+    line-height: 1.3;
+  }
+  
+  .text-4xl {
+    font-size: 2.25rem;
+    letter-spacing: -0.022em;
+    line-height: 1.2;
+  }
+  
+  .text-5xl {
+    font-size: 3rem;
+    letter-spacing: -0.024em;
+    line-height: 1.1;
+  }
+  
+  /* フォントウェイトの再定義 */
+  .font-light {
+    font-weight: 300;
+  }
+  
   .font-normal {
-    font-weight: 450; /* 400から450に */
+    font-weight: 400;
   }
   
-  /* コントラスト強化 - ダークモードの薄いテキスト */
+  .font-medium {
+    font-weight: 500;
+  }
+  
+  .font-semibold {
+    font-weight: 600;
+  }
+  
+  .font-bold {
+    font-weight: 700;
+  }
+  
+  .font-extrabold {
+    font-weight: 800;
+  }
+  
+  /* ボタンやインタラクティブ要素 */
+  button, a {
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  
+  /* カード内のテキスト */
+  .card-title {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  
+  /* ナビゲーション */
+  nav {
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  
+  /* コントラスト強化 */
   .dark .text-slate-400 {
-    color: rgb(203 213 225); /* slate-300 */
+    color: rgb(203 213 225);
   }
   
   .dark .text-slate-500 {
-    color: rgb(148 163 184); /* slate-400 */
+    color: rgb(168 178 189);
   }
   
-  /* 本文サイズの最適化 */
-  .text-base {
-    font-size: 15px; /* 14pxから15pxに */
+  /* 学名のイタリック体 */
+  .scientific-name, em {
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  
+  /* コード・モノスペース */
+  code, pre {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    font-weight: 400;
+  }
+  
+  /* 数値データ */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
   }
 }
 

@@ -249,7 +249,7 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
                 )}
                 {/* Names overlay at bottom */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-4">
-                  <h3 className="text-white font-bold text-lg mb-1 drop-shadow-lg">
+                  <h3 className="text-white font-bold text-lg mb-1 drop-shadow-lg tracking-tight">
                     {moth.name}
                   </h3>
                   <p className="text-white/90 text-sm drop-shadow-md">
@@ -270,7 +270,7 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
                 
                 {/* Names displayed prominently in center */}
                 <div className="text-center flex-1 flex flex-col justify-center">
-                  <h3 className="text-slate-800 dark:text-slate-200 font-bold text-lg mb-2 leading-tight">
+                  <h3 className="text-slate-800 dark:text-slate-200 font-bold text-lg mb-2 leading-tight tracking-tight">
                     {moth.name}
                   </h3>
                   <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
@@ -683,7 +683,7 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
               </svg>
             </div>
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400 tracking-tight">
                 {title}のリスト
               </h2>
               {classificationFilter && (

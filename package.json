@@ -9,7 +9,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate-sitemap": "node scripts/generate-sitemap.js",
+    "generate-sitemap": "node scripts/generate-sitemap-split.js",
     "generate-meta": "node scripts/generate-meta-pages.js",
     "prebuild": "npm run generate-meta && npm run generate-sitemap",
     "predeploy": "npm run build",

@@ -27,6 +27,13 @@ const getInsectImagePath = (insect, imageExtensions = {}) => {
     ['マダラキボシキリガ', 'Dimorphicosmia_variegata'],
     ['ナシイラガ', 'Narosoideus_flavidorsalis'],
     ['ヨモギオオホソハマキ', 'Phtheochroides_clandestina'],
+    // 今回リネームした画像のマッピング追加
+    ['クロモクメヨトウ', 'Dypterygia_caliginosa'],
+    ['コスジシロエダシャク', 'Cabera_purus'],
+    ['シマフコヤガ', 'Corgatha_nitens'],
+    ['シロテンツマキリアツバ', 'Amphitrogia_amphidecta'],
+    ['スジモンヒトリ', 'Spilarctia_seriatopunctata'],
+    ['プライヤエグリシャチホコ', 'Lophontosia_pryeri'],
     // タマムシ科
     ['アオマダラタマムシ', 'Nipponobuprestis_amabilis'],
     ['ルイスヒラタチビタマムシ', 'Habroloma_lewisii'],
@@ -53,7 +60,7 @@ const getInsectImagePath = (insect, imageExtensions = {}) => {
   const japaneseNamedInsects = ['アオマダラタマムシ', 'ルイスヒラタチビタマムシ', 'ウスムラサキケンモン', 'オオマエベニトガリバ', 'ショウブオオヨトウ', 'シラオビキリガ', 'シラホシキリガ', 'タカオキリガ', 'ツマベニヒメハマキ', 'ナシキリガ', 'ニッコウケンモン', 'ニッコウシャチホコ', 'ノコメセダカヨトウ', 'ハスモンヨトウ', 'マエジロシャチホコ', 'クロハナコヤガ', 'フタスジエグリアツバ', 'ベニスズメ', 'ヒメスズメ', 'マダラキボシキリガ', 'ナシイラガ', 'ヨモギオオホソハマキ'];
   const imageFolder = japaneseNamedInsects.includes(insect.name) ? 'insects' :
                      insect.type === 'butterfly' ? 'butterflies' : 
-                     insect.type === 'beetle' ? 'beetles' : 
+                     insect.type === 'beetle' ? 'insects' :  // beetles are in insects folder
                      insect.type === 'leafbeetle' ? 'leafbeetles' : 'insects';
   
   // 動的拡張子取得（マッピング済み学名を最優先）
@@ -116,6 +123,7 @@ const InsectImage = ({ insect, large = false }) => {
       setImageLoaded(false);
     } else {
       setImageError(true);
+      setImageLoaded(false); // Stop showing loading spinner when all images fail
     }
   };
   
@@ -148,7 +156,7 @@ const InsectImage = ({ insect, large = false }) => {
         onLoad={handleImageLoad}
         onError={handleImageError}
       />
-      {!imageLoaded && (
+      {!imageLoaded && !imageError && (
         <div className="absolute inset-0 flex items-center justify-center bg-emerald-50/80 dark:bg-emerald-900/40">
           <div className="relative">
             <div className={`${loadingSize} border-2 border-emerald-200 dark:border-emerald-700 rounded-full`}></div>

@@ -183,7 +183,7 @@ const HostPlantListItem = React.memo(({ plant, mothNames, plantDetails = {}, pla
               />
               {/* Plant name overlay at bottom */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-4">
-                <h3 className="text-white font-bold text-lg drop-shadow-lg">
+                <h3 className="text-white font-bold text-lg drop-shadow-lg tracking-tight">
                   {plant}
                 </h3>
               </div>
@@ -200,7 +200,7 @@ const HostPlantListItem = React.memo(({ plant, mothNames, plantDetails = {}, pla
               
               {/* Plant name displayed prominently in center */}
               <div className="text-center flex-1 flex flex-col justify-center">
-                <h3 className="text-emerald-800 dark:text-emerald-200 font-bold text-lg leading-tight mb-2">
+                <h3 className="text-emerald-800 dark:text-emerald-200 font-bold text-lg leading-tight mb-2 tracking-tight">
                   {plant}
                 </h3>
                 {plantDetails[plant]?.familyName && (
@@ -283,6 +283,14 @@ const HostPlantList = ({ hostPlants = {}, plantDetails = {}, embedded = false })
   const [plantImageFilenames, setPlantImageFilenames] = useState([]);
   const itemsPerPage = 50;
 
+  // ひらがなをカタカナに変換する関数
+  const hiraganaToKatakana = (str) => {
+    return str.replace(/[\u3041-\u3096]/g, (match) => {
+      const chr = match.charCodeAt(0) + 0x60;
+      return String.fromCharCode(chr);
+    });
+  };
+
   // Load plant image filenames on component mount
   useEffect(() => {
     loadPlantImageFilenames().then(filenames => {
@@ -301,6 +309,9 @@ const HostPlantList = ({ hostPlants = {}, plantDetails = {}, embedded = false })
       return [];
     }
     const lowerCaseSearchTerm = debouncedPlantSearch.toLowerCase();
+    // ひらがな入力をカタカナに変換して検索
+    const katakanaSearchTerm = hiraganaToKatakana(debouncedPlantSearch).toLowerCase();
+    
     const filtered = Object.entries(safeHostPlants).filter(([plantName]) => {
       // Explicitly exclude empty, undefined, or invalid plant names
       if (!plantName || plantName.trim() === '' || plantName === 'undefined' || plantName === 'null') {
@@ -312,9 +323,14 @@ const HostPlantList = ({ hostPlants = {}, plantDetails = {}, embedded = false })
       const detail = safePlantDetails[plantName] || {};
       const family = detail.family ? detail.family.toLowerCase() : '';
       const genus = detail.genus ? detail.genus.toLowerCase() : '';
+      
+      // オリジナルの検索条件に加えて、カタカナ変換後の検索も追加
       return plantName.toLowerCase().includes(lowerCaseSearchTerm) ||
+             plantName.toLowerCase().includes(katakanaSearchTerm) ||
              family.includes(lowerCaseSearchTerm) ||
-             genus.includes(lowerCaseSearchTerm);
+             family.includes(katakanaSearchTerm) ||
+             genus.includes(lowerCaseSearchTerm) ||
+             genus.includes(katakanaSearchTerm);
     });
     
     // Sort with plants with images first, then "不明" at the end
@@ -426,16 +442,20 @@ const HostPlantList = ({ hostPlants = {}, plantDetails = {}, embedded = false })
   const plantNameSuggestions = useMemo(() => {
     if (!plantSearchTerm) return [];
     const lowerCaseSearchTerm = plantSearchTerm.toLowerCase();
+    const katakanaSearchTerm = hiraganaToKatakana(plantSearchTerm).toLowerCase();
     const suggestions = new Set();
     Object.keys(safeHostPlants).forEach(plant => {
-      if (plant.toLowerCase().includes(lowerCaseSearchTerm)) {
+      if (plant.toLowerCase().includes(lowerCaseSearchTerm) || 
+          plant.toLowerCase().includes(katakanaSearchTerm)) {
         suggestions.add(plant);
       }
       const detail = safePlantDetails[plant] || {};
-      if (detail.family?.toLowerCase().includes(lowerCaseSearchTerm)) {
+      if (detail.family?.toLowerCase().includes(lowerCaseSearchTerm) ||
+          detail.family?.toLowerCase().includes(katakanaSearchTerm)) {
         suggestions.add(detail.family);
       }
-      if (detail.genus?.toLowerCase().includes(lowerCaseSearchTerm)) {
+      if (detail.genus?.toLowerCase().includes(lowerCaseSearchTerm) ||
+          detail.genus?.toLowerCase().includes(katakanaSearchTerm)) {
         suggestions.add(detail.genus);
       }
     });
@@ -462,7 +482,7 @@ const HostPlantList = ({ hostPlants = {}, plantDetails = {}, embedded = false })
       {!embedded && (
         <div className="p-6 bg-emerald-500/10 dark:bg-emerald-500/20 border-b border-emerald-200/30 dark:border-emerald-700/30">
           <div className="flex items-center space-x-3 mb-4">
-            <h2 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+            <h2 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
               食草リスト
             </h2>
           </div>

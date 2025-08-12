@@ -72,6 +72,13 @@ function App() {
     ['マダラキボシキリガ', 'Dimorphicosmia_variegata'],
     ['ナシイラガ', 'Narosoideus_flavidorsalis'],
     ['ヨモギオオホソハマキ', 'Phtheochroides_clandestina'],
+    // 今回リネームした画像のマッピング追加
+    ['クロモクメヨトウ', 'Dypterygia_caliginosa'],
+    ['コスジシロエダシャク', 'Cabera_purus'],
+    ['シマフコヤガ', 'Corgatha_nitens'],
+    ['シロテンツマキリアツバ', 'Amphitrogia_amphidecta'],
+    ['スジモンヒトリ', 'Spilarctia_seriatopunctata'],
+    ['プライヤエグリシャチホコ', 'Lophontosia_pryeri'],
     // タマムシ科
     ['アオマダラタマムシ', 'Nipponobuprestis_amabilis'],
     ['ルイスヒラタチビタマムシ', 'Habroloma_lewisii'],
@@ -4610,8 +4617,10 @@ function App() {
             let processedCount = 0;
             let skippedCount = 0;
             hamushiParsedData.forEach((row, index) => {
+          const catalogId = row['大図鑑カタログNo']?.trim();  // CSVのIDカラム
           const japaneseName = row['和名']?.trim();
-          const family = row['科和名']?.trim();
+          const familyLatin = row['科名']?.trim();        // 科のラテン語名
+          const familyJapanese = row['科和名']?.trim();   // 科の日本語名
           const subfamily = row['亜科名']?.trim();        // 英語の亜科名
           const subfamilyJapanese = row['亜科和名']?.trim(); // 日本語の亜科名
           const hostPlants = row['食草']?.trim();
@@ -4642,7 +4651,29 @@ function App() {
           // Validate scientific name quality
           const validationResult = validateScientificName(scientificName, japaneseName, 'leafbeetle');
           
-          const id = `leafbeetle-${index + 1}`;
+          // IDを生成 - CSVのIDを使用、なければindexベース
+          let id;
+          if (catalogId && catalogId.startsWith('H')) {
+            // H629 -> leafbeetle-629
+            id = `leafbeetle-${catalogId.substring(1)}`;
+            // デバッグ: H629のデータを確認
+            if (catalogId === 'H629') {
+              console.log('H629 (ムナグロナガハムシ) データ:', {
+                id,
+                catalogId,
+                japaneseName,
+                familyLatin,
+                familyJapanese,
+                scientificName
+              });
+            }
+          } else if (catalogId && catalogId.startsWith('LB')) {
+            // LB101 -> leafbeetle-lb101
+            id = `leafbeetle-${catalogId.toLowerCase()}`;
+          } else {
+            // フォールバック
+            id = `leafbeetle-${index + 1}`;
+          }
           
           // Parse host plants - CSVクリーニング後はシンプルな処理で十分
           let hostPlantList = [];
@@ -4658,8 +4689,8 @@ function App() {
             scientificFilename: formatScientificNameForFilename(scientificName),
             type: 'leafbeetle',
             classification: {
-              family: 'Chrysomelidae',
-              familyJapanese: 'ハムシ科',
+              family: familyLatin || 'Chrysomelidae',
+              familyJapanese: familyJapanese || 'ハムシ科',
               subfamily: subfamily,
               subfamilyJapanese: subfamilyJapanese,
               genus: scientificName ? scientificName.split(' ')[0] : '不明'
