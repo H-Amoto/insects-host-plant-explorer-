@@ -36,21 +36,8 @@ const plantScientificNameMap = {
   'コナラ': 'Quercus serrata',
 };
 
-function App() {
-  const location = useLocation();
-  const [moths, setMoths] = useState([]);
-  const [butterflies, setButterflies] = useState([]);
-  const [beetles, setBeetles] = useState([]);
-  const [leafbeetles, setLeafbeetles] = useState([]);
-  const [hostPlants, setHostPlants] = useState({});
-  const [plantDetails, setPlantDetails] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
-  
-  const isDevelopment = import.meta.env.DEV;
-  
-  // 全体的な和名→学名ファイル名マッピング（ファイル名変更対応）
-  const globalJapaneseToScientificMapping = new Map([
+// 全体的な和名→学名ファイル名マッピング（ファイル名変更対応）
+const globalJapaneseToScientificMapping = new Map([
     // 蛾類
     ['ウスムラサキケンモン', 'Acronicta_subpurpurea_Matsumura'],
     ['オオマエベニトガリバ', 'Tethea_consimilis'],
@@ -85,6 +72,19 @@ function App() {
     // シジミチョウ科
     ['クロマダラソテツシジミ', 'Chilades_pandava']
   ]);
+
+function App() {
+  const location = useLocation();
+  const [moths, setMoths] = useState([]);
+  const [butterflies, setButterflies] = useState([]);
+  const [beetles, setBeetles] = useState([]);
+  const [leafbeetles, setLeafbeetles] = useState([]);
+  const [hostPlants, setHostPlants] = useState({});
+  const [plantDetails, setPlantDetails] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  
+  const isDevelopment = import.meta.env.DEV;
   
   const isHomePage = location.pathname === '/';
 
@@ -3785,25 +3785,8 @@ function App() {
           console.log("オオゴマシジミ 備考 field:", oogomashijimi['備考']);
         }
 
-        // Add a test butterfly first to confirm the system works
-        butterflyData = [
-          {
-            id: "test-butterfly-1",
-            name: "ギフチョウ",
-            scientificName: "Luehdorfia japonica",
-            scientificFilename: "Luehdorfia_japonica",
-            type: "butterfly",
-            classification: {
-              family: "アゲハチョウ科",
-              familyJapanese: "アゲハチョウ科",
-              subfamily: "ウスバアゲハ亜科",
-              subfamilyJapanese: "ウスバアゲハ亜科",
-              genus: "Luehdorfia"
-            },
-            hostPlants: ["カンアオイ", "ウスバサイシン", "フタバアオイ"],
-            source: "日本産蝶類標準図鑑"
-          }
-        ];
+        // Initialize butterfly data array
+        butterflyData = [];
         
         // Process CSV data and add to butterflyData
         let processedCount = 0;
@@ -3813,7 +3796,7 @@ function App() {
           const source = row['文献名'];
           const family = row['科'];
           const subfamily = row['亜科'];
-          const genus = row['属'];
+          const genus = row['属名'] || row['属'];
           const species = row['種小名'];
           const japaneseName = row['和名'];
           const hostPlants = row['食草'];
@@ -4458,10 +4441,10 @@ function App() {
             
             beetleData = [];
         beetleParsed.data.forEach((row, index) => {
-          const source = row['文献名'];
-          const family = row['科'];
-          const subfamily = row['亜科'];
-          const genus = row['属'];
+          const source = row['文献名'] || row['出典'];
+          const family = row['科名'] || row['科'];
+          const subfamily = row['亜科名'] || row['亜科'];
+          const genus = row['属名'] || row['属'];
           const species = row['種小名'];
           const japaneseName = row['和名'];
           const hostPlants = row['食草'];
