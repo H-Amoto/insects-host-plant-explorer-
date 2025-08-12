@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
 import { getSourceLink } from '../utils/sourceLinks';
 
-// 月名と色のマッピング - 統一された色を使用
+// 月名と色のマッピング - 薄い色で統一
 const MONTHS = [
-  { name: '1月', short: 'Jan', number: 1, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'winter' },
-  { name: '2月', short: 'Feb', number: 2, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'winter' },
-  { name: '3月', short: 'Mar', number: 3, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'spring' },
-  { name: '4月', short: 'Apr', number: 4, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'spring' },
-  { name: '5月', short: 'May', number: 5, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'spring' },
-  { name: '6月', short: 'Jun', number: 6, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'summer' },
-  { name: '7月', short: 'Jul', number: 7, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'summer' },
-  { name: '8月', short: 'Aug', number: 8, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'summer' },
-  { name: '9月', short: 'Sep', number: 9, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'autumn' },
-  { name: '10月', short: 'Oct', number: 10, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'autumn' },
-  { name: '11月', short: 'Nov', number: 11, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'autumn' },
-  { name: '12月', short: 'Dec', number: 12, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'winter' }
+  { name: '1月', short: 'Jan', number: 1, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'winter' },
+  { name: '2月', short: 'Feb', number: 2, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'winter' },
+  { name: '3月', short: 'Mar', number: 3, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'spring' },
+  { name: '4月', short: 'Apr', number: 4, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'spring' },
+  { name: '5月', short: 'May', number: 5, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'spring' },
+  { name: '6月', short: 'Jun', number: 6, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'summer' },
+  { name: '7月', short: 'Jul', number: 7, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'summer' },
+  { name: '8月', short: 'Aug', number: 8, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'summer' },
+  { name: '9月', short: 'Sep', number: 9, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'autumn' },
+  { name: '10月', short: 'Oct', number: 10, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'autumn' },
+  { name: '11月', short: 'Nov', number: 11, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'autumn' },
+  { name: '12月', short: 'Dec', number: 12, color: 'bg-orange-300', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'winter' }
 ];
 
 // 季節アイコン
@@ -439,7 +439,7 @@ const EmergenceTimeDisplay = ({ emergenceTime, source, compact = false }) => {
                       key={periodNum}
                       className={`
                         flex-1 
-                        ${isActive ? month.color : 'bg-transparent'} 
+                        ${isActive ? `${month.color} opacity-60` : 'bg-transparent'} 
                         transition-all duration-200
                         ${dividerClass}
                       `}
@@ -554,8 +554,10 @@ const EmergenceTimeDisplay = ({ emergenceTime, source, compact = false }) => {
                         rounded-sm 
                         transition-all 
                         duration-200 
-                        hover:brightness-110
+                        hover:opacity-80
                         min-h-[32px]
+                        opacity-70
+                        border border-orange-400/30
                       `}
                       title={`${month.name}${periodName} - 成虫発生期`}
                     >
