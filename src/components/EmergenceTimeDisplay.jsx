@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
 import { getSourceLink } from '../utils/sourceLinks';
 
-// 月名と色のマッピング
+// 月名と色のマッピング - 統一された色を使用
 const MONTHS = [
-  { name: '1月', short: 'Jan', number: 1, color: 'bg-blue-500', lightColor: 'bg-blue-100', textColor: 'text-blue-700', season: 'winter' },
-  { name: '2月', short: 'Feb', number: 2, color: 'bg-blue-500', lightColor: 'bg-blue-100', textColor: 'text-blue-700', season: 'winter' },
-  { name: '3月', short: 'Mar', number: 3, color: 'bg-green-500', lightColor: 'bg-green-100', textColor: 'text-green-700', season: 'spring' },
-  { name: '4月', short: 'Apr', number: 4, color: 'bg-green-500', lightColor: 'bg-green-100', textColor: 'text-green-700', season: 'spring' },
-  { name: '5月', short: 'May', number: 5, color: 'bg-green-500', lightColor: 'bg-green-100', textColor: 'text-green-700', season: 'spring' },
-  { name: '6月', short: 'Jun', number: 6, color: 'bg-yellow-500', lightColor: 'bg-yellow-100', textColor: 'text-yellow-700', season: 'summer' },
-  { name: '7月', short: 'Jul', number: 7, color: 'bg-red-500', lightColor: 'bg-red-100', textColor: 'text-red-700', season: 'summer' },
-  { name: '8月', short: 'Aug', number: 8, color: 'bg-red-500', lightColor: 'bg-red-100', textColor: 'text-red-700', season: 'summer' },
+  { name: '1月', short: 'Jan', number: 1, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'winter' },
+  { name: '2月', short: 'Feb', number: 2, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'winter' },
+  { name: '3月', short: 'Mar', number: 3, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'spring' },
+  { name: '4月', short: 'Apr', number: 4, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'spring' },
+  { name: '5月', short: 'May', number: 5, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'spring' },
+  { name: '6月', short: 'Jun', number: 6, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'summer' },
+  { name: '7月', short: 'Jul', number: 7, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'summer' },
+  { name: '8月', short: 'Aug', number: 8, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'summer' },
   { name: '9月', short: 'Sep', number: 9, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'autumn' },
   { name: '10月', short: 'Oct', number: 10, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'autumn' },
-  { name: '11月', short: 'Nov', number: 11, color: 'bg-amber-500', lightColor: 'bg-amber-100', textColor: 'text-amber-700', season: 'autumn' },
-  { name: '12月', short: 'Dec', number: 12, color: 'bg-blue-500', lightColor: 'bg-blue-100', textColor: 'text-blue-700', season: 'winter' }
+  { name: '11月', short: 'Nov', number: 11, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'autumn' },
+  { name: '12月', short: 'Dec', number: 12, color: 'bg-orange-500', lightColor: 'bg-orange-100', textColor: 'text-orange-700', season: 'winter' }
 ];
 
 // 季節アイコン
