@@ -420,7 +420,6 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                             </svg>
                           </div>
                           <p className="text-slate-500 dark:text-slate-400 font-medium">画像が見つかりません</p>
-                          <p className="text-slate-400 dark:text-slate-500 text-sm mt-2">写真をお持ちの場合はご提供ください</p>
                         </div>
                       </div>
                     )}
