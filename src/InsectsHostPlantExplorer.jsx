@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import MothList from './components/MothList';
 import HostPlantList from './components/HostPlantList';
 import InstagramIcon from './components/InstagramIcon';
@@ -8,6 +8,7 @@ import { MainStructuredData } from './components/StructuredData';
 const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leafbeetles, hostPlants, plantDetails, theme, setTheme }) => {
   const [activeTab, setActiveTab] = useState('insects');
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  const scrollPositionRef = useRef(0);
   
   // DEBUG: Log the actual data received
   console.log("DEBUG InsectsHostPlantExplorer received:", {
@@ -18,6 +19,44 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
     total: moths.length + butterflies.length + beetles.length + leafbeetles.length
   });
   
+  // Save scroll position before navigating away
+  useEffect(() => {
+    const saveScrollPosition = () => {
+      scrollPositionRef.current = window.scrollY;
+      sessionStorage.setItem('insectExplorerScrollPosition', window.scrollY.toString());
+    };
+
+    // Save scroll position on click of any link that navigates to detail page
+    const handleClick = (e) => {
+      const target = e.target.closest('a');
+      if (target && (target.href.includes('/moth/') || target.href.includes('/butterfly/') || 
+                    target.href.includes('/beetle/') || target.href.includes('/leafbeetle/') || 
+                    target.href.includes('/host-plant/'))) {
+        saveScrollPosition();
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+    
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, []);
+
+  // Restore scroll position when returning to the page
+  useEffect(() => {
+    const savedPosition = sessionStorage.getItem('insectExplorerScrollPosition');
+    if (savedPosition) {
+      const position = parseInt(savedPosition, 10);
+      // Use setTimeout to ensure DOM is fully rendered before scrolling
+      setTimeout(() => {
+        window.scrollTo(0, position);
+      }, 100);
+      // Clear the saved position after restoring
+      sessionStorage.removeItem('insectExplorerScrollPosition');
+    }
+  }, []);
+
   // Preload hero image on component mount
   React.useEffect(() => {
     const heroImageUrl = `${import.meta.env.BASE_URL}images/insects/Cucullia_argentea.jpg`;
