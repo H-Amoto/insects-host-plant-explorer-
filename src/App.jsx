@@ -574,8 +574,15 @@ function App() {
               }
             }
             
-            // キリガCSVのデータを常に優先して上書き
-            emergenceTimeMap.set(japaneseName, { time: normalizedEmergenceTime, source: '日本の冬夜蛾' });
+            // ゴマダラキリガの特別処理 - ガントチャート用に変換
+            if (japaneseName === 'ゴマダラキリガ' && emergenceTime.includes('羽化し')) {
+              // "10~11月に羽化し、寒冷地では5月まで" を "10-12、1-5月" に変換
+              normalizedEmergenceTime = '10-12、1-5月';
+              console.log(`Normalized ゴマダラキリガ emergence time for chart: "${emergenceTime}" -> "${normalizedEmergenceTime}"`);
+            }
+            
+            // キリガCSVのデータを常に優先して上書き（説明文として保存）
+            emergenceTimeMap.set(japaneseName, { time: normalizedEmergenceTime, source: '日本の冬夜蛾', description: emergenceTime });
             
             // Debug log for target species
             if (japaneseName.includes('キバラモクメキリガ') || japaneseName.includes('ナンカイミドリキリガ') || japaneseName.includes('アズサキリガ')) {
@@ -583,13 +590,13 @@ function App() {
             }
           }
           if (scientificName && emergenceTime && emergenceTime !== '不明') {
-            // キリガCSVのデータを常に優先して上書き
-            emergenceTimeMap.set(scientificName, { time: emergenceTime, source: '日本の冬夜蛾' });
+            // キリガCSVのデータを常に優先して上書き（説明文として保存）
+            emergenceTimeMap.set(scientificName, { time: normalizedEmergenceTime, source: '日本の冬夜蛾', description: emergenceTime });
             
             // Also store with author/year removed for better matching
             const cleanedScientificName = scientificName.replace(/\s*\([^)]*\)\s*$/, '').trim();
             if (cleanedScientificName !== scientificName) {
-              emergenceTimeMap.set(cleanedScientificName, { time: emergenceTime, source: '日本の冬夜蛾' });
+              emergenceTimeMap.set(cleanedScientificName, { time: normalizedEmergenceTime, source: '日本の冬夜蛾', description: emergenceTime });
               
               // Debug log for target species
               if (cleanedScientificName.includes('Xylena formosa') || cleanedScientificName.includes('Diphtherocome autumnalis') || cleanedScientificName.includes('Pseudopanolis azusa')) {
@@ -3689,6 +3696,13 @@ function App() {
                                          emergenceTimeMap.get(scientificName) ||
                                          emergenceTimeMap.get(cleanedScientificName) || null;
                     return emergenceData ? emergenceData.source : null;
+                  })(),
+                  emergenceTimeDescription: (() => {
+                    // descriptionフィールドがある場合はそれを返す（説明文優先）
+                    const emergenceData = emergenceTimeMap.get(mothName) || 
+                                         emergenceTimeMap.get(scientificName) ||
+                                         emergenceTimeMap.get(cleanedScientificName) || null;
+                    return emergenceData ? emergenceData.description : null;
                   })()
                 };
                 

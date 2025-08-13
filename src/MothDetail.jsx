@@ -1456,6 +1456,11 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                 
                 <div className="p-4">
                   {(() => {
+                    // descriptionがある場合はそれを優先して表示（説明文として表示）
+                    if (moth.emergenceTimeDescription) {
+                      return <EmergenceTimeDisplay emergenceTime={moth.emergenceTimeDescription} source={moth.emergenceTimeSource} />;
+                    }
+                    
                     // 既存のemergenceTimeがある場合はそれを使用
                     if (moth.emergenceTime && moth.emergenceTime !== '不明') {
                       return <EmergenceTimeDisplay emergenceTime={moth.emergenceTime} source={moth.emergenceTimeSource} />;

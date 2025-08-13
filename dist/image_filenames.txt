@@ -1,17 +1,26 @@
+Acanthoplusia_ichinosei
 Acherontia_lachesis
+Achlya longipennis longipennis Inoue
 Acronicta_subpurpurea_Matsumura
 Acronicta_subpurpurea
 Agrilus_spinipennis
 Agrochola_sakabei
 Agrocholorta_kimurai
 Agrotis_exclamationis
+Aloa_lactinea
 Ambulyx_japonica
+Amphitrogia_amphidecta
+Amraica superans superans Butler
+Anacronicta nitida Butler
 Archiearis_parthenias
 Aroga_mesostrepta
 Artena_dotata
+Atrachya_menetriesi
 Aventiola_pusilla_backup
 Aventiola_pusilla
 Bomolocha_nigrobasalis
+Brahmaea_japonica
+Cabera_purus
 Callopistria_argyrosticta
 Capua_vulgana
 Cassida_lineola
@@ -19,7 +28,11 @@ Cerastis_leucographa
 Cerastis_rubricosa
 Chariaspilates_formosaria
 Chilades_pandava
+Chrysorithrum amatum Bremer & Grey
+Chrysoteuchia diplogramma Zeller
+Conistra castaneofasciata Motschulsky
 Coraebus_daisenensis
+Corgatha_nitens
 Cosmia_affinis
 Cosmia_camptostigma_backup
 Cosmia_camptostigma
@@ -27,25 +40,36 @@ Cosmia_pyralina_backup
 Cosmia_pyralina
 Cosmia_restituta_Walker_1857
 Cosmia_restituta
+Crambus argyrophorus Butler
 Crambus_humidellus
+Craniophora ligustri
+Craniophora_ligustri
 Craniophora_praeclara_Graeser
 Craniophora_praeclara
 Cryphia_mitsuhashi
 Cucullia_argentea
 Cucullia_kurilullia
 Cucullia_pustulata
+Cyrestis thyodamas
 Deilephila_askoldensis_backup
 Deilephila_askoldensis
 Deilephila_elpenor_backup
 Deilephila_elpenor
+Diarsia_deparca
+Dichomeris heriguronis Matsumura
 Dimorphicosmia_variegata_backup
 Dimorphicosmia_variegata
 Diphtherocome_autumnalis
+Dypterygia_caliginosa
 Eligma_narcissus
 Endotricha_minialis
+Eriodonta amagisana Marumo
+Eriodonta_amagisana
 Etielloides_bipartitella
 Eupithecia_virgaureata
 Euplexidia_angusta
+Flavocrambus striatellus Leech
+Gabala_argentata
 Gonepatica_opalina_backup
 Gonepatica_opalina
 Gonitis_mesogona
@@ -54,12 +78,18 @@ Habroloma_lewisii
 Helicoverpa_armigera
 Helotropha_leucostigma_backup
 Helotropha_leucostigma
+Hemipsectra fallax Butler
 Herculia_orthogramma
+Hypephyra_terrosa
 Hypocala_deflorata
+IMG_4736
+IMG_4738
+IMG_8731
 Iragaodes_nobilis
 Kawabeia_razowskii
 Kentrochrysalis_consimilis
 Labdia_semicoccinea
+Lecitholaxa thiodora Meyrick
 Lithomoia_solidaginis
 Lithophane_lamda
 Lithophane_nagaii
@@ -68,10 +98,15 @@ Lithophane_pruinosa
 Lithophane_socia
 Lithophane_venusta
 Loepa_sakaei
+Lophomilia polybapta Butler
+Lophontosia_pryeri
 Lygephila_nigricostata
+Macrobrochis staudingeri staudingeri Alphéraky
 Martania_fulvida
 Maruca_vitrata
+Meganola_fumosa
 Mesoplectra_griselda
+Mesorhynchaglaea_pacifica
 Micromelalopha_troglodyta_1
 Micromelalopha_troglodyta_3
 Micromelalopha_troglodyta
@@ -79,12 +114,16 @@ Microxyla_confusa
 Mimachrostia_fasciata
 Mimopsestis_basalis
 Naganoella_timandra
+Narathura japonica
 Narosoideus_flavidorsalis_backup
 Narosoideus_flavidorsalis
 Negritothripa_hampsoni
 Nemophora_staudingerella
+Nipponobuprestis_amabilis_backup
+Nipponobuprestis_amabilis
 Notodonta_albicosta_backup
 Notodonta_albicosta
+Oides_bowringii
 Organopoda_carnearia
 Orgyia_postica
 Orthogonia_sera_Felder__Felder_1862
@@ -93,13 +132,18 @@ Orthosia_incerta
 Orthosia_lizetta
 Orthosia_satoi
 Pachyerannis_obliquaria
+Pangrapta_costinotata
+Papilio bianor okinawensis
 Paracolax_albinotata
 Paracolax_fentoni
+Parum colligata Walker
 Pennithera_comis
 Perigrapha_circumducta
 Phaecasiophora_roseana_2
 Phaecasiophora_roseana
+Phalga_clarirena
 Phazaca_alikangensis
+Phlogophora_albovittata
 Phlogophora_beatrix
 Phragmataecia_castaneae
 Phtheochroides_clandestina_backup
@@ -115,6 +159,7 @@ Pseudopanolis_takao
 Pyrosis_idiota
 Rhadinosa_nigrocyanea
 Sarcopolia_illoba
+Saturnia_jonasii
 Schiffermuelleria_zelleri
 Scoliopteryx_libatrix
 Sebastosema_bubonaria
@@ -122,13 +167,17 @@ Shachia_circumscripta_backup
 Shachia_circumscripta
 Siccia_obscura
 Spatulipalpia_albistrialis
+Spilarctia_seriatopunctata
+Spilosoma punctarium Stoll
 Spirama_retorta
 Spodoptera_litura_backup
 Spodoptera_litura
 Stericta_kogii
 Sugitania_akirai
 Sugitaniella_kuramana
+Tanaorhinus reciprocata confuciaria Walker
 Telorta_divergens
+Tethea ampliata ampliata Butler
 Tethea_consimilis_backup
 Tethea_consimilis
 Thysanoplusia_intermixta
@@ -137,35 +186,14 @@ Togepteryx_velutina
 Trichopteryx_miracula
 Trichopteryx_muscigera
 Trigonodes_hyppasia
+Xanthia_icteritia
 Xanthia_togata
 Xenotrachea_niphonica
 Xestia_efflorescens
 Xylena_changi
 Xylena_formosa
-Zaranga_permagna
-Achlya_longipennis_longipennis
-Amraica_superans_superans
-Anacronicta_nitida
-Chrysorithrum_amatum
-Chrysoteuchia_diplogramma
-Conistra_castaneofasciata
-Crambus_argyrophorus
-Craniophora_ligustri
-Cyrestis_thyodamas
-Dichomeris_heriguronis
-Eriodonta_amagisana
-Flavocrambus_striatellus
-Hemipsectra_fallax
-Lecitholaxa_thiodora
-Lophomilia_polybapta
-Macrobrochis_staudingeri_staudingeri
-Meganola_fumosa
-Narathura_japonica
-Papilio_bianor_okinawensis
-Parum_colligata
-Spilosoma_punctarium
-Tanaorhinus_reciprocata_confuciaria
-Tethea_ampliata_ampliata
-Zanclognatha_griselda
-Zanclognatha_yaeyamalis
+Zanclognatha griselda Butler
+Zanclognatha yaeyamalis Owada
 Zanclognatha_yaeyamalis_2
+Zaranga_permagna
+コキマエヤガ

@@ -214,8 +214,11 @@ const parseEmergenceTime = (emergenceTime) => {
   });
   
   // カンマで区切られた複数の範囲/月を処理（例：10-12、1-5月）
+  let processedText = emergenceTime;
   const commaSeparatedPattern = /(\d{1,2})[-－](\d{1,2})[、，,]\s*(\d{1,2})[-－](\d{1,2})月/g;
+  let hasCommaSeparatedPattern = false;
   while ((match = commaSeparatedPattern.exec(emergenceTime)) !== null) {
+    hasCommaSeparatedPattern = true;
     if (isDebugSpecies) {
       console.log('DEBUG: commaSeparatedPattern match:', match, 'input:', emergenceTime);
     }
@@ -263,34 +266,37 @@ const parseEmergenceTime = (emergenceTime) => {
   
   // 範囲指定（例：5～8月、3月～10月、4-5月）を検出 - ASCII チルダ (~) も含む（旬指定なし）
   // ハイフンも含めて処理
-  const rangePattern = /(?<!、|，|,\s*)(\d{1,2})月?[～〜~\-－](\d{1,2})月(?![上中下])/g;
-  while ((match = rangePattern.exec(emergenceTime)) !== null) {
-    if (isDebugSpecies) {
-      console.log('DEBUG: rangePattern match:', match, 'input:', emergenceTime);
-    }
-    const start = parseInt(match[1]);
-    const end = parseInt(match[2]);
-    
-    if (start <= end) {
-      for (let i = start; i <= end; i++) {
-        activeMonths.add(i);
-        // 全旬を追加
-        for (let p = 1; p <= 3; p++) {
-          activePeriods.add(i + p * 0.1);
-        }
+  // カンマ区切りパターンがある場合はスキップ（重複処理を避ける）
+  if (!hasCommaSeparatedPattern) {
+    const rangePattern = /(\d{1,2})月?[～〜~\-－](\d{1,2})月(?![上中下])/g;
+    while ((match = rangePattern.exec(emergenceTime)) !== null) {
+      if (isDebugSpecies) {
+        console.log('DEBUG: rangePattern match:', match, 'input:', emergenceTime);
       }
-    } else {
-      // 年をまたぐ場合（例：10～3月）
-      for (let i = start; i <= 12; i++) {
-        activeMonths.add(i);
-        for (let p = 1; p <= 3; p++) {
-          activePeriods.add(i + p * 0.1);
+      const start = parseInt(match[1]);
+      const end = parseInt(match[2]);
+      
+      if (start <= end) {
+        for (let i = start; i <= end; i++) {
+          activeMonths.add(i);
+          // 全旬を追加
+          for (let p = 1; p <= 3; p++) {
+            activePeriods.add(i + p * 0.1);
+          }
         }
-      }
-      for (let i = 1; i <= end; i++) {
-        activeMonths.add(i);
-        for (let p = 1; p <= 3; p++) {
-          activePeriods.add(i + p * 0.1);
+      } else {
+        // 年をまたぐ場合（例：10～3月）
+        for (let i = start; i <= 12; i++) {
+          activeMonths.add(i);
+          for (let p = 1; p <= 3; p++) {
+            activePeriods.add(i + p * 0.1);
+          }
+        }
+        for (let i = 1; i <= end; i++) {
+          activeMonths.add(i);
+          for (let p = 1; p <= 3; p++) {
+            activePeriods.add(i + p * 0.1);
+          }
         }
       }
     }
