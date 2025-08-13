@@ -220,7 +220,6 @@ const HostPlantListItem = React.memo(({ plant, mothNames, plantDetails = {}, pla
                 </span>
               </div>
             </div>
-            </div>
           )}
           
           {/* Loading state for images */}
