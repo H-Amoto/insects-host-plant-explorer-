@@ -112,7 +112,7 @@ function App() {
       const yListCsvPath = `${import.meta.env.BASE_URL}20210514YList_download.csv`; // New YList CSV path
       const hamushiIntegratedCsvPath = `${import.meta.env.BASE_URL}hamushi_integrated_master.csv`;
       const butterflyCsvPath = `${import.meta.env.BASE_URL}butterfly_host.csv`;
-      const beetleCsvPath = `${import.meta.env.BASE_URL}buprestidae_host.csv`;
+      const beetleCsvPath = `${import.meta.env.BASE_URL}buprestidae_host_updated.csv`;
       const kirigaCsvPath = `${import.meta.env.BASE_URL}日本の冬夜蛾.csv`;
       const fuyushakuCsvPath = `${import.meta.env.BASE_URL}日本の冬尺蛾.csv?v=${Date.now()}&bust=${Math.random()}&nocache=${Date.now()}&t=${performance.now()}`;
       const emergenceTimeCsvPath = `${import.meta.env.BASE_URL}emergence_time_integrated.csv`;
@@ -4434,7 +4434,7 @@ function App() {
             console.log("Parsing beetle data...");
             const beetleParsed = Papa.parse(beetleText, { header: true, skipEmptyLines: true, delimiter: ',' });
             if (beetleParsed.errors.length) {
-              console.error("PapaParse errors in buprestidae_host.csv:", beetleParsed.errors);
+              console.error("PapaParse errors in buprestidae_host_updated.csv:", beetleParsed.errors);
             }
             
             // タマムシデータでもグローバルマッピングを使用
@@ -4444,6 +4444,7 @@ function App() {
           const source = row['文献名'] || row['出典'];
           const family = row['科名'] || row['科'];
           const subfamily = row['亜科名'] || row['亜科'];
+          const subfamilyJapanese = row['亜科和名'] || row['亜科'];
           const genus = row['属名'] || row['属'];
           const species = row['種小名'];
           const japaneseName = row['和名'];
@@ -4544,9 +4545,9 @@ function App() {
             type: 'beetle',
             classification: {
               family: family,
-              familyJapanese: family,
+              familyJapanese: row['科和名'] || family,
               subfamily: subfamily,
-              subfamilyJapanese: subfamily,
+              subfamilyJapanese: subfamilyJapanese,
               genus: genus
             },
             hostPlants: hostPlantList,
