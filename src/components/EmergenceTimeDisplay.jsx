@@ -263,8 +263,11 @@ const parseEmergenceTime = (emergenceTime) => {
   
   // 範囲指定（例：5～8月、3月～10月、4-5月）を検出 - ASCII チルダ (~) も含む（旬指定なし）
   // ハイフンも含めて処理
-  const rangePattern = /(\d{1,2})月?[～〜~\-－](\d{1,2})月(?![上中下])/g;
+  const rangePattern = /(?<!、|，|,\s*)(\d{1,2})月?[～〜~\-－](\d{1,2})月(?![上中下])/g;
   while ((match = rangePattern.exec(emergenceTime)) !== null) {
+    if (isDebugSpecies) {
+      console.log('DEBUG: rangePattern match:', match, 'input:', emergenceTime);
+    }
     const start = parseInt(match[1]);
     const end = parseInt(match[2]);
     
