@@ -142,7 +142,7 @@ function App() {
       const beetleCsvPath = `${import.meta.env.BASE_URL}buprestidae_host.csv`;
       const kirigaCsvPath = `${import.meta.env.BASE_URL}日本の冬夜蛾.csv`;
       const fuyushakuCsvPath = `${import.meta.env.BASE_URL}日本の冬尺蛾.csv?v=${Date.now()}&bust=${Math.random()}&nocache=${Date.now()}&t=${performance.now()}`;
-      const emergenceTimeCsvPath = `${import.meta.env.BASE_URL}emergence_time_integrated.csv`;
+      // emergence_time_integrated.csv統合済み - hamushi_integrated_master.csvに統合完了
       const genusMappingCsvPath = `${import.meta.env.BASE_URL}genus_mapping.csv`;
 
       // Unified scientific name processing function for all insect types - FIXED SCOPE
@@ -431,7 +431,7 @@ function App() {
         if (isDevelopment) console.log("DEBUG: フユシャクCsvPath:", fuyushakuCsvPath);
         if (isDevelopment) console.log("DEBUG: About to load フユシャク file with safeFileLoad");
         
-        const [wameiText, mainText, yListText, hamushiIntegratedText, butterflyText, beetleText, kirigaText, fuyushakuText, emergenceTimeText, genusMappingText] = await Promise.all([
+        const [wameiText, mainText, yListText, hamushiIntegratedText, butterflyText, beetleText, kirigaText, fuyushakuText, genusMappingText] = await Promise.all([
           safeFileLoad(wameiCsvPath, 'wamei checklist', 20000),
           safeFileLoad(mainCsvPath, 'main moth data', 20000),
           safeFileLoad(yListCsvPath, 'YList data', 30000), // Longer timeout for large file
@@ -440,7 +440,6 @@ function App() {
           safeFileLoad(beetleCsvPath, 'beetle data', 15000),
           safeFileLoad(kirigaCsvPath, 'kiriga data', 10000),
           safeFileLoad(fuyushakuCsvPath, 'fuyushaku data', 10000),
-          safeFileLoad(emergenceTimeCsvPath, 'emergence time data', 10000),
           safeFileLoad(genusMappingCsvPath, 'genus mapping data', 10000)
         ]);
         
@@ -463,7 +462,7 @@ function App() {
           beetle: beetleText ? 'SUCCESS' : 'FAILED',
           kiriga: kirigaText ? 'SUCCESS' : 'FAILED',
           fuyushaku: fuyushakuText ? 'SUCCESS' : 'FAILED',
-          emergenceTime: emergenceTimeText ? 'SUCCESS' : 'FAILED',
+          // emergenceTime: 統合済みのためhamushiIntegratedTextに含まれる
           genusMapping: genusMappingText ? 'SUCCESS' : 'FAILED'
         });
 
@@ -480,36 +479,7 @@ function App() {
         // Parse キリガ CSV to create emergence time lookup table
         const emergenceTimeMap = new Map();
         
-        // First, parse the integrated emergence time CSV
-        if (emergenceTimeText && emergenceTimeText.trim()) {
-          try {
-            console.log("Parsing integrated emergence time data...");
-            const emergenceTimeParsed = Papa.parse(emergenceTimeText, {
-              header: true,
-              skipEmptyLines: 'greedy',
-              delimiter: ',',
-              encoding: 'UTF-8'
-            });
-            
-            emergenceTimeParsed.data.forEach(row => {
-              const japaneseName = row['和名']?.trim();
-              const scientificName = row['学名']?.trim();
-              const emergenceTime = row['成虫出現時期']?.trim();
-              const source = row['出典']?.trim();
-              
-              if (japaneseName && emergenceTime && emergenceTime !== '不明') {
-                emergenceTimeMap.set(japaneseName, { time: emergenceTime, source: source });
-              }
-              if (scientificName && emergenceTime && emergenceTime !== '不明') {
-                emergenceTimeMap.set(scientificName, { time: emergenceTime, source: source });
-              }
-            });
-            
-            if (isDevelopment) console.log(`Loaded ${emergenceTimeParsed.data.length} emergence time records from integrated CSV`);
-          } catch (error) {
-            console.error("Error parsing integrated emergence time data:", error);
-          }
-        }
+        // emergence_time_integrated.csvはhamushi_integrated_master.csvに統合済み
         
         // Use Papa.parse for proper CSV parsing - handle empty kirigaText gracefully
         let kirigaData = [];
