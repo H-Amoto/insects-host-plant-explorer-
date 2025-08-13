@@ -73,8 +73,40 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
     ['ヨモギオオホソハマキ', 'Phtheochroides_clandestina'],
     // タマムシ科
     ['アオマダラタマムシ', 'Nipponobuprestis_amabilis'],
-    ['ルイスヒラタチビタマムシ', 'Habroloma_lewisii']
-  ]);
+    ['ルイスヒラタチビタマムシ', 'Habroloma_lewisii'],
+    // シジミチョウ科
+    ['クロマダラソテツシジミ', 'Chilades_pandava'],
+    
+    // New Japanese names mapped to scientific filenames
+    ['ムラサキシジミ', 'Narathura_japonica'],
+    ['ウスクロスジツトガ', 'Chrysoteuchia_diplogramma'],
+    ['ゴマダラキリガ', 'Conistra_castaneofasciata'],
+    ['イシガケチョウ', 'Cyrestis_thyodamas'],
+    ['ヤエヤマコブヒゲアツバ', 'Zanclognatha_yaeyamalis'],
+    ['ヤエヤマカラスアゲハ', 'Papilio_bianor_okinawensis'],
+    ['クロスジツトガ', 'Flavocrambus_striatellus'],
+    ['シロスジツトガ', 'Crambus_argyrophorus'],
+    ['アマギシャチホコ', 'Eriodonta_amagisana'],
+    ['ギンボシスズメ', 'Parum_colligata'],
+    ['イボタケンモン', 'Craniophora_ligustri'],
+    ['キボシミスジトガリバ本州亜種', 'Achlya_longipennis_longipennis'],
+    ['クロスジコブガ', 'Meganola_fumosa'],
+    ['ウスベリケンモン', 'Anacronicta_nitida'],
+    ['カバイロキバガ', 'Dichomeris_heriguronis'],
+    ['オオバトガリバ', 'Tethea_ampliata_ampliata'],
+    ['カクモンキシタバ', 'Chrysorithrum_amatum'],
+    ['アトヘリヒトホシアツバ', 'Hemipsectra_fallax'],
+    ['カギバアオシャク', 'Tanaorhinus_reciprocata_confuciaria'],
+    ['アカハラゴマダラヒトリ', 'Spilosoma_punctarium'],
+    ['カクバネヒゲナガキバガ', 'Lecitholaxa_thiodora'],
+    ['クビワウスグロホソバ', 'Macrobrochis_staudingeri_staudingeri'],
+    ['ウスイロオオエダシャク', 'Amraica_superans_superans'],
+    ['キマダラアツバ', 'Lophomilia_polybapta'],
+    ['ツマオビアツバ', 'Zanclognatha_griselda'],
+    
+    // Add the main moth that should be showing
+    ['アオモンギンセダカモクメ', 'Cucullia_argentea']
+  ]);;
 
   // Create safe filename for image checking
   const createSafeFilename = (scientificName) => {
@@ -155,7 +187,9 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
   // Determine the correct image folder based on insect type
   // Special handling for Japanese-named insects that have images in the insects folder
   // These insects have mappings and their images are stored in the insects folder regardless of their type
-  const japaneseNamedInsects = ['アオマダラタマムシ', 'ルイスヒラタチビタマムシ', 'ウスムラサキケンモン', 'オオマエベニトガリバ', 'ショウブオオヨトウ', 'シラオビキリガ', 'シラホシキリガ', 'タカオキリガ', 'ツマベニヒメハマキ', 'ナシキリガ', 'ニッコウケンモン', 'ニッコウシャチホコ', 'ノコメセダカヨトウ', 'ハスモンヨトウ', 'マエジロシャチホコ', 'クロハナコヤガ', 'フタスジエグリアツバ', 'ベニスズメ', 'ヒメスズメ', 'マダラキボシキリガ', 'ナシイラガ', 'ヨモギオオホソハマキ'];
+  const japaneseNamedInsects = ['アオマダラタマムシ', 'ルイスヒラタチビタマムシ', 'ウスムラサキケンモン', 'オオマエベニトガリバ', 'ショウブオオヨトウ', 'シラオビキリガ', 'シラホシキリガ', 'タカオキリガ', 'ツマベニヒメハマキ', 'ナシキリガ', 'ニッコウケンモン', 'ニッコウシャチホコ', 'ノコメセダカヨトウ', 'ハスモンヨトウ', 'マエジロシャチホコ', 'クロハナコヤガ', 'フタスジエグリアツバ', 'ベニスズメ', 'ヒメスズメ', 'マダラキボシキリガ', 'ナシイラガ', 'ヨモギオオホソハマキ',
+    // New Japanese-named insects from recent GitHub additions
+    'ムラサキシジミ', 'ウスクロスジツトガ', 'ゴマダラキリガ', 'イシガケチョウ', 'ヤエヤマコブヒゲアツバ', 'ヤエヤマカラスアゲハ', 'クロスジツトガ', 'シロスジツトガ', 'アマギシャチホコ', 'ギンボシスズメ', 'イボタケンモン', 'キボシミスジトガリバ本州亜種', 'クロスジコブガ', 'ウスベリケンモン', 'カバイロキバガ', 'オオバトガリバ', 'カクモンキシタバ', 'アトヘリヒトホシアツバ', 'カギバアオシャク', 'アカハラゴマダラヒトリ', 'カクバネヒゲナガキバガ', 'クビワウスグロホソバ', 'ウスイロオオエダシャク', 'キマダラアツバ', 'ツマオビアツバ'];
   const imageFolder = japaneseNamedInsects.includes(moth.name) ? 'insects' :
                      moth.type === 'butterfly' ? 'butterflies' : 
                      moth.type === 'beetle' ? 'beetles' : 
@@ -551,9 +585,41 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
         return filteredMoths;
       }
       
+      // Determine if we're in search mode
+      const isSearching = (debouncedSearchTerm && debouncedSearchTerm.trim() !== '') || classificationFilter;
+      
       const sorted = [...filteredMoths].sort((a, b) => {
-      // Create safe filename check function - must match the logic in generate-meta-pages.js
-      const createSafeFilename = (scientificName) => {
+        if (isSearching) {
+          // 検索時：分類階層順（科→亜科→族→属→種）+ あいうえお順
+          const getClassificationPriority = (insect) => {
+            const classification = insect.classification;
+            if (!classification) return { level: 5, name: insect.name };
+            
+            if (classification.familyJapanese) return { level: 1, name: classification.familyJapanese };
+            if (classification.subfamilyJapanese) return { level: 2, name: classification.subfamilyJapanese };
+            if (classification.tribeJapanese) return { level: 3, name: classification.tribeJapanese };
+            if (classification.genus) return { level: 4, name: classification.genus };
+            return { level: 5, name: insect.name };
+          };
+          
+          const priorityA = getClassificationPriority(a);
+          const priorityB = getClassificationPriority(b);
+          
+          // 階層レベルで比較
+          if (priorityA.level !== priorityB.level) {
+            return priorityA.level - priorityB.level;
+          }
+          
+          // 同じ階層レベル内では分類名であいうえお順
+          if (priorityA.name !== priorityB.name) {
+            return priorityA.name.localeCompare(priorityB.name, 'ja');
+          }
+          
+          // 分類名も同じ場合は種名であいうえお順
+          return a.name.localeCompare(b.name, 'ja');
+        } else {
+          // デフォルト表示時：画像優先 + あいうえお順
+          const createSafeFilename = (scientificName) => {
         if (!scientificName) return '';
         // Extract genus and species only
         let cleanedName = scientificName.replace(/\s*\(.*?(?:\)|\s*$)/g, '');
@@ -565,12 +631,12 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
         return cleanedName;
       };
       
-      // Check if species has a static image file (based on preloaded filename list)
-      const filenameA = a.scientificFilename || createSafeFilename(a.scientificName);
-      const filenameB = b.scientificFilename || createSafeFilename(b.scientificName);
-      
-      const hasImageA = imageFilenames.has(filenameA);
-      const hasImageB = imageFilenames.has(filenameB);
+          // Check if species has a static image file (based on preloaded filename list)
+          const filenameA = a.scientificFilename || createSafeFilename(a.scientificName);
+          const filenameB = b.scientificFilename || createSafeFilename(b.scientificName);
+          
+          const hasImageA = imageFilenames.has(filenameA);
+          const hasImageB = imageFilenames.has(filenameB);
       
       // Debug logging for specific moths
       const debugMoths = ['キノコヨトウ', 'キグチヨトウ', 'アズサキリガ', 'イセキリガ', 'クモガタキリガ', 'ヒロバモクメキリガ', 'ベニモントガリホソガ'];
@@ -592,15 +658,16 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
           imageFilenamesHasAgrochola: imageFilenames.has('Agrochola_sakabei'),
           imageFilenamesHasLabdia: imageFilenames.has('Labdia_semicoccinea')
         });
-      }
-      
-      // Priority: Images first, then others
-      if (hasImageA && !hasImageB) return -1;
-      if (!hasImageA && hasImageB) return 1;
-      
-      // If both have images or both don't, sort alphabetically by name
-      return a.name.localeCompare(b.name, 'ja');
-    });
+          }
+          
+          // Priority: Images first, then others
+          if (hasImageA && !hasImageB) return -1;
+          if (!hasImageA && hasImageB) return 1;
+          
+          // If both have images or both don't, sort alphabetically by name
+          return a.name.localeCompare(b.name, 'ja');
+        }
+      });
     
     // Count moths with images
     const mothsWithImages = sorted.filter(m => {

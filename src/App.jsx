@@ -70,7 +70,34 @@ const globalJapaneseToScientificMapping = new Map([
     ['アオマダラタマムシ', 'Nipponobuprestis_amabilis'],
     ['ルイスヒラタチビタマムシ', 'Habroloma_lewisii'],
     // シジミチョウ科
-    ['クロマダラソテツシジミ', 'Chilades_pandava']
+    ['クロマダラソテツシジミ', 'Chilades_pandava'],
+    
+    // New Japanese names from recent GitHub additions
+    ['ムラサキシジミ', 'Narathura_japonica'],
+    ['ウスクロスジツトガ', 'Chrysoteuchia_diplogramma'],
+    ['ゴマダラキリガ', 'Conistra_castaneofasciata'],
+    ['イシガケチョウ', 'Cyrestis_thyodamas'],
+    ['ヤエヤマコブヒゲアツバ', 'Zanclognatha_yaeyamalis'],
+    ['ヤエヤマカラスアゲハ', 'Papilio_bianor_okinawensis'],
+    ['クロスジツトガ', 'Flavocrambus_striatellus'],
+    ['シロスジツトガ', 'Crambus_argyrophorus'],
+    ['アマギシャチホコ', 'Eriodonta_amagisana'],
+    ['ギンボシスズメ', 'Parum_colligata'],
+    ['イボタケンモン', 'Craniophora_ligustri'],
+    ['キボシミスジトガリバ本州亜種', 'Achlya_longipennis_longipennis'],
+    ['クロスジコブガ', 'Meganola_fumosa'],
+    ['ウスベリケンモン', 'Anacronicta_nitida'],
+    ['カバイロキバガ', 'Dichomeris_heriguronis'],
+    ['オオバトガリバ', 'Tethea_ampliata_ampliata'],
+    ['カクモンキシタバ', 'Chrysorithrum_amatum'],
+    ['アトヘリヒトホシアツバ', 'Hemipsectra_fallax'],
+    ['カギバアオシャク', 'Tanaorhinus_reciprocata_confuciaria'],
+    ['アカハラゴマダラヒトリ', 'Spilosoma_punctarium'],
+    ['カクバネヒゲナガキバガ', 'Lecitholaxa_thiodora'],
+    ['クビワウスグロホソバ', 'Macrobrochis_staudingeri_staudingeri'],
+    ['ウスイロオオエダシャク', 'Amraica_superans_superans'],
+    ['キマダラアツバ', 'Lophomilia_polybapta'],
+    ['ツマオビアツバ', 'Zanclognatha_griselda']
   ]);
 
 function App() {

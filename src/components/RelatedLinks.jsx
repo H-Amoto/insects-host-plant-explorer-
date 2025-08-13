@@ -38,7 +38,34 @@ const getInsectImagePath = (insect, imageExtensions = {}) => {
     ['アオマダラタマムシ', 'Nipponobuprestis_amabilis'],
     ['ルイスヒラタチビタマムシ', 'Habroloma_lewisii'],
     // シジミチョウ科
-    ['クロマダラソテツシジミ', 'Chilades_pandava']
+    ['クロマダラソテツシジミ', 'Chilades_pandava'],
+    
+    // New Japanese names from recent GitHub additions
+    ['ムラサキシジミ', 'Narathura_japonica'],
+    ['ウスクロスジツトガ', 'Chrysoteuchia_diplogramma'],
+    ['ゴマダラキリガ', 'Conistra_castaneofasciata'],
+    ['イシガケチョウ', 'Cyrestis_thyodamas'],
+    ['ヤエヤマコブヒゲアツバ', 'Zanclognatha_yaeyamalis'],
+    ['ヤエヤマカラスアゲハ', 'Papilio_bianor_okinawensis'],
+    ['クロスジツトガ', 'Flavocrambus_striatellus'],
+    ['シロスジツトガ', 'Crambus_argyrophorus'],
+    ['アマギシャチホコ', 'Eriodonta_amagisana'],
+    ['ギンボシスズメ', 'Parum_colligata'],
+    ['イボタケンモン', 'Craniophora_ligustri'],
+    ['キボシミスジトガリバ本州亜種', 'Achlya_longipennis_longipennis'],
+    ['クロスジコブガ', 'Meganola_fumosa'],
+    ['ウスベリケンモン', 'Anacronicta_nitida'],
+    ['カバイロキバガ', 'Dichomeris_heriguronis'],
+    ['オオバトガリバ', 'Tethea_ampliata_ampliata'],
+    ['カクモンキシタバ', 'Chrysorithrum_amatum'],
+    ['アトヘリヒトホシアツバ', 'Hemipsectra_fallax'],
+    ['カギバアオシャク', 'Tanaorhinus_reciprocata_confuciaria'],
+    ['アカハラゴマダラヒトリ', 'Spilosoma_punctarium'],
+    ['カクバネヒゲナガキバガ', 'Lecitholaxa_thiodora'],
+    ['クビワウスグロホソバ', 'Macrobrochis_staudingeri_staudingeri'],
+    ['ウスイロオオエダシャク', 'Amraica_superans_superans'],
+    ['キマダラアツバ', 'Lophomilia_polybapta'],
+    ['ツマオビアツバ', 'Zanclognatha_griselda']
   ]);
 
   const createSafeFilename = (scientificName) => {
@@ -57,7 +84,9 @@ const getInsectImagePath = (insect, imageExtensions = {}) => {
   const safeFilename = mappedFilename || insect.scientificFilename || createSafeFilename(insect.scientificName);
   // Special handling for Japanese-named insects that have images in the insects folder
   // These insects have mappings and their images are stored in the insects folder regardless of their type
-  const japaneseNamedInsects = ['アオマダラタマムシ', 'ルイスヒラタチビタマムシ', 'ウスムラサキケンモン', 'オオマエベニトガリバ', 'ショウブオオヨトウ', 'シラオビキリガ', 'シラホシキリガ', 'タカオキリガ', 'ツマベニヒメハマキ', 'ナシキリガ', 'ニッコウケンモン', 'ニッコウシャチホコ', 'ノコメセダカヨトウ', 'ハスモンヨトウ', 'マエジロシャチホコ', 'クロハナコヤガ', 'フタスジエグリアツバ', 'ベニスズメ', 'ヒメスズメ', 'マダラキボシキリガ', 'ナシイラガ', 'ヨモギオオホソハマキ'];
+  const japaneseNamedInsects = ['アオマダラタマムシ', 'ルイスヒラタチビタマムシ', 'ウスムラサキケンモン', 'オオマエベニトガリバ', 'ショウブオオヨトウ', 'シラオビキリガ', 'シラホシキリガ', 'タカオキリガ', 'ツマベニヒメハマキ', 'ナシキリガ', 'ニッコウケンモン', 'ニッコウシャチホコ', 'ノコメセダカヨトウ', 'ハスモンヨトウ', 'マエジロシャチホコ', 'クロハナコヤガ', 'フタスジエグリアツバ', 'ベニスズメ', 'ヒメスズメ', 'マダラキボシキリガ', 'ナシイラガ', 'ヨモギオオホソハマキ',
+    // New Japanese-named insects from recent GitHub additions
+    'ムラサキシジミ', 'ウスクロスジツトガ', 'ゴマダラキリガ', 'イシガケチョウ', 'ヤエヤマコブヒゲアツバ', 'ヤエヤマカラスアゲハ', 'クロスジツトガ', 'シロスジツトガ', 'アマギシャチホコ', 'ギンボシスズメ', 'イボタケンモン', 'キボシミスジトガリバ本州亜種', 'クロスジコブガ', 'ウスベリケンモン', 'カバイロキバガ', 'オオバトガリバ', 'カクモンキシタバ', 'アトヘリヒトホシアツバ', 'カギバアオシャク', 'アカハラゴマダラヒトリ', 'カクバネヒゲナガキバガ', 'クビワウスグロホソバ', 'ウスイロオオエダシャク', 'キマダラアツバ', 'ツマオビアツバ'];
   const imageFolder = japaneseNamedInsects.includes(insect.name) ? 'insects' :
                      insect.type === 'butterfly' ? 'butterflies' : 
                      insect.type === 'beetle' ? 'insects' :  // beetles are in insects folder
