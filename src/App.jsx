@@ -75,7 +75,7 @@ const globalJapaneseToScientificMapping = new Map([
     // New Japanese names from recent GitHub additions
     ['ムラサキシジミ', 'Narathura_japonica'],
     ['ウスクロスジツトガ', 'Chrysoteuchia_diplogramma'],
-    ['ゴマダラキリガ', 'Conistra_castaneofasciata'],
+    ['ゴマダラキリガ', 'Conistra castaneofasciata Motschulsky'],
     ['イシガケチョウ', 'Cyrestis_thyodamas'],
     ['ヤエヤマコブヒゲアツバ', 'Zanclognatha_yaeyamalis'],
     ['ヤエヤマカラスアゲハ', 'Papilio_bianor_okinawensis'],
