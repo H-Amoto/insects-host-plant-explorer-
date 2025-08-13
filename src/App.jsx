@@ -4473,9 +4473,12 @@ function App() {
         if (beetleText) {
           try {
             console.log("Parsing beetle data...");
+            console.log("Beetle CSV text length:", beetleText.length);
+            console.log("First 500 chars of beetle CSV:", beetleText.substring(0, 500));
             const beetleParsed = Papa.parse(beetleText, { header: true, skipEmptyLines: true, delimiter: ',' });
+            console.log("Beetle data parsed. Row count:", beetleParsed.data.length);
             if (beetleParsed.errors.length) {
-              console.error("PapaParse errors in buprestidae_host_updated.csv:", beetleParsed.errors);
+              console.error("PapaParse errors in buprestidae_host.csv:", beetleParsed.errors);
             }
             
             // タマムシデータでもグローバルマッピングを使用
@@ -4757,10 +4760,17 @@ function App() {
 
         // Combine all moth data after all parsing is complete
         const combinedMothData = [...mainMothData];
+        console.log("DEBUG: mainBeetleData length:", mainBeetleData.length);
+        console.log("DEBUG: beetleData length:", beetleData.length);
         // Combine beetle data from integrated file and separate CSV
         combinedBeetleData = [...mainBeetleData, ...beetleData];
+        console.log("DEBUG: combinedBeetleData length:", combinedBeetleData.length);
+        if (combinedBeetleData.length > 0) {
+          console.log("DEBUG: Sample beetle data:", combinedBeetleData[0]);
+        }
         // Add leafbeetle data
         combinedLeafbeetleData = [...leafbeetleData];
+        console.log("DEBUG: combinedLeafbeetleData length:", combinedLeafbeetleData.length);
 
         // Clean up hostPlantData to remove any invalid plant names and normalize duplicates
         const cleanedHostPlantData = {};
@@ -4869,6 +4879,11 @@ function App() {
         });
       } catch (error) {
         console.error("Error fetching or parsing CSVs:", error);
+        console.error("Error details:", {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
         setLoading(false); // Ensure loading is set to false even on error
         // Set empty data to prevent app from hanging
         setMoths([]);
