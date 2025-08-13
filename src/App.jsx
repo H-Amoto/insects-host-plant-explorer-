@@ -4708,8 +4708,8 @@ function App() {
             },
             hostPlants: hostPlantList,
             emergenceTime: emergenceTime || '不明',
-            emergenceTimeSource: source || "ハムシ目録データベース",
-            source: source || "ハムシ目録データベース",
+            emergenceTimeSource: source || "ハムシハンドブック",
+            source: source || "ハムシハンドブック",
             sourceUrl: (source && source.includes('ハムシハンドブック')) ? "https://amzn.to/456YVhu" : undefined,
             geographicalRemarks: remarks || ''
           };
