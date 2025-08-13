@@ -561,9 +561,9 @@ function App() {
           }
           
           // Store emergence time data from キリガ (キリガCSVを優先 - より詳細で正確なデータ)
+          let normalizedEmergenceTime = emergenceTime; // スコープを外側に移動
           if (japaneseName && emergenceTime && emergenceTime !== '不明') {
             // アズサキリガの発生時期表記を正規化
-            let normalizedEmergenceTime = emergenceTime;
             if (japaneseName === 'アズサキリガ' && emergenceTime.includes('低標高地では') && emergenceTime.includes('高地では')) {
               // "低標高地では3月下旬から、高地では5月中旬まで" -> "3月下旬～5月中旬"
               const lowAltMatch = emergenceTime.match(/低標高地では(\d+月[上中下]旬)から/);
