@@ -50,7 +50,7 @@ const parseEmergenceTime = (emergenceTime) => {
   if (!emergenceTime || emergenceTime === '不明') return { months: [], periods: [] };
   
   // Debug log for specific species
-  const isDebugSpecies = emergenceTime.includes('3月') || emergenceTime.includes('丘陵地') || emergenceTime.includes('山地');
+  const isDebugSpecies = emergenceTime.includes('3月') || emergenceTime.includes('丘陵地') || emergenceTime.includes('山地') || emergenceTime.includes('10-12、1-5月');
   if (isDebugSpecies) {
     console.log('DEBUG: parseEmergenceTime input:', emergenceTime);
   }
@@ -278,10 +278,17 @@ const parseEmergenceTime = (emergenceTime) => {
   // カンマで区切られた複数の範囲/月を処理（例：10-11、1-5月）
   const commaSeparatedPattern = /(\d{1,2})[-－](\d{1,2})[、，,]\s*(\d{1,2})[-－](\d{1,2})月/g;
   while ((match = commaSeparatedPattern.exec(emergenceTime)) !== null) {
+    if (isDebugSpecies) {
+      console.log('DEBUG: commaSeparatedPattern match:', match, 'input:', emergenceTime);
+    }
     const firstStart = parseInt(match[1]);
     const firstEnd = parseInt(match[2]);
     const secondStart = parseInt(match[3]);
     const secondEnd = parseInt(match[4]);
+    
+    if (isDebugSpecies) {
+      console.log('DEBUG: Processing ranges:', firstStart, '-', firstEnd, 'and', secondStart, '-', secondEnd);
+    }
     
     // 最初の範囲を処理
     for (let i = firstStart; i <= firstEnd; i++) {
