@@ -213,6 +213,54 @@ const parseEmergenceTime = (emergenceTime) => {
     }
   });
   
+  // カンマで区切られた複数の範囲/月を処理（例：10-12、1-5月）
+  const commaSeparatedPattern = /(\d{1,2})[-－](\d{1,2})[、，,]\s*(\d{1,2})[-－](\d{1,2})月/g;
+  while ((match = commaSeparatedPattern.exec(emergenceTime)) !== null) {
+    if (isDebugSpecies) {
+      console.log('DEBUG: commaSeparatedPattern match:', match, 'input:', emergenceTime);
+    }
+    const firstStart = parseInt(match[1]);
+    const firstEnd = parseInt(match[2]);
+    const secondStart = parseInt(match[3]);
+    const secondEnd = parseInt(match[4]);
+    
+    if (isDebugSpecies) {
+      console.log('DEBUG: Processing ranges:', firstStart, '-', firstEnd, 'and', secondStart, '-', secondEnd);
+    }
+    
+    // 最初の範囲を処理
+    for (let i = firstStart; i <= firstEnd; i++) {
+      activeMonths.add(i);
+      for (let p = 1; p <= 3; p++) {
+        activePeriods.add(i + p * 0.1);
+      }
+    }
+    
+    // 2番目の範囲を処理  
+    if (secondStart <= secondEnd) {
+      for (let i = secondStart; i <= secondEnd; i++) {
+        activeMonths.add(i);
+        for (let p = 1; p <= 3; p++) {
+          activePeriods.add(i + p * 0.1);
+        }
+      }
+    } else {
+      // 年をまたぐ場合
+      for (let i = secondStart; i <= 12; i++) {
+        activeMonths.add(i);
+        for (let p = 1; p <= 3; p++) {
+          activePeriods.add(i + p * 0.1);
+        }
+      }
+      for (let i = 1; i <= secondEnd; i++) {
+        activeMonths.add(i);
+        for (let p = 1; p <= 3; p++) {
+          activePeriods.add(i + p * 0.1);
+        }
+      }
+    }
+  }
+  
   // 範囲指定（例：5～8月、3月～10月、4-5月）を検出 - ASCII チルダ (~) も含む（旬指定なし）
   // ハイフンも含めて処理
   const rangePattern = /(\d{1,2})月?[～〜~\-－](\d{1,2})月(?![上中下])/g;
@@ -274,54 +322,7 @@ const parseEmergenceTime = (emergenceTime) => {
       }
     }
   }
-  
-  // カンマで区切られた複数の範囲/月を処理（例：10-11、1-5月）
-  const commaSeparatedPattern = /(\d{1,2})[-－](\d{1,2})[、，,]\s*(\d{1,2})[-－](\d{1,2})月/g;
-  while ((match = commaSeparatedPattern.exec(emergenceTime)) !== null) {
-    if (isDebugSpecies) {
-      console.log('DEBUG: commaSeparatedPattern match:', match, 'input:', emergenceTime);
-    }
-    const firstStart = parseInt(match[1]);
-    const firstEnd = parseInt(match[2]);
-    const secondStart = parseInt(match[3]);
-    const secondEnd = parseInt(match[4]);
-    
-    if (isDebugSpecies) {
-      console.log('DEBUG: Processing ranges:', firstStart, '-', firstEnd, 'and', secondStart, '-', secondEnd);
-    }
-    
-    // 最初の範囲を処理
-    for (let i = firstStart; i <= firstEnd; i++) {
-      activeMonths.add(i);
-      for (let p = 1; p <= 3; p++) {
-        activePeriods.add(i + p * 0.1);
-      }
-    }
-    
-    // 2番目の範囲を処理  
-    if (secondStart <= secondEnd) {
-      for (let i = secondStart; i <= secondEnd; i++) {
-        activeMonths.add(i);
-        for (let p = 1; p <= 3; p++) {
-          activePeriods.add(i + p * 0.1);
-        }
-      }
-    } else {
-      // 年をまたぐ場合
-      for (let i = secondStart; i <= 12; i++) {
-        activeMonths.add(i);
-        for (let p = 1; p <= 3; p++) {
-          activePeriods.add(i + p * 0.1);
-        }
-      }
-      for (let i = 1; i <= secondEnd; i++) {
-        activeMonths.add(i);
-        for (let p = 1; p <= 3; p++) {
-          activePeriods.add(i + p * 0.1);
-        }
-      }
-    }
-  }
+
 
   // 「X月〜Y月」「X月からY月」パターンを検出 - ASCII チルダ (~) も含む
   const fromToPattern = /(\d{1,2})月(?:から|より)?[〜～~-](\d{1,2})月(?![頃上中下])/g;
