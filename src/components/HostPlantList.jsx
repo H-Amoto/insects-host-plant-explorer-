@@ -190,32 +190,36 @@ const HostPlantListItem = React.memo(({ plant, mothNames, plantDetails = {}, pla
             </div>
           ) : (
             // Fallback to beautiful plant icon with better layout
-            <div className="relative w-full aspect-[4/3] bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-800 dark:to-emerald-900 flex flex-col items-center justify-center p-6">
-              {/* Plant icon at top */}
+            <div className="relative w-full aspect-[4/3] bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-700 dark:to-emerald-800 flex flex-col items-center justify-center p-6">
+              {/* No image icon at top */}
               <div className="flex-shrink-0 mb-4">
-                <svg className="w-16 h-16 text-emerald-600 dark:text-emerald-400 drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M12,4A1,1 0 0,0 11,5V11A1,1 0 0,0 12,12A1,1 0 0,0 13,11V5A1,1 0 0,0 12,4M12,14.5L16,18.5L12,22.5L8,18.5L12,14.5Z"/>
+                <svg className="w-12 h-12 text-emerald-400 dark:text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
               
-              {/* Plant name displayed prominently in center */}
+              {/* Names displayed prominently in center */}
               <div className="text-center flex-1 flex flex-col justify-center">
-                <h3 className="text-emerald-800 dark:text-emerald-200 font-bold text-lg leading-tight mb-2 tracking-tight">
+                <h3 className="text-emerald-800 dark:text-emerald-200 font-bold text-lg mb-2 leading-tight tracking-tight">
                   {plant}
                 </h3>
                 {plantDetails[plant]?.familyName && (
-                  <p className="text-emerald-600 dark:text-emerald-400 text-sm font-medium">
+                  <p className="text-emerald-600 dark:text-emerald-400 text-sm leading-relaxed">
                     {plantDetails[plant].familyName}
                   </p>
                 )}
               </div>
               
-              {/* Plant indicator at bottom */}
+              {/* No image indicator at bottom */}
               <div className="flex-shrink-0 mt-4">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-300/70 dark:bg-emerald-600/70 text-emerald-800 dark:text-emerald-200 border border-emerald-400/30 dark:border-emerald-500/30">
-                  植物図鑑
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-300/70 dark:bg-emerald-600/70 text-emerald-700 dark:text-emerald-300 border border-emerald-400/30 dark:border-emerald-500/30">
+                  <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2v12a2 2 0 002 2z" />
+                  </svg>
+                  画像準備中
                 </span>
               </div>
+            </div>
             </div>
           )}
           
