@@ -208,7 +208,9 @@ const RelatedInsectsSection = ({ relatedMothsByPlant, allInsects }) => {
                               } else {
                                 // 両方失敗した場合はデフォルトアイコンを表示
                                 e.target.style.display = 'none';
-                                e.target.nextElementSibling.style.display = 'flex';
+                                if (e.target.nextElementSibling) {
+                                  e.target.nextElementSibling.style.display = 'flex';
+                                }
                               }
                             }}
                           />

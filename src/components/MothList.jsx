@@ -190,10 +190,8 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
   const japaneseNamedInsects = ['アオマダラタマムシ', 'ルイスヒラタチビタマムシ', 'ウスムラサキケンモン', 'オオマエベニトガリバ', 'ショウブオオヨトウ', 'シラオビキリガ', 'シラホシキリガ', 'タカオキリガ', 'ツマベニヒメハマキ', 'ナシキリガ', 'ニッコウケンモン', 'ニッコウシャチホコ', 'ノコメセダカヨトウ', 'ハスモンヨトウ', 'マエジロシャチホコ', 'クロハナコヤガ', 'フタスジエグリアツバ', 'ベニスズメ', 'ヒメスズメ', 'マダラキボシキリガ', 'ナシイラガ', 'ヨモギオオホソハマキ',
     // New Japanese-named insects from recent GitHub additions
     'ムラサキシジミ', 'ウスクロスジツトガ', 'ゴマダラキリガ', 'イシガケチョウ', 'ヤエヤマコブヒゲアツバ', 'ヤエヤマカラスアゲハ', 'クロスジツトガ', 'シロスジツトガ', 'アマギシャチホコ', 'ギンボシスズメ', 'イボタケンモン', 'キボシミスジトガリバ本州亜種', 'クロスジコブガ', 'ウスベリケンモン', 'カバイロキバガ', 'オオバトガリバ', 'カクモンキシタバ', 'アトヘリヒトホシアツバ', 'カギバアオシャク', 'アカハラゴマダラヒトリ', 'カクバネヒゲナガキバガ', 'クビワウスグロホソバ', 'ウスイロオオエダシャク', 'キマダラアツバ', 'ツマオビアツバ'];
-  const imageFolder = japaneseNamedInsects.includes(moth.name) ? 'insects' :
-                     moth.type === 'butterfly' ? 'butterflies' : 
-                     moth.type === 'beetle' ? 'beetles' : 
-                     moth.type === 'leafbeetle' ? 'leafbeetles' : 'insects';
+  // All insect images are in the insects folder
+  const imageFolder = 'insects';
   
   const imageUrl = `${import.meta.env.BASE_URL}images/${imageFolder}/${encodeURIComponent(imageFilename)}${imageExtension}`;
   
@@ -270,7 +268,9 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
                         e.target.src = fallbackUrl;
                       } else {
                         e.target.style.display = 'none';
-                        e.target.parentElement.nextSibling.style.display = 'flex';
+                        if (e.target.parentElement && e.target.parentElement.nextSibling) {
+                          e.target.parentElement.nextSibling.style.display = 'flex';
+                        }
                       }
                     }}
                   />
