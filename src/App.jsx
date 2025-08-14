@@ -71,6 +71,8 @@ const globalJapaneseToScientificMapping = new Map([
     ['ルイスヒラタチビタマムシ', 'Habroloma_lewisii'],
     // シジミチョウ科
     ['クロマダラソテツシジミ', 'Chilades_pandava'],
+    // セセリチョウ科
+    ['オオチャバネセセリ', 'Polytremis_pellucida'],
     
     // New Japanese names from recent GitHub additions
     ['ムラサキシジミ', 'Narathura_japonica'],
