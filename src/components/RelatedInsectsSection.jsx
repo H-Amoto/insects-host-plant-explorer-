@@ -169,7 +169,7 @@ const RelatedInsectsSection = ({ relatedMothsByPlant, allInsects }) => {
                 layout === 'horizontal' ? 'flex space-x-4 min-w-max' :
                 layout === 'horizontal-limited' ? 'flex space-x-4 min-w-max' :
                 layout === 'grid-2rows' ? 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-6' :
-                layout === 'grid-3rows' ? 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-6' :
+                layout === 'grid-3rows' ? 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-6' :
                 'flex space-x-4 min-w-max'
               }`}>
                 {relatedMothNames.slice(0, displayCount).map(relatedMothName => {

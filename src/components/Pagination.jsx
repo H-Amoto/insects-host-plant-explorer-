@@ -3,7 +3,7 @@ import React from 'react';
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const pageNumbers = [];
   const maxVisiblePages = 5;
-  const maxVisiblePagesMobile = 3;
+  const maxVisiblePagesMobile = 5; // Increased from 3 to 5 for better mobile navigation
   
   // スマホでは表示ページ数を減らす
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;

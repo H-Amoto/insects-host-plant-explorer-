@@ -4377,10 +4377,10 @@ function App() {
           }
 
           const butterfly = {
-            id,
-            name: japaneseName,
-            scientificName,
-            scientificFilename: formatScientificNameForFilename(scientificName),
+          id,
+          name: japaneseName,
+          scientificName,
+          scientificFilename: globalJapaneseToScientificMapping.get(japaneseName) || formatScientificNameForFilename(scientificName),
             type: 'butterfly',
             classification: {
               family: family,

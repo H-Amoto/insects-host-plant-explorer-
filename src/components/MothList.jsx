@@ -387,7 +387,7 @@ const MothList = ({ moths, title = "蛾", baseRoute = "/moth", embedded = false 
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 50;
+  const itemsPerPage = 52; // Changed from 50 to 52 to fill the 4-column grid completely
 
   const classificationFilter = searchParams.get('classification');
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
