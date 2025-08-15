@@ -6354,7 +6354,7 @@ hostplant-006735,species-H292,ハコベ,,,葉,成虫,ハムシハンドブック
 hostplant-006738,species-H295,イヌビワ,,,葉,成虫,ハムシハンドブック,
 hostplant-006739,species-H295,イタビ類,,,葉,成虫,ハムシハンドブック,
 hostplant-006742,species-H298,マメ科,,,葉,成虫,ハムシハンドブック,
-hostplant-006744,species-H300,ウリ類,,,葉,成虫,ハムシハンドブック,
+hostplant-006744,species-H300,ウリ類,,,葉,成虫,ハムシハンドブック,ウリ類の害虫
 hostplant-006745,species-H300,カボチャ,ウリ科,,葉,成虫,ハムシハンドブック,
 hostplant-006748,species-H303,ウリ類,,,葉,成虫,ハムシハンドブック,
 hostplant-006749,species-H304,ウリ類,,,葉,成虫,ハムシハンドブック,
@@ -7113,3 +7113,7 @@ hostplant-007326,species-H285,シラカバ,,,葉,幼虫,ハムシハンドブッ
 hostplant-007327,species-H286,ハンノキ,カバノキ科,,枯葉,幼虫,ハムシハンドブック,
 hostplant-007328,species-H286,クワ,クワ科,,枯葉,幼虫,ハムシハンドブック,
 hostplant-007329,species-H286,イタヤカエデ,ムクロジ科,,枯葉,幼虫,ハムシハンドブック,
+hostplant-007330,species-H295,イヌビワ,,,葉,幼虫,ハムシハンドブック,
+hostplant-007331,species-H295,イタビ類,,,葉,幼虫,ハムシハンドブック,
+hostplant-007332,species-H300,ウリ類,,,葉,幼虫,ハムシハンドブック,ウリ類の害虫
+hostplant-007333,species-H300,カボチャ,ウリ科,,葉,幼虫,ハムシハンドブック,
