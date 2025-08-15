@@ -6372,12 +6372,12 @@ hostplant-006769,species-H318,ヤマノイモ類,,,葉,成虫,ハムシハンド
 hostplant-006772,species-H321,ミズナラ,ブナ科,,葉,成虫,ハムシハンドブック,
 hostplant-006773,species-H321,コナラ,ブナ科,,葉,成虫,ハムシハンドブック,
 hostplant-006779,species-H327,マメ科,,,葉,成虫,ハムシハンドブック,
-hostplant-006780,species-H327,ダイズ,マメ科,,葉,成虫,ハムシハンドブック,
+hostplant-006780,species-H327,ダイズ,マメ科,,葉,成虫,ハムシハンドブック,ダイズの害虫
 hostplant-006783,species-H330,ヨモギ,キク科,,葉,成虫,ハムシハンドブック,
 hostplant-006784,species-H330,ヨメナ,,,葉,成虫,ハムシハンドブック,
 hostplant-006785,species-H330,タデ類,,,葉,成虫,ハムシハンドブック,
-hostplant-006786,species-H330,イネ科,,,葉,成虫,ハムシハンドブック,
-hostplant-006787,species-H330,マメ科,,,葉,成虫,ハムシハンドブック,
+hostplant-006786,species-H330,イネ科,,,葉,成虫,ハムシハンドブック,イネ科牧草の害虫
+hostplant-006787,species-H330,マメ科,,,葉,成虫,ハムシハンドブック,マメ科牧草の害虫
 hostplant-006794,species-H337,柑橘類,,,葉,成虫,ハムシハンドブック,
 hostplant-006795,species-H337,クヌギ,ブナ科,,葉,成虫,ハムシハンドブック,
 hostplant-006796,species-H337,ミズナラ,ブナ科,,葉,成虫,ハムシハンドブック,
@@ -7123,3 +7123,9 @@ hostplant-007336,species-H304,ウリ類,,,根,幼虫,ハムシハンドブック
 hostplant-007337,species-H304,ウリ類,,,落果,幼虫,ハムシハンドブック,ウリ類の害虫
 hostplant-007338,species-H305,ウリ類,,,根,幼虫,ハムシハンドブック,ウリ類の害虫
 hostplant-007339,species-H305,ウリ類,,,落果,幼虫,ハムシハンドブック,ウリ類の害虫
+hostplant-007340,species-H318,クワ,クワ科,,根,幼虫,ハムシハンドブック,
+hostplant-007341,species-H318,コウゾ,,,根,幼虫,ハムシハンドブック,
+hostplant-007342,species-H318,ヤマノイモ,,,根,幼虫,ハムシハンドブック,ヤマノイモ類の害虫
+hostplant-007343,species-H318,クリ,ブナ科,,根,幼虫,ハムシハンドブック,
+hostplant-007344,species-H318,フジ,マメ科,,根,幼虫,ハムシハンドブック,
+hostplant-007345,species-H318,ヤマノイモ類,,,根,幼虫,ハムシハンドブック,
