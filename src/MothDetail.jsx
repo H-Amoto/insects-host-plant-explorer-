@@ -1565,64 +1565,46 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                 
                 <div className="p-4">
                   {(() => {
-                    // 統合データの詳細発生時期情報がある場合は優先表示
+                    // まず備考欄から発生時期を抽出
+                    const { emergenceTime: extractedTime } = extractEmergenceTime(moth.notes || '');
+                    const normalizedTime = normalizeEmergenceTime(extractedTime);
+                    
+                    // 統合された発生時期データを作成
+                    let allEmergenceTimeData = [];
+                    
+                    // 詳細データがある場合はそれを追加
                     if (moth.emergenceTimeDetailed && moth.emergenceTimeDetailed.length > 0) {
-                      return (
-                        <div className="space-y-4">
-                          {moth.emergenceTimeDetailed.map((timeDetail, index) => (
-                            <div key={index} className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-3 border border-orange-200/50 dark:border-orange-700/50">
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <div className="text-lg font-medium text-orange-800 dark:text-orange-200">
-                                    {timeDetail.period}
-                                  </div>
-                                  {timeDetail.region && (
-                                    <div className="text-sm text-orange-600 dark:text-orange-300 mt-1">
-                                      地域: {timeDetail.region}
-                                    </div>
-                                  )}
-                                  {timeDetail.notes && (
-                                    <div className="text-sm text-orange-600 dark:text-orange-300 mt-1">
-                                      {timeDetail.notes}
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                              {timeDetail.source && (
-                                <div className="mt-2 pt-2 border-t border-orange-200/30 dark:border-orange-700/30">
-                                  <div className="text-xs text-orange-500 dark:text-orange-400">
-                                    出典: {timeDetail.source}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      );
+                      allEmergenceTimeData = [...moth.emergenceTimeDetailed];
                     }
                     
-                    // descriptionがある場合はそれを優先して表示（説明文として表示）
-                    if (moth.emergenceTimeDescription) {
-                      return <EmergenceTimeDisplay emergenceTime={moth.emergenceTimeDescription} source={moth.emergenceTimeSource} />;
-                    }
-                    
-                    // 既存のemergenceTimeがある場合はそれを使用
+                    // 既存のemergenceTimeがある場合は追加
                     if (moth.emergenceTime && moth.emergenceTime !== '不明') {
-                      return <EmergenceTimeDisplay emergenceTime={moth.emergenceTime} source={moth.emergenceTimeSource} />;
+                      allEmergenceTimeData.push({
+                        period: moth.emergenceTime,
+                        source: moth.emergenceTimeSource || '',
+                        region: '',
+                        notes: moth.emergenceTimeDescription || ''
+                      });
                     }
                     
-                    // 備考欄から成虫発生時期を抽出
-                    const { emergenceTime } = extractEmergenceTime(moth.notes || '');
-                    const normalizedTime = normalizeEmergenceTime(emergenceTime);
-                    
-                    if (normalizedTime) {
-                      return <EmergenceTimeDisplay emergenceTime={normalizedTime} source={moth.source} />;
+                    // 備考欄から抽出した発生時期がある場合は追加
+                    if (normalizedTime && normalizedTime !== '不明') {
+                      allEmergenceTimeData.push({
+                        period: normalizedTime,
+                        source: moth.source || '',
+                        region: '',
+                        notes: '備考欄から抽出'
+                      });
                     }
                     
-                    // デフォルトの不明表示
-                    return <EmergenceTimeDisplay emergenceTime="不明" source={moth.emergenceTimeSource} />;
+                    return (
+                      <EnhancedEmergenceTimeDisplay
+                        emergenceTime={allEmergenceTimeData.length > 0 ? allEmergenceTimeData[0].period : '不明'}
+                        emergenceTimeDetailed={allEmergenceTimeData}
+                        showDetailsByDefault={false}
+                      />
+                    );
                   })()}
-                  
                 </div>
               </div>
             )}

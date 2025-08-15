@@ -75,18 +75,23 @@ const getLifeStageIcon = (lifeStage) => {
 const HostPlantDetailCard = ({ hostPlant, isExpanded, onToggle }) => {
   const obsStyle = getObservationTypeStyle(hostPlant.observationType);
   
+  // 「野外（国内）」以外の記録は透明度を下げて区別
+  const isDomesticWild = hostPlant.observationType === '野外（国内）';
+  const cardOpacity = isDomesticWild ? 'opacity-100' : 'opacity-75';
+  const cardFilter = isDomesticWild ? '' : 'saturate-75';
+  
   return (
-    <div className={`rounded-lg border ${obsStyle.borderColor} ${obsStyle.bgColor} p-3 transition-all duration-200`}>
+    <div className={`rounded-lg border ${obsStyle.borderColor} ${obsStyle.bgColor} p-3 transition-all duration-200 ${cardOpacity} ${cardFilter}`}>
       {/* 基本情報行 */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2 flex-1 min-w-0">
           <span className="text-lg">{obsStyle.icon}</span>
           <div className="flex-1 min-w-0">
-            <span className="font-medium text-slate-800 dark:text-slate-200">
+            <span className={`font-medium ${isDomesticWild ? 'text-slate-800 dark:text-slate-200' : 'text-slate-600 dark:text-slate-400'}`}>
               {hostPlant.name}
             </span>
             {hostPlant.family && (
-              <span className="text-sm text-slate-600 dark:text-slate-400 ml-1">
+              <span className={`text-sm ml-1 ${isDomesticWild ? 'text-slate-600 dark:text-slate-400' : 'text-slate-500 dark:text-slate-500'}`}>
                 （{hostPlant.family}）
               </span>
             )}
@@ -170,6 +175,19 @@ const HostPlantDetailCard = ({ hostPlant, isExpanded, onToggle }) => {
 };
 
 /**
+ * 観察タイプ別の優先度を取得（数値が小さいほど優先度が高い）
+ */
+const getObservationTypePriority = (observationType) => {
+  switch (observationType) {
+    case '野外（国内）': return 1; // 最優先
+    case '飼育': return 2;
+    case '野外（海外）':
+    case '海外': return 3;
+    default: return 4; // その他は最後
+  }
+};
+
+/**
  * 統合食草情報表示コンポーネント
  */
 const EnhancedHostPlantDisplay = ({ 
@@ -182,7 +200,7 @@ const EnhancedHostPlantDisplay = ({
   const [showAll, setShowAll] = useState(false);
   
   // 詳細情報がある場合はそれを優先、なければ従来形式を使用
-  const plantsToDisplay = hostPlantsDetailed && hostPlantsDetailed.length > 0 
+  let plantsToDisplay = hostPlantsDetailed && hostPlantsDetailed.length > 0 
     ? hostPlantsDetailed 
     : hostPlants.map(plant => ({
         name: typeof plant === 'string' ? plant.replace(/（.*）$/, '') : plant.name || plant,
@@ -195,6 +213,19 @@ const EnhancedHostPlantDisplay = ({
         notes: '',
         isDetailed: false
       }));
+
+  // 「野外（国内）」を優先してソート
+  plantsToDisplay = plantsToDisplay.sort((a, b) => {
+    const priorityA = getObservationTypePriority(a.observationType);
+    const priorityB = getObservationTypePriority(b.observationType);
+    
+    // 優先度が同じ場合は植物名でソート
+    if (priorityA === priorityB) {
+      return (a.name || '').localeCompare(b.name || '', 'ja');
+    }
+    
+    return priorityA - priorityB;
+  });
   
   const toggleExpanded = (index) => {
     const newExpanded = new Set(expandedItems);
