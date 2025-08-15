@@ -7084,9 +7084,10 @@ hostplant-007296,species-H001,オオマツヨイグサ,,,葉,幼虫,ハムシハ
 hostplant-007297,species-H014,オオマツヨイグサ,,,葉,幼虫,ハムシハンドブック,
 hostplant-007298,species-H014,ヤナギラン,,,葉,幼虫,ハムシハンドブック,
 hostplant-007299,species-H014,アカバナ,,,葉,幼虫,ハムシハンドブック,
-hostplant-007300,species-H032,ヒイラギモクセイ,,,葉,幼虫,ハムシハンドブック,
-hostplant-007301,species-H032,ヒイラギ,,,葉,幼虫,ハムシハンドブック,
-hostplant-007302,species-H032,ネズミモチ,,,葉,幼虫,ハムシハンドブック,
-hostplant-007303,species-H032,キンモクセイ,モクセイ科,,葉,幼虫,ハムシハンドブック,
+hostplant-007300,species-H032,ヒイラギモクセイ,,,葉,幼虫,ハムシハンドブック,葉肉
+hostplant-007301,species-H032,ヒイラギ,,,葉,幼虫,ハムシハンドブック,葉肉
+hostplant-007302,species-H032,ネズミモチ,,,葉,幼虫,ハムシハンドブック,葉肉
+hostplant-007303,species-H032,キンモクセイ,モクセイ科,,葉,幼虫,ハムシハンドブック,葉肉
 hostplant-007304,species-H031,トネリコ,,,葉,成虫,ハムシハンドブック,
 hostplant-007305,species-H031,イボタ,,,葉,成虫,ハムシハンドブック,
+hostplant-007306,species-H069,ヤナギ類,,,葉,幼虫,ハムシハンドブック,地中
