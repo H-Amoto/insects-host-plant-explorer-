@@ -23,7 +23,7 @@ const InstagramEmbed = ({ className = "" }) => {
 
   return (
     <div className={`instagram-embed-container ${className} w-full`} ref={embedRef}>
-      <div className="w-full flex justify-center px-2 sm:px-4">
+      <div className="w-full flex justify-center px-0 sm:px-2 md:px-4">
         {/* Instagram Timeline Embed */}
         <blockquote 
           className="instagram-media mx-auto" 
@@ -36,18 +36,18 @@ const InstagramEmbed = ({ className = "" }) => {
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
             margin: '0 auto',
             maxWidth: '540px',
-            minWidth: '280px',
+            minWidth: '260px',
             padding: '0',
             width: '100%'
           }}
         >
-          <div style={{ padding: '8px 10px' }}>
+          <div style={{ padding: '12px 12px 8px' }}>
             <a 
               href="https://www.instagram.com/onychodactylus_nipponoborealis/" 
               style={{
                 background: '#FFFFFF',
                 lineHeight: '0',
-                padding: '0 0',
+                padding: '0',
                 textAlign: 'center',
                 textDecoration: 'none',
                 width: '100%',
@@ -85,9 +85,9 @@ const InstagramEmbed = ({ className = "" }) => {
                   }}></div>
                 </div>
               </div>
-              <div style={{ padding: '15% 0' }}></div>
-              <div style={{ display: 'block', height: '40px', margin: '0 auto 8px', width: '40px' }}>
-                <svg width="40px" height="40px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg">
+              <div style={{ padding: '12% 0' }}></div>
+              <div style={{ display: 'block', height: '36px', margin: '0 auto 10px', width: '36px' }}>
+                <svg width="36px" height="36px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg">
                   <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                     <g transform="translate(-511.000000, -20.000000)" fill="#000000">
                       <g>
@@ -97,41 +97,42 @@ const InstagramEmbed = ({ className = "" }) => {
                   </g>
                 </svg>
               </div>
-              <div style={{ paddingTop: '6px' }}>
+              <div style={{ paddingTop: '8px', paddingBottom: '6px' }}>
                 <div style={{
                   color: '#3897f0',
                   fontFamily: 'Arial,sans-serif',
-                  fontSize: '12px',
+                  fontSize: '13px',
                   fontStyle: 'normal',
                   fontWeight: '550',
-                  lineHeight: '16px'
+                  lineHeight: '18px'
                 }}>
-                  Instagramでこの投稿をみる
+                  Instagramで投稿を見る
                 </div>
               </div>
             </a>
             <p style={{
               color: '#c9c8cd',
               fontFamily: 'Arial,sans-serif',
-              fontSize: '11px',
-              lineHeight: '14px',
+              fontSize: '12px',
+              lineHeight: '16px',
               marginBottom: '0',
-              marginTop: '4px',
+              marginTop: '8px',
               overflow: 'hidden',
-              padding: '4px 8px 3px',
+              padding: '8px 12px 10px',
               textAlign: 'center',
               textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
+              whiteSpace: 'normal',
+              borderTop: '1px solid #efefef'
             }}>
               <a 
                 href="https://www.instagram.com/onychodactylus_nipponoborealis/" 
                 style={{
                   color: '#c9c8cd',
                   fontFamily: 'Arial,sans-serif',
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontStyle: 'normal',
                   fontWeight: 'normal',
-                  lineHeight: '14px',
+                  lineHeight: '16px',
                   textDecoration: 'none'
                 }} 
                 target="_blank"
@@ -145,10 +146,10 @@ const InstagramEmbed = ({ className = "" }) => {
                 style={{
                   color: '#c9c8cd',
                   fontFamily: 'Arial,sans-serif',
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontStyle: 'normal',
                   fontWeight: 'normal',
-                  lineHeight: '14px',
+                  lineHeight: '16px',
                   textDecoration: 'none'
                 }} 
                 target="_blank"

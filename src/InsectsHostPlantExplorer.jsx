@@ -408,24 +408,24 @@ const InsectsHostPlantExplorer = React.memo(({ moths, butterflies, beetles, leaf
                     </div>
 
                     {/* Instagram最新投稿 */}
-                    <div className="flex-grow flex flex-col">
+                    <div className="flex-grow flex flex-col max-h-[450px] sm:max-h-[500px] lg:max-h-none">
                       <div className="mb-3">
                         <div className="flex items-center space-x-3 mb-2">
-                          <div className="p-1.5 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 rounded-lg">
+                          <div className="p-1.5 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 rounded-lg flex-shrink-0">
                             <InstagramIcon className="w-4 h-4 text-white" alt="Instagramアイコン" />
                           </div>
-                          <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
+                          <h3 className="text-base sm:text-lg font-semibold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent">
                             Instagram 最新投稿
                           </h3>
                         </div>
-                        <p className="text-xs text-slate-600 dark:text-slate-400 ml-9">
+                        <p className="text-xs text-slate-600 dark:text-slate-400 ml-0 sm:ml-9 px-1 sm:px-0">
                           徒然なるままに野生生物の観察記録をInstagramで投稿しています
                         </p>
                       </div>
                       
                       {/* Instagram埋め込み */}
-                      <div className="flex-grow">
-                        <div className="instagram-wrapper h-full border border-gradient-to-r from-purple-200/50 via-pink-200/50 to-orange-200/50 dark:border-purple-700/50 rounded-lg sm:rounded-xl p-0 sm:p-1 bg-gradient-to-r from-purple-50/30 via-pink-50/30 to-orange-50/30 dark:bg-gradient-to-r dark:from-purple-900/10 dark:via-pink-900/10 dark:to-orange-900/10">
+                      <div className="flex-grow overflow-hidden flex items-center justify-center">
+                        <div className="instagram-wrapper w-full h-full max-h-[380px] sm:max-h-[430px] lg:max-h-none overflow-y-auto border border-gradient-to-r from-purple-200/50 via-pink-200/50 to-orange-200/50 dark:border-purple-700/50 rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4 bg-gradient-to-r from-purple-50/30 via-pink-50/30 to-orange-50/30 dark:bg-gradient-to-r dark:from-purple-900/10 dark:via-pink-900/10 dark:to-orange-900/10">
                           <InstagramEmbed />
                         </div>
                       </div>

@@ -267,9 +267,15 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
                         const fallbackUrl = `${import.meta.env.BASE_URL}images/insects/${encodeURIComponent(imageFilename)}${imageExtension}`;
                         e.target.src = fallbackUrl;
                       } else {
-                        e.target.style.display = 'none';
-                        if (e.target.parentElement && e.target.parentElement.nextSibling) {
-                          e.target.parentElement.nextSibling.style.display = 'flex';
+                        // Safely hide the image and show fallback
+                        if (e.target && e.target.style) {
+                          e.target.style.display = 'none';
+                        }
+                        // Only access nextSibling if parentElement exists and has a nextSibling
+                        const parent = e.target?.parentElement;
+                        const sibling = parent?.nextSibling;
+                        if (sibling && sibling.style) {
+                          sibling.style.display = 'flex';
                         }
                       }
                     }}
@@ -329,13 +335,43 @@ const MothListItem = React.memo(({ moth, baseRoute = "/moth", isPriority = false
           {/* Enhanced Content section */}
           <div className="p-4">
             <div className="space-y-3">
-              <div className="flex items-start space-x-2">
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 flex-shrink-0">
-                  食草
-                </span>
-                <span className="text-sm text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
-                  {moth.hostPlants.length > 0 ? moth.hostPlants.join(', ') : '不明'}
-                </span>
+              <div>
+                <div className="flex items-center space-x-2 mb-2">
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 flex-shrink-0">
+                    食草
+                  </span>
+                </div>
+                <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {(() => {
+                    if (!moth.hostPlants) return '情報なし';
+                    
+                    // hostPlants が文字列の場合と配列の場合を処理
+                    let plantNames;
+                    if (typeof moth.hostPlants === 'string') {
+                      // セミコロン、カンマで分割して各食草を取得
+                      plantNames = moth.hostPlants.split(/[;；、,]/)
+                        .map(plant => plant.trim())
+                        .filter(plant => plant && plant !== '不明')
+                        .map(plant => {
+                          // 科名を除去: （○○科）や (○○科) のパターンを削除
+                          return plant.replace(/[（(][^）)]*科[^）)]*[）)]/g, '').trim();
+                        })
+                        .filter(plant => plant && !plant.includes('以上'));
+                    } else if (Array.isArray(moth.hostPlants)) {
+                      plantNames = moth.hostPlants
+                        .filter(plant => plant && plant !== '不明')
+                        .map(plant => {
+                          // 科名を除去
+                          return plant.replace(/[（(][^）)]*科[^）)]*[）)]/g, '').trim();
+                        })
+                        .filter(plant => plant);
+                    } else {
+                      return '情報なし';
+                    }
+                    
+                    return plantNames.length > 0 ? plantNames.join('、') : '情報なし';
+                  })()}
+                </div>
               </div>
               
               {/* 成虫発生時期表示 */}

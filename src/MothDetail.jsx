@@ -6,6 +6,8 @@ import { getSourceLink } from './utils/sourceLinks';
 import { formatScientificNameReact } from './utils/scientificNameFormatter.jsx';
 import { MothStructuredData, ButterflyStructuredData, LeafBeetleStructuredData, BeetleStructuredData } from './components/StructuredData';
 import EmergenceTimeDisplay from './components/EmergenceTimeDisplay';
+import EnhancedHostPlantDisplay from './components/EnhancedHostPlantDisplay';
+import EnhancedEmergenceTimeDisplay from './components/EnhancedEmergenceTimeDisplay';
 import RelatedInsectsSection from './components/RelatedInsectsSection';
 import { extractEmergenceTime, normalizeEmergenceTime } from './utils/emergenceTimeUtils';
 
@@ -175,7 +177,30 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
 
   // Group related moths by host plant
   const relatedMothsByPlant = {};
-  moth.hostPlants.forEach(plant => {
+  
+  // Get plant names from current moth - handle both string and array formats
+  let currentMothPlants = [];
+  if (moth.hostPlantsDetailed && moth.hostPlantsDetailed.length > 0) {
+    // Use new detailed format
+    currentMothPlants = moth.hostPlantsDetailed.map(plant => plant.name).filter(name => name);
+  } else if (moth.hostPlants) {
+    // Handle old format - could be string or array
+    if (typeof moth.hostPlants === 'string') {
+      // Split by common delimiters and clean up
+      currentMothPlants = moth.hostPlants.split(/[;；、,]/)
+        .map(plant => plant.trim())
+        .filter(plant => plant && plant !== '不明')
+        .map(plant => {
+          // Remove family annotations like （○○科）
+          return plant.replace(/[（(][^）)]*科[^）)]*[）)]/g, '').trim();
+        })
+        .filter(plant => plant);
+    } else if (Array.isArray(moth.hostPlants)) {
+      currentMothPlants = moth.hostPlants.filter(plant => plant && plant !== '不明');
+    }
+  }
+
+  currentMothPlants.forEach(plant => {
     // Extract base plant name for matching (e.g., "フジの花蕾" -> "フジ")
     let basePlantName = plant;
     const partMatch = plant.match(/^([^の]+)の/);
@@ -205,9 +230,21 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
     });
   });
 
+  // Debug logging for アオバシャチホコ
+  if (moth.name === 'アオバシャチホコ') {
+    console.log('DEBUG アオバシャチホコ関連昆虫:', {
+      currentMothPlants,
+      relatedMothsByPlant,
+      hostPlantsKeys: Object.keys(hostPlants),
+      hasYamaboushi: hostPlants['ヤマボウシ'] || 'not found',
+      hasMizuki: hostPlants['ミズキ'] || 'not found',
+      hasKumanoMizuki: hostPlants['クマノミズキ'] || 'not found'
+    });
+  }
+
   // Also keep the old format for backward compatibility
   const relatedMoths = new Set();
-  moth.hostPlants.forEach(plant => {
+  currentMothPlants.forEach(plant => {
     // Extract base plant name for matching (e.g., "フジの花蕾" -> "フジ")
     let basePlantName = plant;
     const partMatch = plant.match(/^([^の]+)の/);
@@ -580,10 +617,81 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                   return null;
                 })()}
                 
-                {(moth.hostPlants.length > 0 || (moth.hostPlantDetails && moth.hostPlantDetails.length > 0)) ? (
+                {(moth.hostPlants.length > 0 || (moth.hostPlantsDetailed && moth.hostPlantsDetailed.length > 0) || (moth.hostPlantDetails && moth.hostPlantDetails.length > 0)) ? (
                   <div className="space-y-4">
-                    {/* Display detailed host plant info if available */}
-                    {moth.hostPlantDetails && moth.hostPlantDetails.length > 0 ? (
+                    {/* Display integrated detailed host plant info if available */}
+                    {moth.hostPlantsDetailed && moth.hostPlantsDetailed.length > 0 ? (
+                      <div>
+                        <div className="grid grid-cols-1 gap-4">
+                          {moth.hostPlantsDetailed.map((plantDetail, index) => {
+                            return (
+                              <div 
+                                key={index}
+                                className="block p-4 bg-white/60 dark:bg-slate-700/60 rounded-lg border border-emerald-200/50 dark:border-emerald-700/50 hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-white/80 dark:hover:bg-slate-700/80 transition-all duration-200"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center flex-wrap gap-2">
+                                    <Link 
+                                      to={`/plant/${encodeURIComponent(plantDetail.name)}`}
+                                      className="text-lg font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 transition-colors"
+                                    >
+                                      {plantDetail.name}
+                                    </Link>
+                                    {plantDetail.family && (
+                                      <span className="text-sm text-slate-500 dark:text-slate-400">
+                                        ({plantDetail.family})
+                                      </span>
+                                    )}
+                                    {/* 色付きアイコン表示 */}
+                                    <div className="flex items-center gap-1 flex-wrap">
+                                      {plantDetail.observationType && (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                          {plantDetail.observationType}
+                                        </span>
+                                      )}
+                                      {plantDetail.plantPart && (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+                                          {plantDetail.plantPart}
+                                        </span>
+                                      )}
+                                      {plantDetail.lifeStage && (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                                          {plantDetail.lifeStage}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <Link 
+                                    to={`/plant/${encodeURIComponent(plantDetail.name)}`}
+                                    className="text-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                  </Link>
+                                </div>
+                                
+                                {/* 出典情報 */}
+                                {plantDetail.reference && (
+                                  <div className="mt-2">
+                                    <span className="text-slate-500 dark:text-slate-400 text-xs">出典: </span>
+                                    <span className="text-slate-600 dark:text-slate-300 text-xs">
+                                      {plantDetail.reference}
+                                    </span>
+                                  </div>
+                                )}
+                                
+                                {plantDetail.notes && (
+                                  <div className="mt-2 p-2 bg-slate-50 dark:bg-slate-800/50 rounded text-xs text-slate-600 dark:text-slate-400">
+                                    {plantDetail.notes}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : moth.hostPlantDetails && moth.hostPlantDetails.length > 0 ? (
                       <div>
 
                         {/* Display domestic plants first */}
@@ -1434,11 +1542,12 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
 
             {/* 成虫発生時期情報 - ハムシと蛾で表示 */}
             {(moth.type === 'leafbeetle' || moth.type === 'moth') && (() => {
+              const hasDetailedTime = moth.emergenceTimeDetailed && moth.emergenceTimeDetailed.length > 0;
               const hasExistingTime = moth.emergenceTime && moth.emergenceTime !== '不明';
               const { emergenceTime } = extractEmergenceTime(moth.notes || '');
               const normalizedTime = normalizeEmergenceTime(emergenceTime);
               const hasExtractedTime = normalizedTime && normalizedTime !== '不明';
-              return hasExistingTime || hasExtractedTime;
+              return hasDetailedTime || hasExistingTime || hasExtractedTime;
             })() && (
               <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-xl shadow-lg border border-white/20 dark:border-slate-700/50 overflow-hidden">
                 <div className="p-4 bg-orange-500/10 dark:bg-orange-500/20 border-b border-orange-200/30 dark:border-orange-700/30">
@@ -1456,6 +1565,42 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                 
                 <div className="p-4">
                   {(() => {
+                    // 統合データの詳細発生時期情報がある場合は優先表示
+                    if (moth.emergenceTimeDetailed && moth.emergenceTimeDetailed.length > 0) {
+                      return (
+                        <div className="space-y-4">
+                          {moth.emergenceTimeDetailed.map((timeDetail, index) => (
+                            <div key={index} className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-3 border border-orange-200/50 dark:border-orange-700/50">
+                              <div className="flex items-start justify-between">
+                                <div className="flex-1">
+                                  <div className="text-lg font-medium text-orange-800 dark:text-orange-200">
+                                    {timeDetail.period}
+                                  </div>
+                                  {timeDetail.region && (
+                                    <div className="text-sm text-orange-600 dark:text-orange-300 mt-1">
+                                      地域: {timeDetail.region}
+                                    </div>
+                                  )}
+                                  {timeDetail.notes && (
+                                    <div className="text-sm text-orange-600 dark:text-orange-300 mt-1">
+                                      {timeDetail.notes}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              {timeDetail.source && (
+                                <div className="mt-2 pt-2 border-t border-orange-200/30 dark:border-orange-700/30">
+                                  <div className="text-xs text-orange-500 dark:text-orange-400">
+                                    出典: {timeDetail.source}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }
+                    
                     // descriptionがある場合はそれを優先して表示（説明文として表示）
                     if (moth.emergenceTimeDescription) {
                       return <EmergenceTimeDisplay emergenceTime={moth.emergenceTimeDescription} source={moth.emergenceTimeSource} />;

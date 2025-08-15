@@ -207,9 +207,14 @@ const RelatedInsectsSection = ({ relatedMothsByPlant, allInsects }) => {
                                 e.target.src = getFallbackImagePath(relatedMoth);
                               } else {
                                 // 両方失敗した場合はデフォルトアイコンを表示
-                                e.target.style.display = 'none';
-                                if (e.target.nextElementSibling) {
-                                  e.target.nextElementSibling.style.display = 'flex';
+                                // Safely hide the image
+                                if (e.target && e.target.style) {
+                                  e.target.style.display = 'none';
+                                }
+                                // Only access nextElementSibling if it exists
+                                const sibling = e.target?.nextElementSibling;
+                                if (sibling && sibling.style) {
+                                  sibling.style.display = 'flex';
                                 }
                               }
                             }}

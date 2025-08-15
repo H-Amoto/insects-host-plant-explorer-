@@ -146,6 +146,11 @@ function App() {
       const fuyushakuCsvPath = `${import.meta.env.BASE_URL}日本の冬尺蛾.csv?v=${Date.now()}&bust=${Math.random()}&nocache=${Date.now()}&t=${performance.now()}`;
       // emergence_time_integrated.csv統合済み - hamushi_integrated_master.csvに統合完了
       const genusMappingCsvPath = `${import.meta.env.BASE_URL}genus_mapping.csv`;
+      
+      // 正規化データのパス（新しい3ファイル構造）
+      const normalizedInsectsCsvPath = `${import.meta.env.BASE_URL}insects.csv?v=${Date.now()}`;
+      const normalizedHostplantsCsvPath = `${import.meta.env.BASE_URL}hostplants.csv?v=${Date.now()}`;
+      const normalizedNotesCsvPath = `${import.meta.env.BASE_URL}general_notes.csv?v=${Date.now()}`;
 
       // Unified scientific name processing function for all insect types - FIXED SCOPE
       const processScientificName = (existingScientificName, genusName, speciesName, authorName, yearName, insectType = 'moth') => {
@@ -433,7 +438,7 @@ function App() {
         if (isDevelopment) console.log("DEBUG: フユシャクCsvPath:", fuyushakuCsvPath);
         if (isDevelopment) console.log("DEBUG: About to load フユシャク file with safeFileLoad");
         
-        const [wameiText, mainText, yListText, hamushiIntegratedText, butterflyText, beetleText, kirigaText, fuyushakuText, genusMappingText] = await Promise.all([
+        const [wameiText, mainText, yListText, hamushiIntegratedText, butterflyText, beetleText, kirigaText, fuyushakuText, genusMappingText, normalizedInsectsText, normalizedHostplantsText, normalizedNotesText] = await Promise.all([
           safeFileLoad(wameiCsvPath, 'wamei checklist', 20000),
           safeFileLoad(mainCsvPath, 'main moth data', 20000),
           safeFileLoad(yListCsvPath, 'YList data', 30000), // Longer timeout for large file
@@ -442,7 +447,10 @@ function App() {
           safeFileLoad(beetleCsvPath, 'beetle data', 15000),
           safeFileLoad(kirigaCsvPath, 'kiriga data', 10000),
           safeFileLoad(fuyushakuCsvPath, 'fuyushaku data', 10000),
-          safeFileLoad(genusMappingCsvPath, 'genus mapping data', 10000)
+          safeFileLoad(genusMappingCsvPath, 'genus mapping data', 10000),
+          safeFileLoad(normalizedInsectsCsvPath, 'normalized insects data', 15000),
+          safeFileLoad(normalizedHostplantsCsvPath, 'normalized hostplants data', 15000),
+          safeFileLoad(normalizedNotesCsvPath, 'normalized notes data', 10000)
         ]);
         
         if (isDevelopment) console.log("DEBUG: File loading completed, checking results...");
@@ -465,8 +473,72 @@ function App() {
           kiriga: kirigaText ? 'SUCCESS' : 'FAILED',
           fuyushaku: fuyushakuText ? 'SUCCESS' : 'FAILED',
           // emergenceTime: 統合済みのためhamushiIntegratedTextに含まれる
-          genusMapping: genusMappingText ? 'SUCCESS' : 'FAILED'
+          genusMapping: genusMappingText ? 'SUCCESS' : 'FAILED',
+          normalizedInsects: normalizedInsectsText ? 'SUCCESS' : 'FAILED',
+          normalizedHostplants: normalizedHostplantsText ? 'SUCCESS' : 'FAILED',
+          normalizedNotes: normalizedNotesText ? 'SUCCESS' : 'FAILED'
         });
+        
+        // Process normalized CSV data if available
+        let normalizedData = null;
+        if (normalizedInsectsText && normalizedHostplantsText && normalizedNotesText) {
+          try {
+            console.log("正規化CSVファイルを処理中...");
+            
+            // Import normalized data parser
+            const { convertNormalizedDataToStandardFormat, validateNormalizedData } = await import('./utils/normalizedDataParser.js');
+            
+            // Parse normalized CSVs
+            const insectsParsed = Papa.parse(normalizedInsectsText, {
+              header: true,
+              skipEmptyLines: true,
+              transformHeader: (header) => header.trim(),
+              transform: (value) => value?.trim() || ''
+            });
+            
+            const hostplantsParsed = Papa.parse(normalizedHostplantsText, {
+              header: true,
+              skipEmptyLines: true,
+              transformHeader: (header) => header.trim(),
+              transform: (value) => value?.trim() || ''
+            });
+            
+            const notesParsed = Papa.parse(normalizedNotesText, {
+              header: true,
+              skipEmptyLines: true,
+              transformHeader: (header) => header.trim(),
+              transform: (value) => value?.trim() || ''
+            });
+            
+            // Check for parsing errors
+            [insectsParsed, hostplantsParsed, notesParsed].forEach((parsed, index) => {
+              const names = ['insects', 'hostplants', 'notes'];
+              if (parsed.errors?.length > 0) {
+                console.warn(`正規化CSV解析警告 (${names[index]}):`, parsed.errors);
+              }
+            });
+            
+            // Convert to standard format
+            normalizedData = convertNormalizedDataToStandardFormat(
+              insectsParsed.data, 
+              hostplantsParsed.data, 
+              notesParsed.data
+            );
+            
+            // Validate data quality
+            const qualityReport = validateNormalizedData(normalizedData);
+            console.log("正規化データ品質レポート:", qualityReport);
+            
+            // Log first few entries for verification
+            if (normalizedData.moths?.length > 0) {
+              console.log("正規化データサンプル (蛾類):", normalizedData.moths.slice(0, 2));
+            }
+            
+          } catch (error) {
+            console.error("正規化CSV処理エラー:", error);
+            normalizedData = null;
+          }
+        }
 
         // Check if essential files loaded
         if (!mainText) {
@@ -4830,10 +4902,55 @@ function App() {
           sampleLeafbeetle: combinedLeafbeetleData[0]
         });
         
-        setMoths(deduplicatedMoths);
-        setButterflies(butterflyData);
-        setBeetles(combinedBeetleData);
-        setLeafbeetles(combinedLeafbeetleData);
+        // Decide whether to use normalized data or legacy data
+        let finalMothData, finalButterflyData, finalBeetleData, finalLeafbeetleData;
+        
+        if (normalizedData && normalizedData.moths?.length > 0) {
+          console.log("正規化データを使用します");
+          
+          // Use normalized data as primary source
+          finalMothData = normalizedData.moths;
+          finalButterflyData = normalizedData.butterflies;
+          finalBeetleData = normalizedData.beetles;
+          finalLeafbeetleData = normalizedData.leafbeetles;
+          
+          console.log("正規化データ使用状況:", {
+            moths: finalMothData.length,
+            butterflies: finalButterflyData.length,
+            beetles: finalBeetleData.length,
+            leafbeetles: finalLeafbeetleData.length,
+            total: finalMothData.length + finalButterflyData.length + finalBeetleData.length + finalLeafbeetleData.length
+          });
+          
+        } else {
+          console.log("レガシーデータを使用します（正規化データが利用不可）");
+          
+          // Fallback to legacy data
+          finalMothData = deduplicatedMoths;
+          finalButterflyData = butterflyData;
+          finalBeetleData = combinedBeetleData;
+          finalLeafbeetleData = combinedLeafbeetleData;
+          
+          // Enhance legacy data with integrated format for compatibility
+          try {
+            const { convertLegacyToIntegratedFormat } = await import('./utils/integratedDataParser.js');
+            
+            finalMothData = convertLegacyToIntegratedFormat(finalMothData, 'moth');
+            finalButterflyData = convertLegacyToIntegratedFormat(finalButterflyData, 'butterfly');
+            finalBeetleData = convertLegacyToIntegratedFormat(finalBeetleData, 'beetle');
+            finalLeafbeetleData = convertLegacyToIntegratedFormat(finalLeafbeetleData, 'leafbeetle');
+            
+            console.log("レガシーデータを統合形式に変換完了");
+          } catch (error) {
+            console.warn("レガシーデータ変換エラー:", error);
+            // Continue with original data if conversion fails
+          }
+        }
+        
+        setMoths(finalMothData);
+        setButterflies(finalButterflyData);
+        setBeetles(finalBeetleData);
+        setLeafbeetles(finalLeafbeetleData);
         setHostPlants(cleanedHostPlantData);
         setPlantDetails(cleanedPlantDetailData);
         setLoading(false); // Set loading to false after data is loaded
