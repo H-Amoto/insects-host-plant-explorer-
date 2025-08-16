@@ -1085,7 +1085,14 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
               const { emergenceTime } = extractEmergenceTime(moth.notes || '');
               const normalizedTime = normalizeEmergenceTime(emergenceTime);
               const hasExtractedTime = normalizedTime && normalizedTime !== '不明';
-              return hasDetailedTime || hasExistingTime || hasExtractedTime;
+              
+              // generalNotesから出現時期を抽出
+              const emergenceFromGeneralNotes = moth.generalNotes && moth.generalNotes.find(note => 
+                note.type === '出現時期' && note.content && note.content.trim()
+              );
+              const hasGeneralNotesTime = emergenceFromGeneralNotes && emergenceFromGeneralNotes.content !== '不明';
+              
+              return hasDetailedTime || hasExistingTime || hasExtractedTime || hasGeneralNotesTime;
             })() && (
               <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-xl shadow-lg border border-white/20 dark:border-slate-700/50 overflow-hidden">
                 <div className="p-4 bg-orange-500/10 dark:bg-orange-500/20 border-b border-orange-200/30 dark:border-orange-700/30">
@@ -1132,6 +1139,19 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                         source: moth.source || '',
                         region: '',
                         notes: '備考欄から抽出'
+                      });
+                    }
+                    
+                    // generalNotesから出現時期を追加
+                    const emergenceFromGeneralNotes = moth.generalNotes && moth.generalNotes.find(note => 
+                      note.type === '出現時期' && note.content && note.content.trim()
+                    );
+                    if (emergenceFromGeneralNotes && emergenceFromGeneralNotes.content !== '不明') {
+                      allEmergenceTimeData.push({
+                        period: emergenceFromGeneralNotes.content,
+                        source: emergenceFromGeneralNotes.reference || '',
+                        region: '',
+                        notes: 'general_notes.csvから抽出'
                       });
                     }
                     
