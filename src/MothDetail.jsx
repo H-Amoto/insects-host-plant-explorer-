@@ -623,8 +623,10 @@ const MothDetail = ({ moths, butterflies = [], beetles = [], leafbeetles = [], h
                   showDetailsByDefault={false}
                   maxDisplayCount={10}
                 />
-                    })
-                    .filter(note => {
+
+                {/* 食草備考表示 */}
+                {moth.hostPlantNotes && moth.hostPlantNotes.length > 0 && (() => {
+                  const filteredNotes = moth.hostPlantNotes.filter(note => {
                       if (!note) return false; // 空の場合は除外
                       
                       // 既存の食草データから部位情報を抽出
