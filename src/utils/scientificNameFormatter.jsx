@@ -54,6 +54,17 @@ export const formatScientificNameHTML = (scientificName) => {
     return `<em>${binomialName}</em>${extraInfo}`;
   }
   
+  // 属名のみで亜属名が括弧内にある場合（例：Paridea (Paridea)）
+  const genusSubgenusPattern = /^([A-Z][a-z]+)\s+\(([A-Z][a-z]+)\)\s*$/;
+  const genusSubgenusMatch = trimmed.match(genusSubgenusPattern);
+  
+  if (genusSubgenusMatch) {
+    const genus = genusSubgenusMatch[1];
+    const subgenus = genusSubgenusMatch[2];
+    
+    return `<em>${genus}</em> (${subgenus})`;
+  }
+  
   // フォールバック: 最初の2語のみをイタリック体にする
   const parts = trimmed.split(/\s+/);
   if (parts.length >= 2) {
@@ -131,6 +142,21 @@ export const formatScientificNameReact = (scientificName) => {
       <>
         <em>{binomialName}</em>
         {extraInfo}
+      </>
+    );
+  }
+  
+  // 属名のみで亜属名が括弧内にある場合（例：Paridea (Paridea)）
+  const genusSubgenusPattern = /^([A-Z][a-z]+)\s+\(([A-Z][a-z]+)\)\s*$/;
+  const genusSubgenusMatch = trimmed.match(genusSubgenusPattern);
+  
+  if (genusSubgenusMatch) {
+    const genus = genusSubgenusMatch[1];
+    const subgenus = genusSubgenusMatch[2];
+    
+    return (
+      <>
+        <em>{genus}</em> ({subgenus})
       </>
     );
   }
