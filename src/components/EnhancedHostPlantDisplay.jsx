@@ -72,6 +72,19 @@ const getLifeStageIcon = (lifeStage) => {
 };
 
 /**
+ * 観察タイプ別の優先度を取得（数値が小さいほど優先度が高い）
+ */
+const getObservationTypePriority = (observationType) => {
+  switch (observationType) {
+    case '野外（国内）': return 1; // 最優先
+    case '飼育': return 2;
+    case '野外（海外）':
+    case '海外': return 3;
+    default: return 4; // その他は最後
+  }
+};
+
+/**
  * 植物記録をグループ化する関数
  */
 const groupPlantsByName = (plants) => {
@@ -152,56 +165,52 @@ const HostPlantDetailCard = ({ plantGroup, isExpanded, onToggle }) => {
             )}
           </div>
           
-          {/* 利用情報のプレビュー */}
-          <div className="flex items-center space-x-1">
-            {hasMultipleUsages ? (
-              <span className="text-xs px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 font-medium">
-                複数利用
-              </span>
-            ) : usageInfoArray[0] && (
-              <>
-                {usageInfoArray[0].lifeStage && (
-                  <span className="text-sm" title={`利用段階: ${usageInfoArray[0].lifeStage}`}>
-                    {getLifeStageIcon(usageInfoArray[0].lifeStage)}
-                  </span>
-                )}
-                {usageInfoArray[0].plantPart && (
-                  <span className="text-sm" title={`利用部位: ${usageInfoArray[0].plantPart}`}>
-                    {getPlantPartIcon(usageInfoArray[0].plantPart)}
-                  </span>
-                )}
-              </>
-            )}
-          </div>
-          
           <span className={`text-xs px-2 py-1 rounded-full ${obsStyle.bgColor} ${obsStyle.textColor} font-medium`}>
             {obsStyle.label}
           </span>
         </div>
         
-        {/* 詳細情報がある場合のトグルボタン */}
-        <button
-          onClick={onToggle}
-          className="ml-2 p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-          aria-label={isExpanded ? "詳細を閉じる" : "詳細を表示"}
-        >
-          <svg 
-            className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
+        {/* 詳細情報がある場合のトグルボタン - 複数利用がある場合のみ表示 */}
+        {hasMultipleUsages && (
+          <button
+            onClick={onToggle}
+            className="ml-2 p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+            aria-label={isExpanded ? "詳細を閉じる" : "詳細を表示"}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
+            <svg 
+              className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        )}
       </div>
       
-      {/* 詳細情報（展開時） */}
-      {isExpanded && (
-        <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600 space-y-3">
-          {/* 利用情報一覧 */}
+      {/* 単一利用の場合は直接詳細を表示 */}
+      {!hasMultipleUsages && usageInfoArray.length > 0 && (
+        <div className="mt-2 flex items-center space-x-4 text-sm text-slate-600 dark:text-slate-400">
+          {usageInfoArray[0].lifeStage && (
+            <div className="flex items-center space-x-1">
+              <span>{getLifeStageIcon(usageInfoArray[0].lifeStage)}</span>
+              <span>{usageInfoArray[0].lifeStage}</span>
+            </div>
+          )}
+          {usageInfoArray[0].plantPart && (
+            <div className="flex items-center space-x-1">
+              <span>{getPlantPartIcon(usageInfoArray[0].plantPart)}</span>
+              <span>{usageInfoArray[0].plantPart}</span>
+            </div>
+          )}
+        </div>
+      )}
+      
+      {/* 複数利用の詳細情報（常に表示） */}
+      {hasMultipleUsages && (
+        <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600 space-y-2">
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">利用情報</h4>
             {usageInfoArray.map((usage, index) => (
               <div key={index} className="bg-slate-50 dark:bg-slate-800/50 rounded-md p-2 text-sm">
                 <div className="flex items-center space-x-4">
@@ -238,10 +247,10 @@ const HostPlantDetailCard = ({ plantGroup, isExpanded, onToggle }) => {
                   </div>
                 )}
                 
-                {/* 出典情報 */}
+                {/* 参考文献 */}
                 {usage.references.size > 0 && (
-                  <div className="mt-1">
-                    <span className="text-slate-600 dark:text-slate-400">出典: </span>
+                  <div className="mt-1 flex items-center space-x-1">
+                    <span className="text-slate-600 dark:text-slate-400">出典:</span>
                     <span className="text-slate-700 dark:text-slate-300">
                       {Array.from(usage.references).join(', ')}
                     </span>
@@ -251,10 +260,14 @@ const HostPlantDetailCard = ({ plantGroup, isExpanded, onToggle }) => {
                 {/* 備考 */}
                 {usage.notes.size > 0 && (
                   <div className="mt-1">
-                    <span className="text-slate-600 dark:text-slate-400">備考: </span>
-                    <span className="text-slate-700 dark:text-slate-300">
-                      {Array.from(usage.notes).join(', ')}
-                    </span>
+                    <span className="text-slate-600 dark:text-slate-400">備考:</span>
+                    <div className="mt-1">
+                      {Array.from(usage.notes).map(note => (
+                        <div key={note} className="text-slate-700 dark:text-slate-300 text-xs">
+                          {note}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -264,19 +277,6 @@ const HostPlantDetailCard = ({ plantGroup, isExpanded, onToggle }) => {
       )}
     </div>
   );
-};
-
-/**
- * 観察タイプ別の優先度を取得（数値が小さいほど優先度が高い）
- */
-const getObservationTypePriority = (observationType) => {
-  switch (observationType) {
-    case '野外（国内）': return 1; // 最優先
-    case '飼育': return 2;
-    case '野外（海外）':
-    case '海外': return 3;
-    default: return 4; // その他は最後
-  }
 };
 
 /**
