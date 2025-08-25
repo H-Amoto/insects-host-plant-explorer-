@@ -66,7 +66,7 @@ img {
 
 /* ボタンスタイル */
 .btn-primary {
-  @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors;
+  @apply bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 inline-block text-center shadow-md hover:shadow-lg;
 }
 
 .btn-secondary {
@@ -75,7 +75,7 @@ img {
 
 /* カード要素 */
 .card {
-  @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-shadow hover:shadow-lg;
+  @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-100 dark:border-gray-700;
 }
 
 /* 検索結果のハイライト */
@@ -96,5 +96,14 @@ img {
 input:focus,
 select:focus,
 textarea:focus {
-  @apply outline-none ring-2 ring-blue-500 ring-opacity-50;
+  @apply outline-none ring-2 ring-green-500 ring-opacity-50;
+}
+
+/* 検索フォーム */
+.search-input {
+  @apply flex-1 px-6 py-4 text-lg border-2 border-gray-200 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-green-400 transition-colors;
+}
+
+.search-button {
+  @apply px-8 py-4 bg-green-600 text-white font-bold text-lg rounded-r-xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors duration-200 shadow-md hover:shadow-lg;
 }

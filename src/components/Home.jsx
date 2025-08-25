@@ -12,26 +12,29 @@ function Home() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-4">
+      <div className="text-center mb-16">
+        <h1 className="text-6xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-6">
           昆虫食草図鑑
         </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+        <p className="text-2xl text-gray-700 dark:text-gray-200 mb-4 font-medium">
           7000種以上の蛾・蝶・タマムシ・ハムシと植物の関係を探索
         </p>
+        <p className="text-lg text-gray-500 dark:text-gray-400">
+          日本最大級の昆虫-植物関係データベース
+        </p>
         
-        <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
-          <div className="flex">
+        <form onSubmit={handleSearch} className="max-w-3xl mx-auto mb-12">
+          <div className="flex shadow-xl rounded-xl">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="昆虫名または植物名で検索..."
-              className="flex-1 px-4 py-3 text-lg border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+              className="search-input"
             />
             <button
               type="submit"
-              className="px-6 py-3 bg-green-600 text-white font-semibold rounded-r-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="search-button"
             >
               検索
             </button>
@@ -39,7 +42,7 @@ function Home() {
         </form>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
         <div className="card">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">蛾</h2>
           <p className="text-gray-600 dark:text-gray-300 mb-4">
